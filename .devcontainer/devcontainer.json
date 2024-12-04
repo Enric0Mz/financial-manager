@@ -1,0 +1,21 @@
+{
+    "name": "Financial Manager Dev Container",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "PKief.material-icon-theme",
+                "EditorConfig.EditorConfig"
+            ]
+        },
+        "settings": {
+          "edit.formatOnSave": true,
+          "files.autoSave": "off"
+        }
+    },
+    "postCreateCommand": "npm install",
+    "forwardPorts": [3000],
+    "remoteUser": "node"
+}
