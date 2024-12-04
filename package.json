@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "next dev",
     "lint:prettier:check": "npx prettier . --check",
-    "lint:prettier:fix": "npx prettier . --write"
+    "lint:prettier:fix": "npx prettier . --write",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "^15.0.3",
@@ -10,6 +11,15 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
     "prettier": "3.4.2"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npx prettier . --check"
+    ]
   }
 }
