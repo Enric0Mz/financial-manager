@@ -3,6 +3,7 @@
     "dev": "next dev",
     "lint:prettier:check": "npx prettier . --check",
     "lint:prettier:fix": "npx prettier . --write",
+    "commit": "cz",
     "prepare": "husky"
   },
   "dependencies": {
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.6.0",
     "@commitlint/config-conventional": "^19.6.0",
+    "cz-conventional-changelog": "^3.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "prettier": "3.4.2"
@@ -21,5 +23,10 @@
     "*.js": [
       "npx prettier . --check"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
