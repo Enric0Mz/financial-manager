@@ -1,6 +1,8 @@
 {
   "name": "Financial Manager Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  "service": "app",
+  "dockerComposeFile": "docker-compose.yml",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -8,15 +10,21 @@
         "esbenp.prettier-vscode",
         "PKief.material-icon-theme",
         "EditorConfig.EditorConfig"
-      ]
-    },
-    "settings": {
-      "editor.formatOnSave": true,
-      "files.autoSave": "off",
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "files.autoSave": "off",
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
     }
   },
   "postCreateCommand": "npm install",
-  "forwardPorts": [3000],
-  "remoteUser": "node"
+  "forwardPorts": [3000, 5432],
+  "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  }
 }
