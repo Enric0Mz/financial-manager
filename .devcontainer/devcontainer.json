@@ -9,12 +9,16 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "PKief.material-icon-theme",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "Prisma.prisma"
       ],
       "settings": {
         "editor.formatOnSave": true,
         "files.autoSave": "off",
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[prisma]": {
+          "editor.defaultFormatter": "Prisma.prisma"
+        }
       }
     }
   },
