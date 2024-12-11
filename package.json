@@ -5,7 +5,7 @@
     "lint:prettier:fix": "npx prettier . --write",
     "lint:eslint:check": "next lint --dir .",
     "db:migrate": "dotenv -e .env.development -- npx prisma migrate dev",
-    "testando": "dotenv -e .env.development -- npx node src/infra/database.js",
+    "postinstall": "prisma generate --allow-no-models",
     "commit": "cz",
     "prepare": "husky"
   },
