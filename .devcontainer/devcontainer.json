@@ -1,7 +1,7 @@
 {
   "name": "Financial Manager Dev Container",
   "service": "app",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "compose.yaml",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "customizations": {
     "vscode": {
