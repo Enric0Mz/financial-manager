@@ -1,8 +1,6 @@
 {
   "name": "Financial Manager Dev Container",
-  "service": "app",
-  "dockerComposeFile": "docker-compose.yml",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -23,7 +21,6 @@
     }
   },
   "postCreateCommand": "npm install",
-  "forwardPorts": [3000, 5432],
   "remoteUser": "node",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
