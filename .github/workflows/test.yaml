@@ -6,17 +6,11 @@ jobs:
   test:
     name: test
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: "postgresql://user:password@localhost:5432/testdb"
-      NODE_ENV: "test"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: v18.20.4
-
-      - name: Print environment variables
-        run: printenv | grep DATABASE_URL
 
       - run: npm ci
       - run: npm test
