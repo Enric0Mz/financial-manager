@@ -10,6 +10,10 @@ test("route POST /api/v1/year should return 201 created", async () => {
     method: "POST",
   });
   expect(response.status).toBe(201);
+
+  const responseBody = await response.json();
+
+  expect(responseBody.status).toBe("created");
 });
 
 test("route POST should return 409 conflict if 2 year already exist", async () => {
@@ -18,4 +22,8 @@ test("route POST should return 409 conflict if 2 year already exist", async () =
   });
 
   expect(response.status).toBe(409);
+
+  const responseBody = await response.json();
+
+  expect(responseBody.error).toBe("conflict");
 });
