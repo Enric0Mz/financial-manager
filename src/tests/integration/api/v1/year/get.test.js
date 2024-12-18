@@ -23,3 +23,15 @@ test("route GET /api/v1/year/{year_number} should return 404 if year_number do n
   expect(response.status).toBe(404);
   expect(responseBody.error).toBe("not found");
 });
+
+test("route GET /api/v1/year should return a list of years", async () => {
+  await fetch("http://localhost:3000/api/v1/year/1997", {
+    method: "POST",
+  });
+  const response = await fetch("http://localhost:3000/api/v1/year");
+  const responseBody = await response.json();
+  console.log(responseBody);
+
+  expect(response.status).toBe(200);
+  expect(Array.isArray(responseBody.data)).toBe(true);
+});
