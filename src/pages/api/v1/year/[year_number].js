@@ -5,7 +5,9 @@ export default async function year(req, res) {
 
   if (!allowedMethods.includes(req.method)) {
     return res.status(405).json({
-      error: `method ${req.method} not allowed`,
+      status_code: 405,
+      error: "invalid_method",
+      description: `method ${req.method} not allowed`,
     });
   }
 
