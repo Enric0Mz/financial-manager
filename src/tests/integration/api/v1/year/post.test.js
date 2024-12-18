@@ -11,3 +11,11 @@ test("route POST /api/v1/year should return 201 created", async () => {
   });
   expect(response.status).toBe(201);
 });
+
+test("route POST should return 409 conflict if 2 year already exist", async () => {
+  const response = await fetch("http:localhost:3000/api/v1/year/1996", {
+    method: "POST",
+  });
+
+  expect(response.status).toBe(409);
+});

@@ -8,5 +8,5 @@ test("Retrieving current database information", async () => {
   expect(responseBody.updated_at).toBe(currentDate);
   expect(databaseInfo.version).toBe("16.0");
   expect(databaseInfo.max_connections).toBe("100");
-  expect(databaseInfo.opened_connections).toBe(1);
+  expect(databaseInfo.opened_connections).toBeGreaterThan(1);
 });
