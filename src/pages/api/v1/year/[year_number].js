@@ -37,7 +37,6 @@ export default async function year(req, res) {
   }
 
   if (req.method === "GET") {
-    console.log(yearNumberValue);
     const result = await prisma.year.findUnique({
       where: {
         yearNumber: yearNumberValue,

@@ -30,7 +30,6 @@ test("route GET /api/v1/year should return a list of years", async () => {
   });
   const response = await fetch("http://localhost:3000/api/v1/year");
   const responseBody = await response.json();
-  console.log(responseBody);
 
   expect(response.status).toBe(200);
   expect(Array.isArray(responseBody.data)).toBe(true);
