@@ -1,7 +1,7 @@
 import prisma from "@infra/database";
 
 export default async function year(req, res) {
-  const allowedMethods = ["POST"];
+  const allowedMethods = ["POST", "GET"];
 
   if (!allowedMethods.includes(req.method)) {
     return res.status(405).json({
@@ -11,17 +11,17 @@ export default async function year(req, res) {
     });
   }
 
-  if (req.method == "POST") {
-    const payload = req.query;
-    const yearNumberValue = parseInt(payload.year_number);
+  const payload = req.query;
+  const yearNumberValue = parseInt(payload.year_number);
 
+  if (req.method == "POST") {
     try {
       await prisma.year.create({
         data: {
           yearNumber: yearNumberValue,
         },
       });
-    } catch (err) {
+    } catch {
       res.status(409).json({
         status_code: 409,
         error: "conflict",
@@ -34,5 +34,24 @@ export default async function year(req, res) {
       status: "created",
       description: `value ${yearNumberValue} inserted into database`,
     });
+  }
+
+  if (req.method === "GET") {
+    console.log(yearNumberValue);
+    const result = await prisma.year.findUnique({
+      where: {
+        yearNumber: yearNumberValue,
+      },
+    });
+
+    if (!result) {
+      res.status(404).json({
+        status_code: 404,
+        error: `not found`,
+        description: `value ${yearNumberValue} not found`,
+      });
+    }
+
+    res.status(200).json({ data: result });
   }
 }
