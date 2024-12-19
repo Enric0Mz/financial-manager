@@ -13,9 +13,10 @@
     "lint:prettier:check": "npx prettier . --check",
     "lint:prettier:fix": "npx prettier . --write",
     "lint:eslint:check": "next lint --dir .",
-    "postinstall": "prisma generate --allow-no-models",
+    "postinstall": "prisma generate",
     "commit": "cz",
-    "prepare": "husky"
+    "prepare": "husky",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "next": "15.0.3",
