@@ -27,4 +27,8 @@ async function clearDatabase() {
 
 const orchestrator = { waitForAllServices, clearDatabase };
 
+afterAll(async () => {
+  await prisma.$disconnect();
+});
+
 export default orchestrator;
