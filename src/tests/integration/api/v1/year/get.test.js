@@ -21,7 +21,7 @@ test("route GET /api/v1/year/{year_number} should return 404 if year_number do n
   const responseBody = await response.json();
 
   expect(response.status).toBe(404);
-  expect(responseBody.error).toBe("not found");
+  expect(responseBody.name).toBe("not found");
 });
 
 test("route GET /api/v1/year should return a list of years", async () => {
