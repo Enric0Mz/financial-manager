@@ -1,4 +1,5 @@
 import prisma from "@infra/database";
+import { ConflictError } from "errors";
 
 export default async function year(req, res) {
   const allowedMethods = ["POST", "GET"];
@@ -21,12 +22,9 @@ export default async function year(req, res) {
           yearNumber: yearNumberValue,
         },
       });
-    } catch {
-      res.status(409).json({
-        status_code: 409,
-        error: "conflict",
-        description: `value ${yearNumberValue} already exists`,
-      });
+    } catch (error) {
+      const responseError = new ConflictError(error);
+      res.status(409).json(responseError);
     }
 
     res.status(201).json({
@@ -37,6 +35,7 @@ export default async function year(req, res) {
   }
 
   if (req.method === "GET") {
+    console.log(yearNumberValue);
     const result = await prisma.year.findUnique({
       where: {
         yearNumber: yearNumberValue,
