@@ -1,14 +1,16 @@
 import prisma from "@infra/database";
+import {
+  ConflictError,
+  NotFoundError,
+  InvalidHttpMethodError,
+} from "errors/http.js";
 
 export default async function year(req, res) {
   const allowedMethods = ["POST", "GET"];
 
   if (!allowedMethods.includes(req.method)) {
-    return res.status(405).json({
-      status_code: 405,
-      error: "invalid_method",
-      description: `method ${req.method} not allowed`,
-    });
+    const responseError = new InvalidHttpMethodError(req.method);
+    return res.status(405).json(responseError);
   }
 
   const payload = req.query;
@@ -21,12 +23,9 @@ export default async function year(req, res) {
           yearNumber: yearNumberValue,
         },
       });
-    } catch {
-      res.status(409).json({
-        status_code: 409,
-        error: "conflict",
-        description: `value ${yearNumberValue} already exists`,
-      });
+    } catch (error) {
+      const responseError = new ConflictError(error, yearNumberValue);
+      res.status(409).json(responseError);
     }
 
     res.status(201).json({
@@ -44,11 +43,8 @@ export default async function year(req, res) {
     });
 
     if (!result) {
-      res.status(404).json({
-        status_code: 404,
-        error: `not found`,
-        description: `value ${yearNumberValue} not found`,
-      });
+      const responseError = new NotFoundError(yearNumberValue);
+      res.status(404).json(responseError);
     }
 
     res.status(200).json({ data: result });

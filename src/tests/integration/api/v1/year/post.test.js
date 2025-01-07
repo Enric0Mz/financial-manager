@@ -25,5 +25,5 @@ test("route POST /api/v1/year should return 409 conflict if year already exist",
 
   const responseBody = await response.json();
 
-  expect(responseBody.error).toBe("conflict");
+  expect(responseBody.name).toBe("conflict");
 });
