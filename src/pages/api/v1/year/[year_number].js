@@ -1,5 +1,5 @@
 import prisma from "@infra/database";
-import { ConflictError } from "errors";
+import { ConflictError, NotFoundError } from "errors/http.js";
 
 export default async function year(req, res) {
   const allowedMethods = ["POST", "GET"];
@@ -35,7 +35,6 @@ export default async function year(req, res) {
   }
 
   if (req.method === "GET") {
-    console.log(yearNumberValue);
     const result = await prisma.year.findUnique({
       where: {
         yearNumber: yearNumberValue,
@@ -43,11 +42,8 @@ export default async function year(req, res) {
     });
 
     if (!result) {
-      res.status(404).json({
-        status_code: 404,
-        error: `not found`,
-        description: `value ${yearNumberValue} not found`,
-      });
+      const responseError = new NotFoundError(yearNumberValue);
+      res.status(404).json(responseError);
     }
 
     res.status(200).json({ data: result });
