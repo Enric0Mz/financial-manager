@@ -1,15 +1,16 @@
 import prisma from "@infra/database";
-import { ConflictError, NotFoundError } from "errors/http.js";
+import {
+  ConflictError,
+  NotFoundError,
+  InvalidHttpMethodError,
+} from "errors/http.js";
 
 export default async function year(req, res) {
   const allowedMethods = ["POST", "GET"];
 
   if (!allowedMethods.includes(req.method)) {
-    return res.status(405).json({
-      status_code: 405,
-      error: "invalid_method",
-      description: `method ${req.method} not allowed`,
-    });
+    const responseError = new InvalidHttpMethodError(req.method);
+    return res.status(405).json(responseError);
   }
 
   const payload = req.query;

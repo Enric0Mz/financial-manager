@@ -34,3 +34,13 @@ test("route GET /api/v1/year should return a list of years", async () => {
   expect(response.status).toBe(200);
   expect(Array.isArray(responseBody.data)).toBe(true);
 });
+
+test("route DELETE /api/v1/year should return 405 invalid method", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/year", {
+    method: "DELETE",
+  });
+  const responseBody = await response.json();
+
+  expect(response.status).toBe(405);
+  expect(responseBody.name).toBe("invalid method");
+});

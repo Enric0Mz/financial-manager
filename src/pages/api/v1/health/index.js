@@ -1,6 +1,13 @@
 import prisma from "@infra/database.js";
+import { InvalidHttpMethodError } from "errors/http";
 
-export default async function health(request, response) {
+export default async function health(req, res) {
+  const allowedMethods = ["GET"];
+
+  if (!allowedMethods.includes(req.method)) {
+    const responseError = new InvalidHttpMethodError(req.method);
+    return res.status(405).json(responseError);
+  }
   const serverVersionResult = await prisma.$queryRaw`SHOW server_version;`;
   const serverVersionValue = serverVersionResult[0].server_version.slice(0, 4);
 
@@ -15,7 +22,7 @@ export default async function health(request, response) {
 
   const updatedAt = new Date().toISOString();
 
-  return response.status(200).json({
+  return res.status(200).json({
     updated_at: updatedAt,
     dependencies: {
       database: {
