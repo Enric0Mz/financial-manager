@@ -23,7 +23,7 @@ export default async function year(req, res) {
         },
       });
     } catch (error) {
-      const responseError = new ConflictError(error);
+      const responseError = new ConflictError(error, yearNumberValue);
       res.status(409).json(responseError);
     }
 

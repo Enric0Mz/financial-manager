@@ -1,10 +1,10 @@
 export class ConflictError extends TypeError {
-  constructor({ cause }) {
-    super("Value already exists on table", {
+  constructor({ cause }, value) {
+    super(`Value ${value} already exists on table`, {
       cause: cause,
     });
     (this.name = "conflict"),
-      (this.message = "Insira um valor novo"),
+      (this.message = `Value ${value} already exists on table. Insert other value`),
       (this.statusCode = 409);
   }
   toJSON() {
