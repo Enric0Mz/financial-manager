@@ -24,8 +24,7 @@ model Month {
   id             Int             @id @default(autoincrement())
   month          MonthName       @unique
   numeric        Int             @unique
-  yearId         Int?
-  year           Year?           @relation(fields: [yearId], references: [yearNumber])
+  years          Year[]
   expenses       Expense[]
   bankStatements BankStatement[]
 }
