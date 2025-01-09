@@ -6,15 +6,16 @@ import {
 } from "errors/http.js";
 
 export default async function month(req, res) {
-  const allowedMethods = ["POST"];
+  const allowedMethods = ["POST", "GET"];
   if (!allowedMethods.includes(req.method)) {
     const responseError = new InvalidHttpMethodError(req.method);
     return res.status(405).json(responseError);
   }
 
+  const payload = req.query;
+  const yearNumberValue = parseInt(payload.year_number);
+
   if (req.method === "POST") {
-    const payload = req.query;
-    const yearNumberValue = parseInt(payload.year_number);
     const body = req.body;
 
     const year = await prisma.year.findUnique({
@@ -44,6 +45,20 @@ export default async function month(req, res) {
       name: "created",
       message: `month ${body} created on ${yearNumberValue}`,
       statusCode: 201,
+    });
+  }
+  if (req.method === "GET") {
+    const result = await prisma.month.findMany({
+      where: {
+        years: {
+          some: {
+            yearNumber: yearNumberValue,
+          },
+        },
+      },
+    });
+    res.status(200).json({
+      data: result,
     });
   }
 }
