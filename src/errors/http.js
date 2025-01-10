@@ -4,7 +4,7 @@ export class ConflictError extends TypeError {
       cause: cause,
     });
     (this.name = "conflict"),
-      (this.message = `Value ${value} already exists on table. Insert other value`),
+      (this.message = `value ${value} already exists on table. Insert other value`),
       (this.statusCode = 409);
   }
   toJSON() {
@@ -18,9 +18,9 @@ export class ConflictError extends TypeError {
 
 export class NotFoundError extends Error {
   constructor(value) {
-    super(`Value ${value} does not exist on table`);
+    super(`value ${value} already exist on table`);
     this.name = "not found";
-    this.message = `Value ${value} does not exist on table. Try another value`;
+    this.message = `value ${value} already exist on table. Insert a new value`;
     this.statusCode = 404;
   }
   toJSON() {
@@ -34,9 +34,9 @@ export class NotFoundError extends Error {
 
 export class InvalidHttpMethodError extends Error {
   constructor(value) {
-    super(`Value ${value} not allowed on this route`);
+    super(`value ${value} not allowed on this route`);
     this.name = "invalid method";
-    this.message = `Enter a valid method`;
+    this.message = `enter a valid method`;
     this.statusCode = 405;
   }
   toJSON() {
