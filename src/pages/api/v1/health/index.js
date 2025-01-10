@@ -22,7 +22,7 @@ export default async function health(req, res) {
 
   const updatedAt = new Date().toISOString();
 
-  return res.status(200).json({
+  res.status(200).json({
     updated_at: updatedAt,
     dependencies: {
       database: {

@@ -24,7 +24,7 @@ export default async function month(req, res) {
       },
     });
     if (!year) {
-      res.status(404).json(new NotFoundError(yearNumberValue));
+      return res.status(404).json(new NotFoundError(yearNumberValue));
     }
 
     try {
@@ -38,7 +38,7 @@ export default async function month(req, res) {
       });
     } catch (error) {
       const responseError = new ConflictError(error, body);
-      res.status(404).json(responseError);
+      return res.status(404).json(responseError);
     }
 
     return res.status(201).json({

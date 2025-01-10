@@ -25,10 +25,10 @@ export default async function year(req, res) {
       });
     } catch (error) {
       const responseError = new ConflictError(error, yearNumberValue);
-      res.status(409).json(responseError);
+      return res.status(409).json(responseError);
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       status_code: 201,
       status: "created",
       description: `value ${yearNumberValue} inserted into database`,
@@ -44,7 +44,7 @@ export default async function year(req, res) {
 
     if (!result) {
       const responseError = new NotFoundError(yearNumberValue);
-      res.status(404).json(responseError);
+      return res.status(404).json(responseError);
     }
 
     res.status(200).json({ data: result });

@@ -7,7 +7,7 @@ export default async function month(req, res) {
 
   if (!allowedMethods.includes(req.method)) {
     const responseError = new InvalidHttpMethodError();
-    res.status(405).json(responseError);
+    return res.status(405).json(responseError);
   }
 
   if (req.method === "POST") {
