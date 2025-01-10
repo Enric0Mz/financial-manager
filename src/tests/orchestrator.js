@@ -23,9 +23,6 @@ async function clearDatabase() {
   await prisma.year.deleteMany({
     where: {},
   });
-  await prisma.month.deleteMany({
-    where: {},
-  });
 }
 
 const orchestrator = { waitForAllServices, clearDatabase };
