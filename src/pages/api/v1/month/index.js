@@ -1,14 +1,11 @@
 import prisma from "@infra/database";
 import { MonthName } from "@prisma/client";
-import { InvalidHttpMethodError } from "errors/http";
+import { validateAllowedMethods } from "helpers/validators";
 
 export default async function month(req, res) {
   const allowedMethods = ["POST"];
 
-  if (!allowedMethods.includes(req.method)) {
-    const responseError = new InvalidHttpMethodError();
-    return res.status(405).json(responseError);
-  }
+  validateAllowedMethods(req.method, allowedMethods, res);
 
   if (req.method === "POST") {
     const months = MonthName;

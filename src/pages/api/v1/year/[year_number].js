@@ -1,17 +1,11 @@
 import prisma from "@infra/database";
-import {
-  ConflictError,
-  NotFoundError,
-  InvalidHttpMethodError,
-} from "errors/http.js";
+import { ConflictError, NotFoundError } from "errors/http.js";
+import { validateAllowedMethods } from "helpers/validators";
 
 export default async function year(req, res) {
   const allowedMethods = ["POST", "GET"];
 
-  if (!allowedMethods.includes(req.method)) {
-    const responseError = new InvalidHttpMethodError(req.method);
-    return res.status(405).json(responseError);
-  }
+  validateAllowedMethods(req.method, allowedMethods, res);
 
   const payload = req.query;
   const yearNumberValue = parseInt(payload.year_number);
