@@ -1,13 +1,10 @@
 import prisma from "@infra/database";
-import { InvalidHttpMethodError } from "errors/http";
+import { validateAllowedMethods } from "helpers/validators";
 
 export default async function year(req, res) {
   const allowedMethods = ["GET"];
 
-  if (!allowedMethods.includes(req.method)) {
-    const responseError = new InvalidHttpMethodError(req.method);
-    return res.status(405).json(responseError);
-  }
+  validateAllowedMethods(req.method, allowedMethods, res);
 
   const result = await prisma.year.findMany();
   res.status(200).json({

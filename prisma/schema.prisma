@@ -8,10 +8,10 @@ generator client {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  createdAt     DateTime       @default(now())
-  bankStatments BankStatment[]
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  createdAt     DateTime        @default(now())
+  bankStatments BankStatement[]
   expenses      Expense[]
 }
 
@@ -21,21 +21,20 @@ model Year {
 }
 
 model Month {
-  id            Int            @id @default(autoincrement())
-  name          String         @unique
-  numeric       Int            @unique
-  yearId        Int
-  year          Year           @relation(fields: [yearId], references: [yearNumber])
-  expenses      Expense[]
-  bankStatments BankStatment[]
+  id             Int             @id @default(autoincrement())
+  month          MonthName       @unique
+  numeric        Int             @unique
+  years          Year[]
+  expenses       Expense[]
+  bankStatements BankStatement[]
 }
 
 model Bank {
-  id            Int            @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   name          String
   balance       Float
   expenses      Expense[]
-  bankStatments BankStatment[]
+  bankStatments BankStatement[]
 }
 
 model Debit {
@@ -45,24 +44,24 @@ model Debit {
 }
 
 model Expense {
-  id            Int            @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   name          String?
   description   String?
   total         Float
   expenseDate   DateTime
-  createdAt     DateTime       @default(now())
+  createdAt     DateTime        @default(now())
   debitId       Int
   bankId        Int
-  debit         Debit          @relation(fields: [debitId], references: [id])
-  bank          Bank           @relation(fields: [bankId], references: [id])
-  bankStatments BankStatment[]
-  User          User?          @relation(fields: [userId], references: [id])
+  debit         Debit           @relation(fields: [debitId], references: [id])
+  bank          Bank            @relation(fields: [bankId], references: [id])
+  bankStatments BankStatement[]
+  User          User?           @relation(fields: [userId], references: [id])
   userId        Int?
-  Month         Month?         @relation(fields: [monthId], references: [id])
+  Month         Month?          @relation(fields: [monthId], references: [id])
   monthId       Int?
 }
 
-model BankStatment {
+model BankStatement {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   userId       Int
@@ -77,4 +76,20 @@ model BankStatment {
   bankId       Int?
 
   @@unique([userId, monthId])
+  @@map("BankStatment")
+}
+
+enum MonthName {
+  January
+  February
+  March
+  April
+  May
+  June
+  July
+  August
+  September
+  October
+  November
+  December
 }
