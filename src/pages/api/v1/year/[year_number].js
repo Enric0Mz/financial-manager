@@ -3,7 +3,7 @@ import { ConflictError, NotFoundError } from "errors/http.js";
 import { validateAllowedMethods } from "helpers/validators";
 
 export default async function year(req, res) {
-  const allowedMethods = ["POST", "GET"];
+  const allowedMethods = ["POST", "GET", "DELETE"];
 
   validateAllowedMethods(req.method, allowedMethods, res);
 
@@ -26,6 +26,24 @@ export default async function year(req, res) {
       status_code: 201,
       status: "created",
       description: `value ${yearNumberValue} inserted into database`,
+    });
+  }
+
+  if (req.method === "DELETE") {
+    try {
+      await prisma.year.delete({
+        where: {
+          yearNumber: yearNumberValue,
+        },
+      });
+    } catch {
+      const responseError = new NotFoundError(yearNumberValue);
+      return res.status(404).json(responseError);
+    }
+    return res.status(200).json({
+      name: "deleted",
+      message: `value ${yearNumberValue} deleted successfuly`,
+      status_code: 200,
     });
   }
 
