@@ -6,7 +6,7 @@ import {
 } from "errors/http.js";
 
 export default async function year(req, res) {
-  const allowedMethods = ["POST", "GET"];
+  const allowedMethods = ["POST", "GET", "DELETE"];
 
   if (!allowedMethods.includes(req.method)) {
     const responseError = new InvalidHttpMethodError(req.method);
@@ -32,6 +32,24 @@ export default async function year(req, res) {
       status_code: 201,
       status: "created",
       description: `value ${yearNumberValue} inserted into database`,
+    });
+  }
+
+  if (req.method === "DELETE") {
+    try {
+      await prisma.year.delete({
+        where: {
+          yearNumber: yearNumberValue,
+        },
+      });
+    } catch {
+      const responseError = new NotFoundError(yearNumberValue);
+      return res.status(404).json(responseError);
+    }
+    return res.status(200).json({
+      name: "deleted",
+      message: `value ${yearNumberValue} deleted successfuly`,
+      status_code: 200,
     });
   }
 
