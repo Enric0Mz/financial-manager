@@ -13,6 +13,7 @@ test("route DELETE api/v1/year/2025 should return status 200 deleted", async () 
     method: "DELETE",
   });
   const responseBody = await response.json();
+  console.log(responseBody);
 
   const responseWithExpectedError = await fetch(
     "http://localhost:3000/api/v1/year/9999",
