@@ -1,11 +1,16 @@
 import prisma from "@infra/database";
-import { validateAllowedMethods } from "helpers/validators";
+import { onNoMatchHandler } from "helpers/handlers";
+import { createRouter } from "next-connect";
 
-export default async function year(req, res) {
-  const allowedMethods = ["GET"];
+const router = createRouter();
 
-  validateAllowedMethods(req.method, allowedMethods, res);
+router.get(getHandler);
 
+export default router.handler({
+  onNoMatch: onNoMatchHandler,
+});
+
+async function getHandler(req, res) {
   const result = await prisma.year.findMany();
   res.status(200).json({
     data: result,

@@ -1,26 +1,36 @@
 import prisma from "@infra/database";
 import { MonthName } from "@prisma/client";
-import { validateAllowedMethods } from "helpers/validators";
+import {
+  onNoMatchHandler,
+  onInternalServerErrorHandler,
+} from "helpers/handlers";
+import { createRouter } from "next-connect";
 
-export default async function month(req, res) {
-  const allowedMethods = ["POST"];
+const router = createRouter();
 
-  validateAllowedMethods(req.method, allowedMethods, res);
+router.post(postHandler);
+
+export default router.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
+
+async function postHandler(req, res) {
+  let months = [];
 
   if (req.method === "POST") {
-    const months = MonthName;
-    let counter = 1;
-    for (const [value] of Object.entries(months)) {
-      await prisma.month.createMany({
-        data: [
-          {
-            month: value,
-            numeric: counter,
-          },
-        ],
+    for (const [index, [, month]] of Object.entries(
+      Object.entries(MonthName),
+    )) {
+      months.push({
+        month,
+        numeric: parseInt(index) + 1,
       });
-      counter++;
     }
+    await prisma.month.createMany({
+      data: months,
+    });
+
     res.status(201).json({
       name: "created",
       message: "all months created successufuly",

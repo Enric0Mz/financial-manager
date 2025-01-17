@@ -36,8 +36,24 @@ export class InvalidHttpMethodError extends Error {
   constructor(value) {
     super(`Value ${value} not allowed on this route`);
     this.name = "invalid method";
-    this.message = `Enter a valid method`;
     this.statusCode = 405;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class InternalServerError extends Error {
+  constructor(cause) {
+    super("Internal server error.", {
+      cause: cause,
+    });
+    this.name = "internal server error";
+    this.statusCode = 500;
   }
   toJSON() {
     return {
