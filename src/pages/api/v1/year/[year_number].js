@@ -1,64 +1,76 @@
 import prisma from "@infra/database";
 import { ConflictError, NotFoundError } from "errors/http.js";
-import { validateAllowedMethods } from "helpers/validators";
+import { onNoMatchHandler } from "helpers/handlers";
+import { createRouter } from "next-connect";
 
-export default async function year(req, res) {
-  const allowedMethods = ["POST", "GET", "DELETE"];
+const router = createRouter();
 
-  validateAllowedMethods(req.method, allowedMethods, res);
+router.get(getHandler);
+router.post(postHandler);
+router.delete(deleteHandler);
 
+export default router.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onErrorHandler,
+});
+
+function onErrorHandler(err, req, res) {
+  const payload = req.query;
+  const yearNumberValue = parseInt(payload.year_number);
+  if (req.method === "POST") {
+    const responseError = new ConflictError(err, yearNumberValue);
+    return res.status(409).json(responseError);
+  }
+  const responseError = new NotFoundError(yearNumberValue);
+  return res.status(404).json(responseError);
+}
+
+async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.year_number);
 
-  if (req.method == "POST") {
-    try {
-      await prisma.year.create({
-        data: {
-          yearNumber: yearNumberValue,
-        },
-      });
-    } catch (error) {
-      const responseError = new ConflictError(error, yearNumberValue);
-      return res.status(409).json(responseError);
-    }
+  const result = await prisma.year.findUnique({
+    where: {
+      yearNumber: yearNumberValue,
+    },
+  });
 
-    return res.status(201).json({
-      status_code: 201,
-      status: "created",
-      description: `value ${yearNumberValue} inserted into database`,
-    });
+  if (!result) {
+    const responseError = new NotFoundError(yearNumberValue);
+    return res.status(404).json(responseError);
   }
 
-  if (req.method === "DELETE") {
-    try {
-      await prisma.year.delete({
-        where: {
-          yearNumber: yearNumberValue,
-        },
-      });
-    } catch {
-      const responseError = new NotFoundError(yearNumberValue);
-      return res.status(404).json(responseError);
-    }
-    return res.status(200).json({
-      name: "deleted",
-      message: `value ${yearNumberValue} deleted successfuly`,
-      status_code: 200,
-    });
-  }
+  return res.status(200).json({ data: result });
+}
 
-  if (req.method === "GET") {
-    const result = await prisma.year.findUnique({
-      where: {
-        yearNumber: yearNumberValue,
-      },
-    });
+async function postHandler(req, res) {
+  const payload = req.query;
+  const yearNumberValue = parseInt(payload.year_number);
 
-    if (!result) {
-      const responseError = new NotFoundError(yearNumberValue);
-      return res.status(404).json(responseError);
-    }
+  await prisma.year.create({
+    data: {
+      yearNumber: yearNumberValue,
+    },
+  });
 
-    res.status(200).json({ data: result });
-  }
+  return res.status(201).json({
+    status_code: 201,
+    status: "created",
+    description: `value ${yearNumberValue} inserted into database`,
+  });
+}
+
+async function deleteHandler(req, res) {
+  const payload = req.query;
+  const yearNumberValue = parseInt(payload.year_number);
+  await prisma.year.delete({
+    where: {
+      yearNumber: yearNumberValue,
+    },
+  });
+  return res.status(200).json({
+    name: "deleted",
+    message: `value ${yearNumberValue} deleted successfuly`,
+    status_code: 200,
+  });
 }
