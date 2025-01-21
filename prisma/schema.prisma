@@ -20,16 +20,15 @@ model Year {
 }
 
 model Month {
-  id      Int         @id @default(autoincrement())
+  numeric Int         @id
   month   MonthName   @unique
-  numeric Int         @unique
   years   YearMonth[]
 }
 
 model YearMonth {
   id            Int             @id @default(autoincrement())
   createdAt     DateTime        @default(now())
-  month         Month           @relation(fields: [monthId], references: [id])
+  month         Month           @relation(fields: [monthId], references: [numeric])
   monthId       Int
   year          Year            @relation(fields: [yearId], references: [yearNumber])
   yearId        Int
