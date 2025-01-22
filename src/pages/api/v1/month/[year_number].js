@@ -21,23 +21,24 @@ function onErrorHandler(err, req, res) {
   if (req.method === "POST") {
     const body = req.body;
     const responseError = new ConflictError(err, body);
-    return res.status(404).json(responseError);
+    return res.status(responseError.statusCode).json(responseError);
   }
+  throw err;
   return onInternalServerErrorHandler(err, req, res);
 }
 
 async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.year_number);
-  const result = await prisma.month.findMany({
+  const data = await prisma.yearMonth.findMany({
     where: {
-      years: {
-        some: {
-          yearNumber: yearNumberValue,
-        },
-      },
+      yearId: yearNumberValue,
+    },
+    select: {
+      month: true,
     },
   });
+  const result = data.map((item) => item.month);
   return res.status(200).json({
     data: result,
   });
@@ -56,15 +57,23 @@ async function postHandler(req, res) {
   if (!year) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
-
-  await prisma.month.update({
+  const month = await prisma.month.findFirst({
     where: {
       month: String(body[0]).toUpperCase() + String(body).slice(1),
     },
+  });
+
+  if (!month) {
+    return res.status(404).json(new NotFoundError(yearNumberValue));
+  }
+
+  await prisma.yearMonth.create({
     data: {
-      years: { connect: [year] },
+      monthId: month.numeric,
+      yearId: year.yearNumber,
     },
   });
+
   return res.status(201).json({
     name: "created",
     message: `month ${body} created on ${yearNumberValue}`,
@@ -77,21 +86,24 @@ async function deleteHandler(req, res) {
   const yearNumberValue = parseInt(payload.year_number);
   const body = req.body;
 
-  const result = await prisma.month.findFirst({
+  const result = await prisma.yearMonth.findFirst({
     where: {
-      AND: [
-        { month: String(body[0]).toUpperCase() + String(body).slice(1) },
-        { years: { some: { yearNumber: yearNumberValue } } },
-      ],
+      month: {
+        month: String(body[0]).toUpperCase() + String(body).slice(1),
+      },
+      year: {
+        yearNumber: yearNumberValue,
+      },
     },
   });
   if (!result) {
     const responseError = new NotFoundError(body);
     return res.status(404).json(responseError);
   }
-  await prisma.month.delete({
+  await prisma.yearMonth.deleteMany({
     where: {
-      month: result.month,
+      yearId: yearNumberValue,
+      monthId: result.monthId,
     },
   });
   return res.status(200).json({
