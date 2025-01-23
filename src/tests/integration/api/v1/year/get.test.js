@@ -5,7 +5,7 @@ beforeAll(async () => {
   await orchestrator.clearDatabase();
 });
 
-test("route GET /api/v1/year/{year_number} should return 200 ok", async () => {
+test("route GET /api/v1/year/{yearNumber} should return 200 ok", async () => {
   await fetch("http://localhost:3000/api/v1/year/1996", {
     method: "POST",
   });
@@ -16,7 +16,7 @@ test("route GET /api/v1/year/{year_number} should return 200 ok", async () => {
   expect(responseBody.data).toMatchObject({ yearNumber: 1996 });
 });
 
-test("route GET /api/v1/year/{year_number} should return 404 if year_number do not exist", async () => {
+test("route GET /api/v1/year/{yearNumber} should return 404 if yearNumber do not exist", async () => {
   const response = await fetch("http://localhost:3000/api/v1/year/9999");
   const responseBody = await response.json();
 

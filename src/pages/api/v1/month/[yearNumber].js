@@ -23,13 +23,12 @@ function onErrorHandler(err, req, res) {
     const responseError = new ConflictError(err, body);
     return res.status(responseError.statusCode).json(responseError);
   }
-  throw err;
   return onInternalServerErrorHandler(err, req, res);
 }
 
 async function getHandler(req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
   const data = await prisma.yearMonth.findMany({
     where: {
       yearId: yearNumberValue,
@@ -46,7 +45,7 @@ async function getHandler(req, res) {
 
 async function postHandler(req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
   const body = req.body;
 
   const year = await prisma.year.findUnique({
@@ -83,7 +82,7 @@ async function postHandler(req, res) {
 
 async function deleteHandler(req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
   const body = req.body;
 
   const result = await prisma.yearMonth.findFirst({

@@ -16,7 +16,7 @@ export default router.handler({
 
 function onErrorHandler(err, req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
   if (req.method === "POST") {
     const responseError = new ConflictError(err, yearNumberValue);
     return res.status(409).json(responseError);
@@ -27,7 +27,7 @@ function onErrorHandler(err, req, res) {
 
 async function getHandler(req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
 
   const result = await prisma.year.findUnique({
     where: {
@@ -45,7 +45,7 @@ async function getHandler(req, res) {
 
 async function postHandler(req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
 
   await prisma.year.create({
     data: {
@@ -62,7 +62,7 @@ async function postHandler(req, res) {
 
 async function deleteHandler(req, res) {
   const payload = req.query;
-  const yearNumberValue = parseInt(payload.year_number);
+  const yearNumberValue = parseInt(payload.yearNumber);
   await prisma.year.delete({
     where: {
       yearNumber: yearNumberValue,
