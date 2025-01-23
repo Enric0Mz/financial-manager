@@ -20,7 +20,7 @@ export class NotFoundError extends Error {
   constructor(value) {
     super(`value ${value} already exist on table`);
     this.name = "not found";
-    this.message = `value ${value} already exist on table. Insert a new value`;
+    this.message = `Value ${value} does not exist on table. Try another value`;
     this.statusCode = 404;
   }
   toJSON() {
@@ -34,10 +34,26 @@ export class NotFoundError extends Error {
 
 export class InvalidHttpMethodError extends Error {
   constructor(value) {
-    super(`value ${value} not allowed on this route`);
+    super(`Value ${value} not allowed on this route`);
     this.name = "invalid method";
-    this.message = `enter a valid method`;
     this.statusCode = 405;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class InternalServerError extends Error {
+  constructor(cause) {
+    super("Internal server error.", {
+      cause: cause,
+    });
+    this.name = "internal server error";
+    this.statusCode = 500;
   }
   toJSON() {
     return {

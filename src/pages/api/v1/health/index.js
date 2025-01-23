@@ -1,13 +1,20 @@
 import prisma from "@infra/database.js";
-import { InvalidHttpMethodError } from "errors/http";
+import {
+  onNoMatchHandler,
+  onInternalServerErrorHandler,
+} from "helpers/handlers";
+import { createRouter } from "next-connect";
 
-export default async function health(req, res) {
-  const allowedMethods = ["GET"];
+const router = createRouter();
 
-  if (!allowedMethods.includes(req.method)) {
-    const responseError = new InvalidHttpMethodError(req.method);
-    return res.status(405).json(responseError);
-  }
+router.get(getHandler);
+
+export default router.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
+
+async function getHandler(req, res) {
   const serverVersionResult = await prisma.$queryRaw`SHOW server_version;`;
   const serverVersionValue = serverVersionResult[0].server_version.slice(0, 4);
 

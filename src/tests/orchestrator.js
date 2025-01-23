@@ -20,7 +20,13 @@ async function waitForAllServices() {
 }
 
 async function clearDatabase() {
+  await prisma.yearMonth.deleteMany({
+    where: {},
+  });
   await prisma.year.deleteMany({
+    where: {},
+  });
+  await prisma.month.deleteMany({
     where: {},
   });
 }
