@@ -29,7 +29,7 @@ async function getHandler(req, res) {
 
   const updatedAt = new Date().toISOString();
 
-  res.status(200).json({
+  return res.status(200).json({
     updated_at: updatedAt,
     dependencies: {
       database: {
