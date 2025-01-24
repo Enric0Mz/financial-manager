@@ -9,11 +9,27 @@ import { httpSuccessCreated } from "helpers/httpSuccess";
 const route = createRouter();
 
 route.post(postHandler);
+route.get(getHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });
+
+async function getHandler(req, res) {
+  const result = await prisma.salary.findFirst({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return res.status(200).json({
+    data: {
+      id: result.id,
+      salary: result.amount,
+    },
+  });
+}
 
 async function postHandler(req, res) {
   const body = req.body;
