@@ -1,6 +1,7 @@
 import prisma from "@infra/database";
 import { ConflictError, NotFoundError } from "errors/http.js";
 import { onNoMatchHandler } from "helpers/handlers";
+import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 
 const router = createRouter();
@@ -52,12 +53,10 @@ async function postHandler(req, res) {
       yearNumber: yearNumberValue,
     },
   });
-
-  return res.status(201).json({
-    status_code: 201,
-    status: "created",
-    description: `value ${yearNumberValue} inserted into database`,
-  });
+  const responseSuccess = new httpSuccessCreated(
+    `value ${yearNumberValue} inserted into database`,
+  );
+  return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
 
 async function deleteHandler(req, res) {
