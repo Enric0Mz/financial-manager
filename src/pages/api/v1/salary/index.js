@@ -5,11 +5,13 @@ import {
 import { createRouter } from "next-connect";
 import prisma from "@infra/database";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import putHandler from "./[salaryId]";
 
 const route = createRouter();
 
 route.post(postHandler);
 route.get(getHandler);
+route.put(putHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,

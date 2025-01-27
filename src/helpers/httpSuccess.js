@@ -12,3 +12,19 @@ export class httpSuccessCreated {
     };
   }
 }
+
+export class httpSuccessUpdated {
+  constructor(value) {
+    this.name = "updated";
+    this.message = `value updated to ${value}`;
+    this.statusCode = 200;
+  }
+
+  toJson() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}
