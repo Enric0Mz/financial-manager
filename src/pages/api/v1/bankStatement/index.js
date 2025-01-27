@@ -19,6 +19,14 @@ export default route.handler({
 
 async function getHandler(req, res) {
   const queryParams = req.query;
+  if (!(queryParams.monthId || queryParams.yearId)) {
+    const result = await prisma.bankStatement.findMany({
+      include: {
+        salary: true,
+      },
+    });
+    return res.status(200).json({ data: result });
+  }
   const result = await prisma.bankStatement.findFirst({
     where: {
       yearMonth: {
