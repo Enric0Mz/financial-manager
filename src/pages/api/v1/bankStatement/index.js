@@ -5,15 +5,36 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import { NotFoundError } from "errors/http";
 
 const route = createRouter();
 
+route.get(getHandler);
 route.post(postHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });
+
+async function getHandler(req, res) {
+  const queryParams = req.query;
+  const result = await prisma.bankStatement.findFirst({
+    where: {
+      yearMonth: {
+        is: {
+          monthId: parseInt(queryParams.monthId),
+          yearId: parseInt(queryParams.yearId),
+        },
+      },
+    },
+    include: {
+      salary: true,
+    },
+  });
+
+  return res.status(200).json({ data: result });
+}
 
 async function postHandler(req, res) {
   const body = req.body;
@@ -27,6 +48,12 @@ async function postHandler(req, res) {
       id: true,
     },
   });
+  if (!yearMonth) {
+    const responseError = new NotFoundError(
+      `[${data.yearId}, ${data.monthId}]`,
+    );
+    return res.status(responseError.statusCode).json(responseError);
+  }
   const salary = await prisma.salary.findFirst({
     orderBy: {
       createdAt: "desc",
