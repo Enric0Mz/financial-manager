@@ -5,6 +5,7 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
+import { httpSuccessCreated } from "helpers/httpSuccess";
 
 const router = createRouter();
 
@@ -73,11 +74,10 @@ async function postHandler(req, res) {
     },
   });
 
-  return res.status(201).json({
-    name: "created",
-    message: `month ${body} created on ${yearNumberValue}`,
-    statusCode: 201,
-  });
+  const responseSuccess = new httpSuccessCreated(
+    `month ${body} created on ${yearNumberValue}`,
+  );
+  return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
 
 async function deleteHandler(req, res) {

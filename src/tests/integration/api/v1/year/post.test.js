@@ -13,7 +13,7 @@ test("route POST /api/v1/year should return 201 created", async () => {
 
   const responseBody = await response.json();
 
-  expect(responseBody.status).toBe("created");
+  expect(responseBody.name).toBe("created");
 });
 
 test("route POST /api/v1/year should return 409 conflict if year already exist", async () => {
