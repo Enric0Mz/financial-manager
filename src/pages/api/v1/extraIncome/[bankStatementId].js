@@ -1,8 +1,38 @@
+import { createRouter } from "next-connect";
 import prisma from "@infra/database";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
 import { NotFoundError } from "errors/http";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 
-export default async function postHandler(req, res) {
+const route = createRouter();
+
+route.get(getHandler);
+route.post(postHandler);
+
+export default route.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
+
+async function getHandler(req, res) {
+  const query = req.query;
+  const bankStatementId = parseInt(query.bankStatementId);
+  const result = await prisma.extraIncome.findMany({
+    where: {
+      bankStatments: {
+        every: {
+          id: bankStatementId,
+        },
+      },
+    },
+  });
+  return res.status(200).json({ data: result });
+}
+
+async function postHandler(req, res) {
   const query = req.query;
   const body = JSON.parse(req.body);
   const extraIncomeName = body.name;
