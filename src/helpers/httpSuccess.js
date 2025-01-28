@@ -28,3 +28,18 @@ export class httpSuccessUpdated {
     };
   }
 }
+
+export class httpSuccessDeleted {
+  constructor(value) {
+    this.name = "deleted";
+    this.message = `value ${value} deleted successfuly`;
+    this.statusCode = 200;
+  }
+  toJson() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}

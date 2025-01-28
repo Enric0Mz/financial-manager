@@ -6,11 +6,13 @@ import {
 } from "helpers/handlers";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
+import deleteHandler from "./[bankStatementId]";
 
 const route = createRouter();
 
 route.get(getHandler);
 route.post(postHandler);
+route.delete(deleteHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
