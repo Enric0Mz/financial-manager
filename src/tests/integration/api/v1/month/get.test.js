@@ -1,22 +1,13 @@
-import orchestrator from "tests/orchestrator.js";
+import setupDatabase from "tests/setupTests";
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
-  await orchestrator.clearDatabase();
-  await fetch("http://localhost:3000/api/v1/year/2025", {
-    method: "POST",
-  });
-  await fetch("http://localhost:3000/api/v1/month", {
-    method: "POST",
-  });
-  await fetch("http://localhost:3000/api/v1/month/2025", {
-    method: "POST",
-    body: "january",
+  await setupDatabase({
+    createMonths: ["january"],
   });
 });
 
 test("route GET api/v1/month/2025 should return 200 with a object with a list of months", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/month/2025");
+  const response = await fetch(`${process.env.BASE_API_URL}/month/2025`);
   const responseBody = await response.json();
 
   expect(response.status).toBe(200);
