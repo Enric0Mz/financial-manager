@@ -1,31 +1,9 @@
-import orchestrator from "tests/orchestrator";
+import setupDatabase from "tests/setupTests";
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
-  await orchestrator.clearDatabase();
-  await fetch(`${process.env.BASE_API_URL}/year/2025`, {
-    method: "POST",
-  });
-
-  await fetch(`${process.env.BASE_API_URL}/month`, {
-    method: "POST",
-  });
-  await fetch(`${process.env.BASE_API_URL}/month/2025`, {
-    method: "POST",
-    body: "january",
-  });
-  await fetch("http://localhost:3000/api/v1/salary", {
-    method: "POST",
-    body: JSON.stringify({
-      amount: 4500,
-    }),
-  });
-  await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
-    method: "POST",
-    body: JSON.stringify({
-      yearId: 2025,
-      monthId: 1,
-    }),
+  await setupDatabase({
+    createMonths: ["january"],
+    createBankStatements: [{ yearId: 2025, monthId: 1 }],
   });
 });
 
