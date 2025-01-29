@@ -20,10 +20,9 @@ async function setupDatabase({
   if (createYear) {
     await fetch(`${BASE_API_URL}/year/${createYear.value}`, { method: "POST" });
   }
-
   if (createMonths.length > 0) {
     await fetch(`${BASE_API_URL}/month`, { method: "POST" });
-    for (const month in createMonths) {
+    for (const month of createMonths) {
       await fetch(`${BASE_API_URL}/month/2025`, {
         method: "POST",
         body: month,
@@ -39,11 +38,10 @@ async function setupDatabase({
 
   if (createBankStatements.length > 0) {
     for (const { yearId, monthId } of createBankStatements) {
-      await fetch(`${BASE_API_URL}/bankStatement`),
-        {
-          method: "POST",
-          body: JSON.stringify(monthId, yearId),
-        };
+      await fetch(`${BASE_API_URL}/bankStatement`, {
+        method: "POST",
+        body: JSON.stringify({ monthId, yearId }),
+      });
     }
   }
 }
