@@ -17,7 +17,7 @@ async function setupDatabase({
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  if (createYear) {
+  if (createYear.create) {
     await fetch(`${BASE_API_URL}/year/${createYear.value}`, { method: "POST" });
   }
   if (createMonths.length > 0) {
@@ -29,7 +29,7 @@ async function setupDatabase({
       });
     }
   }
-  if (createSalary) {
+  if (createSalary.create) {
     await fetch(`${BASE_API_URL}/salary`, {
       method: "POST",
       body: JSON.stringify({ amount: createSalary.value }),

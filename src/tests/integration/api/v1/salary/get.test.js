@@ -3,9 +3,11 @@ import setupDatabase from "tests/setupTests";
 beforeAll(async () => {
   await setupDatabase({
     createSalary: {
+      create: true,
       value: 3000.12,
     },
     createSalary: {
+      create: true,
       value: 4550.12,
     },
   });
