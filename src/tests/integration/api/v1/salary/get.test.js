@@ -6,11 +6,11 @@ beforeAll(async () => {
       create: true,
       value: 3000.12,
     },
-    createSalary: {
-      create: true,
-      value: 4550.12,
-    },
   });
+  await fetch(`${process.env.BASE_API_URL}/salary`, {
+    method: "POST",
+    body: JSON.stringify({ amount: 4550.12 }),
+  }); // TODO: fix this logic
 });
 
 test("route GET api/v1/salary should return a object with the most recent created salary", async () => {

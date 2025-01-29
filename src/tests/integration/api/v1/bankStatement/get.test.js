@@ -10,7 +10,7 @@ beforeAll(async () => {
   });
 });
 
-test("route GET /api/v1/bankStatement/ should return a bank statement object for specified month and year ", async () => {
+test("route GET /api/v1/bankStatement/ should return a bank statement object for specified month and year", async () => {
   const response = await fetch(
     `${process.env.BASE_API_URL}/bankStatement?` +
       new URLSearchParams({
