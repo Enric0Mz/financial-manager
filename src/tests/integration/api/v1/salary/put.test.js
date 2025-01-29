@@ -1,15 +1,7 @@
-import orchestrator from "tests/orchestrator";
+import setupDatabase from "tests/setupTests";
 
-const salary = 4500;
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
-  await orchestrator.clearDatabase();
-  await fetch(`${process.env.BASE_API_URL}/salary`, {
-    method: "POST",
-    body: JSON.stringify({
-      amount: salary,
-    }),
-  });
+  await setupDatabase();
 });
 
 test("route PUT /api/v1/salary/{salaryId} should return 200 updated", async () => {
