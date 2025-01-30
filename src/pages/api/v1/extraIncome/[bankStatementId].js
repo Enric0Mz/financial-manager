@@ -11,6 +11,7 @@ const route = createRouter();
 
 route.get(getHandler);
 route.post(postHandler);
+route.patch(patchHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
@@ -58,4 +59,17 @@ async function postHandler(req, res) {
     `Extra income '${extraIncomeName}' created`,
   );
   return res.status(responseSuccess.statusCode).json(responseSuccess);
+}
+
+async function patchHandler(req, res) {
+  const { extraIncomeId } = req.query;
+  const { name, amount } = req.body;
+
+  const updatedExtraIncome = await prisma.extraIncome.update({
+    where: { id: parseInt(extraIncomeId) },
+    data: { name, amount },
+  });
+  console.log(updatedExtraIncome);
+
+  return res.status(200).json({ on: "develop" });
 }
