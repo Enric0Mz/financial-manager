@@ -18,14 +18,9 @@ test("route PATCH api/v1/extraIncome/{extraIncomeId} should update an extra inco
   const getBankStatementResponseBody = await getBankStatementResponse.json();
   const bankStatementId = getBankStatementResponseBody.data.id;
 
-  const initialExtraIncome = {
-    name: "Freelance Job",
-    amount: 500.0,
-  };
-
   await fetch(`${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`, {
     method: "POST",
-    body: JSON.stringify(initialExtraIncome),
+    body: JSON.stringify({ name: "Freelance Job", amount: 500.0 }),
   });
 
   const extraIncomeResponse = await fetch(
@@ -33,7 +28,7 @@ test("route PATCH api/v1/extraIncome/{extraIncomeId} should update an extra inco
   );
   const extraIncomeResponseBody = await extraIncomeResponse.json();
 
-  const extraIncomeId = extraIncomeResponseBody.data.id;
+  const extraIncomeId = extraIncomeResponseBody.data[0].id;
 
   const updatedExtraIncome = {
     name: "Updated Freelance Job",
@@ -54,9 +49,11 @@ test("route PATCH api/v1/extraIncome/{extraIncomeId} should update an extra inco
   expect(patchResponseBody.data.amount).toBe(updatedExtraIncome.amount);
 
   const getUpdatedResponse = await fetch(
-    `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
+    `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
   );
   const getUpdatedBody = await getUpdatedResponse.json();
-  expect(getUpdatedBody.data.name).toBe(updatedExtraIncome.name);
-  expect(getUpdatedBody.data.amount).toBe(updatedExtraIncome.amount);
+
+  console.log(getUpdatedBody);
+  expect(getUpdatedBody.data[0].name).toBe(updatedExtraIncome.name);
+  expect(getUpdatedBody.data[0].amount).toBe(updatedExtraIncome.amount);
 });

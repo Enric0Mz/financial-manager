@@ -62,14 +62,15 @@ async function postHandler(req, res) {
 }
 
 async function patchHandler(req, res) {
-  const { extraIncomeId } = req.query;
-  const { name, amount } = req.body;
+  const query = req.query;
+  const extraIncomeId = parseInt(query.bankStatementId);
+  const { name, amount } = JSON.parse(req.body);
+  console.log(extraIncomeId);
 
   const updatedExtraIncome = await prisma.extraIncome.update({
-    where: { id: parseInt(extraIncomeId) },
+    where: { id: extraIncomeId },
     data: { name, amount },
   });
-  console.log(updatedExtraIncome);
 
-  return res.status(200).json({ on: "develop" });
+  return res.status(200).json({ data: updatedExtraIncome });
 }
