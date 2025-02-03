@@ -38,6 +38,9 @@ async function clearDatabase() {
   await prisma.extraIncome.deleteMany({
     where: {},
   });
+  await prisma.bank.deleteMany({
+    where: {},
+  });
 }
 
 const orchestrator = { waitForAllServices, clearDatabase };
