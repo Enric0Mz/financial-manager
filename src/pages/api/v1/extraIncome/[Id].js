@@ -20,7 +20,7 @@ export default route.handler({
 
 async function getHandler(req, res) {
   const query = req.query;
-  const bankStatementId = parseInt(query.bankStatementId);
+  const bankStatementId = parseInt(query.Id);
   const result = await prisma.extraIncome.findMany({
     where: {
       bankStatments: {
@@ -38,7 +38,7 @@ async function postHandler(req, res) {
   const body = JSON.parse(req.body);
   const extraIncomeName = body.name;
   const extraIncomeAmount = body.amount;
-  const bankStatementId = parseInt(query.bankStatementId);
+  const bankStatementId = parseInt(query.Id);
 
   try {
     await prisma.extraIncome.create({
@@ -63,7 +63,7 @@ async function postHandler(req, res) {
 
 async function patchHandler(req, res) {
   const query = req.query;
-  const extraIncomeId = parseInt(query.bankStatementId);
+  const extraIncomeId = parseInt(query.Id);
   const { name, amount } = JSON.parse(req.body);
   console.log(extraIncomeId);
 
