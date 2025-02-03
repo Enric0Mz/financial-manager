@@ -1,13 +1,16 @@
-import orchestrator from "tests/orchestrator";
+import setupDatabase from "tests/setupTests";
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
-  await orchestrator.clearDatabase();
+  await setupDatabase({
+    createSalary: {
+      create: false,
+    },
+  });
 });
 
 test("route POST /api/v1/salary should return 201 created", async () => {
   const salary = 2563.57;
-  const response = await fetch("http://localhost:3000/api/v1/salary", {
+  const response = await fetch(`${process.env.BASE_API_URL}/salary/`, {
     method: "POST",
     body: JSON.stringify({
       amount: salary,

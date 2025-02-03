@@ -1,7 +1,7 @@
 import prisma from "@infra/database";
 import { ConflictError, NotFoundError } from "errors/http.js";
 import { onNoMatchHandler } from "helpers/handlers";
-import { httpSuccessCreated } from "helpers/httpSuccess";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 
 const router = createRouter();
@@ -67,9 +67,6 @@ async function deleteHandler(req, res) {
       yearNumber: yearNumberValue,
     },
   });
-  return res.status(200).json({
-    name: "deleted",
-    message: `value ${yearNumberValue} deleted successfuly`,
-    status_code: 200,
-  });
+  const responseSuccess = new httpSuccessDeleted(yearNumberValue);
+  return res.status(responseSuccess.statusCode).json(responseSuccess);
 }

@@ -18,9 +18,8 @@ export class ConflictError extends TypeError {
 
 export class NotFoundError extends Error {
   constructor(value) {
-    super(`value ${value} already exist on table`);
+    super(`Value ${value} does not exist on table. Try another value`);
     this.name = "not found";
-    this.message = `Value ${value} does not exist on table. Try another value`;
     this.statusCode = 404;
   }
   toJSON() {
