@@ -4,6 +4,7 @@ import {
   onNoMatchHandler,
   onInternalServerErrorHandler,
 } from "helpers/handlers";
+import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 
 const router = createRouter();
@@ -31,10 +32,9 @@ async function postHandler(req, res) {
       data: months,
     });
 
-    res.status(201).json({
-      name: "created",
-      message: "all months created successufuly",
-      status_code: 201,
-    });
+    const responseSuccess = new httpSuccessCreated(
+      "all months created successufuly",
+    );
+    res.status(responseSuccess.statusCode).json(responseSuccess);
   }
 }

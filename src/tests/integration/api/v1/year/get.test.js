@@ -1,15 +1,21 @@
-import orchestrator from "tests/orchestrator";
+import setupDatabase from "tests/setupTests";
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
-  await orchestrator.clearDatabase();
+  await setupDatabase({
+    createSalary: {
+      create: false,
+    },
+    createYear: {
+      create: false,
+    },
+  });
 });
 
 test("route GET /api/v1/year/{yearNumber} should return 200 ok", async () => {
-  await fetch("http://localhost:3000/api/v1/year/1996", {
+  await fetch(`${process.env.BASE_API_URL}/year/1996`, {
     method: "POST",
   });
-  const response = await fetch("http://localhost:3000/api/v1/year/1996");
+  const response = await fetch(`${process.env.BASE_API_URL}/year/1996`);
   const responseBody = await response.json();
 
   expect(response.status).toBe(200);
@@ -17,7 +23,7 @@ test("route GET /api/v1/year/{yearNumber} should return 200 ok", async () => {
 });
 
 test("route GET /api/v1/year/{yearNumber} should return 404 if yearNumber do not exist", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/year/9999");
+  const response = await fetch(`${process.env.BASE_API_URL}/year/9999`);
   const responseBody = await response.json();
 
   expect(response.status).toBe(404);
@@ -25,10 +31,10 @@ test("route GET /api/v1/year/{yearNumber} should return 404 if yearNumber do not
 });
 
 test("route GET /api/v1/year should return a list of years", async () => {
-  await fetch("http://localhost:3000/api/v1/year/1997", {
+  await fetch(`${process.env.BASE_API_URL}/year/1997`, {
     method: "POST",
   });
-  const response = await fetch("http://localhost:3000/api/v1/year");
+  const response = await fetch(`${process.env.BASE_API_URL}/year`);
   const responseBody = await response.json();
 
   expect(response.status).toBe(200);
@@ -36,7 +42,7 @@ test("route GET /api/v1/year should return a list of years", async () => {
 });
 
 test("route DELETE /api/v1/year should return 405 invalid method", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/year", {
+  const response = await fetch(`${process.env.BASE_API_URL}/year`, {
     method: "DELETE",
   });
   const responseBody = await response.json();

@@ -1,30 +1,27 @@
-import orchestrator from "tests/orchestrator";
+import setupDatabase from "tests/setupTests";
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
-  await orchestrator.clearDatabase();
-  await fetch("http://localhost:3000/api/v1/year/2025", {
-    method: "POST",
-  });
-  await fetch("http://localhost:3000/api/v1/month", {
-    method: "POST",
-  });
-  await fetch("http://localhost:3000/api/v1/month/2025", {
-    method: "POST",
-    body: "january",
+  await setupDatabase({
+    createMonths: ["january"],
   });
 });
 
 test("route DELETE api/v1/month/2025 with body january should return 200 deleted", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/month/2025", {
+  const response = await fetch(`${process.env.BASE_API_URL}/month/2025`, {
     method: "DELETE",
     body: "january",
   });
 
   const responseBody = await response.json();
 
+  expect(response.status).toBe(200);
+  expect(responseBody.name).toBe("deleted");
+  expect(responseBody.message).toBe("value january deleted sucessfuly");
+});
+
+test("route DELETE api/v1/month/2025 with body december or invalid year should return 404 not found", async () => {
   const responseWithInvalidYear = await fetch(
-    "http://localhost:3000/api/v1/month/9999",
+    `${process.env.BASE_API_URL}/month/9999`,
     {
       method: "DELETE",
       body: "january",
@@ -33,18 +30,14 @@ test("route DELETE api/v1/month/2025 with body january should return 200 deleted
   const responseBodyWithInvalidYear = await responseWithInvalidYear.json();
 
   const responseWithInvalidMonth = await fetch(
-    "http://localhost:3000/api/v1/month/2025",
+    `${process.env.BASE_API_URL}/month/2025`,
     {
       method: "DELETE",
       body: "december",
     },
   );
-
   const responseBodyWithInvalidMonth = await responseWithInvalidMonth.json();
 
-  expect(response.status).toBe(200);
-  expect(responseBody.name).toBe("deleted");
-  expect(responseBody.message).toBe("value january deleted sucessfuly");
   expect(responseWithInvalidMonth.status).toBe(404);
   expect(responseWithInvalidYear.status).toBe(404);
   expect(responseBodyWithInvalidMonth.name).toBe("not found");
