@@ -5,13 +5,14 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { NotFoundError } from "errors/http";
-import { httpSuccessCreated } from "helpers/httpSuccess";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 
 const route = createRouter();
 
 route.get(getHandler);
 route.post(postHandler);
 route.patch(patchHandler);
+route.delete(deleteHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
@@ -73,4 +74,22 @@ async function patchHandler(req, res) {
   });
 
   return res.status(200).json({ data: updatedExtraIncome });
+}
+
+async function deleteHandler(req, res) {
+  const query = req.query;
+  const extraIncomeId = parseInt(query.Id);
+  try {
+    await prisma.extraIncome.delete({
+      where: {
+        id: extraIncomeId,
+      },
+    });
+  } catch {
+    const responseError = new NotFoundError(extraIncomeId);
+    return res.status(responseError.statusCode).json(responseError);
+  }
+
+  const responseSuccess = new httpSuccessDeleted(`with id ${extraIncomeId}`);
+  return res.status(responseSuccess.statusCode).json(responseSuccess);
 }

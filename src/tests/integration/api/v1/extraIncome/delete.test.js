@@ -7,7 +7,7 @@ beforeAll(async () => {
   });
 });
 
-test("route PATCH api/v1/extraIncome/{extraIncomeId} should update an extra income entry", async () => {
+test("route DELETE api/v1/extraIncome/{extraIncomeId} should return 200 deleted", async () => {
   const getBankStatementResponse = await fetch(
     `${process.env.BASE_API_URL}/bankStatement?` +
       new URLSearchParams({
@@ -30,29 +30,17 @@ test("route PATCH api/v1/extraIncome/{extraIncomeId} should update an extra inco
 
   const extraIncomeId = extraIncomeResponseBody.data[0].id;
 
-  const updatedExtraIncome = {
-    name: "Updated Freelance Job",
-    amount: 750.0,
-  };
-
-  const patchResponse = await fetch(
+  const response = await fetch(
     `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
     {
-      method: "PATCH",
-      body: JSON.stringify(updatedExtraIncome),
+      method: "DELETE",
     },
   );
-  const patchResponseBody = await patchResponse.json();
+  const responseBody = await response.json();
 
-  expect(patchResponse.status).toBe(200);
-  expect(patchResponseBody.data.name).toBe(updatedExtraIncome.name);
-  expect(patchResponseBody.data.amount).toBe(updatedExtraIncome.amount);
-
-  const getUpdatedResponse = await fetch(
-    `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
+  expect(response.status).toBe(200);
+  expect(responseBody.name).toBe("deleted");
+  expect(responseBody.message).toBe(
+    `value with id ${extraIncomeId} deleted successfuly`,
   );
-  const getUpdatedBody = await getUpdatedResponse.json();
-
-  expect(getUpdatedBody.data[0].name).toBe(updatedExtraIncome.name);
-  expect(getUpdatedBody.data[0].amount).toBe(updatedExtraIncome.amount);
 });
