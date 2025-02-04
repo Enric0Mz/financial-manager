@@ -5,13 +5,15 @@ import {
 } from "helpers/handlers";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
-import putHandler from "./[bankId]";
+import { putHandler } from "./[bankId]";
+import { deleteHandler } from "./[bankId]";
 
 const route = createRouter();
 
 route.get(getHandler);
 route.post(postHandler);
 route.put(putHandler);
+route.delete(deleteHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
