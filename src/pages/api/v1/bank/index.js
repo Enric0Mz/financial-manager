@@ -9,11 +9,18 @@ import { createRouter } from "next-connect";
 const route = createRouter();
 
 route.post(postHandler);
+route.get(getHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });
+
+async function getHandler(req, res) {
+  const result = await prisma.bank.findMany();
+
+  return res.status(200).json({ data: result });
+}
 
 async function postHandler(req, res) {
   const body = JSON.parse(req.body);
