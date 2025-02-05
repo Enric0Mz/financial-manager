@@ -38,11 +38,10 @@ model YearMonth {
 }
 
 model Bank {
-  id            Int             @id @default(autoincrement())
-  name          String
-  balance       Float           @default(0)
-  expenses      Expense[]
-  bankStatments BankStatement[]
+  id       Int       @id @default(autoincrement())
+  name     String
+  balance  Float     @default(0)
+  expenses Expense[]
 }
 
 model Debit {
@@ -52,17 +51,18 @@ model Debit {
 }
 
 model Expense {
-  id            Int             @id @default(autoincrement())
-  name          String?
-  description   String?
-  total         Float
-  expenseDate   DateTime
-  createdAt     DateTime        @default(now())
-  debitId       Int
-  bankId        Int
-  debit         Debit           @relation(fields: [debitId], references: [id])
-  bank          Bank            @relation(fields: [bankId], references: [id])
-  bankStatments BankStatement[]
+  id              Int           @id @default(autoincrement())
+  name            String?
+  description     String?
+  total           Float
+  expenseDate     DateTime      @default(now())
+  createdAt       DateTime      @default(now())
+  debitId         Int?
+  bankId          Int?
+  debit           Debit?        @relation(fields: [debitId], references: [id])
+  bank            Bank?         @relation(fields: [bankId], references: [id])
+  bankStatementId Int
+  bankStatement   BankStatement @relation(fields: [bankStatementId], references: [id])
 }
 
 model BankStatement {
@@ -75,13 +75,11 @@ model BankStatement {
   userId        Int?
   user          User?        @relation(fields: [userId], references: [id])
   expenseId     Int?
-  expense       Expense?     @relation(fields: [expenseId], references: [id])
+  expenses      Expense[]
   yearMonthId   Int
   yearMonth     YearMonth    @relation(fields: [yearMonthId], references: [id])
   balanceTotal  Float
   balanceReal   Float
-  Bank          Bank?        @relation(fields: [bankId], references: [id])
-  bankId        Int?
 }
 
 model Salary {
