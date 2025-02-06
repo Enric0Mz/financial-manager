@@ -4,13 +4,18 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessCreated, httpSuccessUpdated } from "helpers/httpSuccess";
+import {
+  httpSuccessCreated,
+  httpSuccessDeleted,
+  httpSuccessUpdated,
+} from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
 
 const route = createRouter();
 
 route.get(getHanlder);
 route.post(postHandler);
+route.delete(deleteHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
@@ -72,5 +77,23 @@ async function postHandler(req, res) {
   });
 
   const responseSuccess = new httpSuccessCreated(`expense created`);
+  return res.status(responseSuccess.statusCode).json(responseSuccess);
+}
+
+async function deleteHandler(req, res) {
+  const query = req.query;
+  const expenseId = parseInt(query.id);
+
+  try {
+    await prisma.expense.delete({
+      where: {
+        id: expenseId,
+      },
+    });
+  } catch {
+    const responseError = new NotFoundError(expenseId);
+    return res.status(responseError).json(responseError);
+  }
+  const responseSuccess = new httpSuccessDeleted(`with id ${expenseId}`);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
