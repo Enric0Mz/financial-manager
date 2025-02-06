@@ -5,15 +5,33 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { httpSuccessCreated, httpSuccessUpdated } from "helpers/httpSuccess";
+import { NotFoundError } from "errors/http";
 
 const route = createRouter();
 
+route.get(getHanlder);
 route.post(postHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });
+
+async function getHanlder(req, res) {
+  const query = req.query;
+  const expenseId = parseInt(query.id);
+
+  const result = await prisma.expense.findUnique({
+    where: {
+      id: expenseId,
+    },
+  });
+  if (!result) {
+    const responseError = new NotFoundError(expenseId);
+    return res.status(responseError.statusCode).json(responseError);
+  }
+  return res.status(200).json(result);
+}
 
 async function postHandler(req, res) {
   const query = req.query;
