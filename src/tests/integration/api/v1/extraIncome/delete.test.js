@@ -16,7 +16,7 @@ test("route DELETE api/v1/extraIncome/{extraIncomeId} should return 200 deleted"
       }),
   );
   const getBankStatementResponseBody = await getBankStatementResponse.json();
-  const bankStatementId = getBankStatementResponseBody.data.id;
+  const bankStatementId = getBankStatementResponseBody.id;
 
   await fetch(`${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`, {
     method: "POST",

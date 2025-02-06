@@ -20,7 +20,7 @@ test("route POST /api/v1/expense/{bankStatementId} should return 201 created", a
       }),
   );
   const bankStatementResponseBody = await bankStatementResponse.json();
-  const bankStatementId = bankStatementResponseBody.data.id;
+  const bankStatementId = bankStatementResponseBody.id;
 
   const bankResponse = await fetch(`${process.env.BASE_API_URL}/bank`);
   const bankResponseBody = await bankResponse.json();
