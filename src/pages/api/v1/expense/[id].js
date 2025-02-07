@@ -16,6 +16,7 @@ const route = createRouter();
 route.get(getHanlder);
 route.post(postHandler);
 route.delete(deleteHandler);
+route.patch(patchHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
@@ -77,6 +78,36 @@ async function postHandler(req, res) {
   });
 
   const responseSuccess = new httpSuccessCreated(`expense created`);
+  return res.status(responseSuccess.statusCode).json(responseSuccess);
+}
+
+async function patchHandler(req, res) {
+  const query = req.query;
+  const expenseId = parseInt(query.id);
+  const { name, description, total } = JSON.parse(req.body);
+
+  const existingExpense = await prisma.expense.findUnique({
+    where: {
+      id: expenseId,
+    },
+  });
+  if (!existingExpense) {
+    const responseError = new NotFoundError(`with id ${expenseId}`);
+    return res.status(responseError.statusCode).json(responseError);
+  }
+
+  const result = await prisma.expense.update({
+    where: {
+      id: expenseId,
+    },
+    data: {
+      name: name ? name : existingExpense.name,
+      description: description ? description : existingExpense.description,
+      total: total ? total : existingExpense.total,
+    },
+  });
+
+  const responseSuccess = new httpSuccessUpdated(result.name);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
 
