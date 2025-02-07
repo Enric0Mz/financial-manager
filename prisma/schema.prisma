@@ -66,20 +66,21 @@ model Expense {
 }
 
 model BankStatement {
-  id            Int          @id @default(autoincrement())
-  createdAt     DateTime     @default(now())
-  salaryId      Int
-  salary        Salary       @relation(fields: [salaryId], references: [id])
-  extraIncomeId Int?
-  extraIncome   ExtraIncome? @relation(fields: [extraIncomeId], references: [id])
-  userId        Int?
-  user          User?        @relation(fields: [userId], references: [id])
-  expenseId     Int?
-  expenses      Expense[]
-  yearMonthId   Int
-  yearMonth     YearMonth    @relation(fields: [yearMonthId], references: [id])
-  balanceTotal  Float
-  balanceReal   Float
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  salaryId       Int
+  salary         Salary       @relation(fields: [salaryId], references: [id])
+  extraIncomeId  Int?
+  extraIncome    ExtraIncome? @relation(fields: [extraIncomeId], references: [id])
+  userId         Int?
+  user           User?        @relation(fields: [userId], references: [id])
+  expenseId      Int?
+  expenses       Expense[]
+  yearMonthId    Int
+  yearMonth      YearMonth    @relation(fields: [yearMonthId], references: [id])
+  balanceInitial Float
+  balanceTotal   Float
+  balanceReal    Float
 }
 
 model Salary {
