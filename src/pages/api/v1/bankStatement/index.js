@@ -28,6 +28,7 @@ async function getHandler(req, res) {
         expenses: true,
       },
     });
+    console.log(result, "AQUI");
     return res.status(200).json({ data: result });
   }
   const result = await prisma.bankStatement.findFirst({
@@ -75,15 +76,23 @@ async function postHandler(req, res) {
       amount: true,
     },
   });
-
-  await prisma.bankStatement.create({
+  const oldBankStatement = await prisma.bankStatement.findFirst({});
+  console.log("SALARUO", yearMonth.id);
+  const result = await prisma.bankStatement.create({
     data: {
       salaryId: salary.id,
       yearMonthId: yearMonth.id,
+      balanceInitial: salary.amount,
       balanceTotal: salary.amount,
       balanceReal: salary.amount,
+      initialBalance: salary.amount,
     },
   });
+  console.log("resultado", result);
+
+  if (oldBankStatement) {
+    console.log("FAZ ALGo");
+  }
 
   const responseSuccess = new httpSuccessCreated("Bank statement created");
 

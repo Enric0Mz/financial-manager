@@ -71,7 +71,7 @@ async function postHandler(req, res) {
   await prisma.bankStatement.update({
     where: { id: bankStatementId },
     data: {
-      balanceTotal: {
+      balanceReal: {
         decrement: totalExpenseValue,
       },
     },
