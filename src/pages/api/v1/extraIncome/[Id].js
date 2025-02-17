@@ -76,7 +76,6 @@ async function patchHandler(req, res) {
 }
 
 async function deleteHandler(req, res) {
-  console.log("AQUI", req.query);
   const query = req.query;
   const extraIncomeId = parseInt(query.Id);
   try {

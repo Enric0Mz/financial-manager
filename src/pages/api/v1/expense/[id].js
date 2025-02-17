@@ -66,14 +66,23 @@ async function postHandler(req, res) {
     where: { bankStatementId: bankStatementId },
     _sum: { total: true },
   });
-  const totalExpenseValue = totalExpenses._sum.total || 0;
+  const totalExpensesValue = totalExpenses._sum.total || 0;
 
   await prisma.bankStatement.update({
     where: { id: bankStatementId },
     data: {
       balanceReal: {
-        decrement: totalExpenseValue,
+        decrement: totalExpensesValue,
       },
+    },
+  });
+
+  await prisma.bank.update({
+    where: {
+      id: bankId,
+    },
+    data: {
+      balance: totalExpensesValue,
     },
   });
 

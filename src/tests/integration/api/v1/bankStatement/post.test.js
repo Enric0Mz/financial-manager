@@ -57,6 +57,4 @@ test("route POST /api/v1/bankStatement should return an updated balance real bas
 
   const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
   const responseBody = await response.json();
-
-  console.log(responseBody);
 });
