@@ -11,7 +11,7 @@ beforeAll(async () => {
   });
 });
 
-test("route GET api/v1/expense/{expenseId} should return one expense object", async () => {
+test("route GET api/v1/expense/credit/{expenseId} should return one expense object", async () => {
   const bankStatementResponse = await fetch(
     `${process.env.BASE_API_URL}/bankStatement?` +
       new URLSearchParams({
@@ -31,7 +31,7 @@ test("route GET api/v1/expense/{expenseId} should return one expense object", as
     total: 543.12,
     bankId: bankResponseBody.data[0].id,
   };
-  await fetch(`${process.env.BASE_API_URL}/expense/${bankStatementId}`, {
+  await fetch(`${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`, {
     method: "POST",
     body: JSON.stringify(expense),
   });
@@ -46,7 +46,7 @@ test("route GET api/v1/expense/{expenseId} should return one expense object", as
   const getExpensesListResponseBody = await getExpensesListResponse.json();
 
   const response = await fetch(
-    `${process.env.BASE_API_URL}/expense/${getExpensesListResponseBody.expenses[0].id}`,
+    `${process.env.BASE_API_URL}/expense/credit/${getExpensesListResponseBody.expenses[0].id}`,
   );
   const responseBody = await response.json();
 

@@ -75,8 +75,8 @@ async function postHandler(req, res) {
       amount: true,
     },
   });
-  const oldBankStatement = await prisma.bankStatement.findFirst({});
-  const result = await prisma.bankStatement.create({
+  await prisma.bankStatement.findFirst({});
+  await prisma.bankStatement.create({
     data: {
       salaryId: salary.id,
       yearMonthId: yearMonth.id,

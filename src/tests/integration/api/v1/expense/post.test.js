@@ -11,7 +11,7 @@ beforeAll(async () => {
   });
 });
 
-test("route POST /api/v1/expense/{bankStatementId} should return 201 created", async () => {
+test("route POST /api/v1/expense/credit/{bankStatementId} should return 201 created", async () => {
   const bankStatementResponse = await fetch(
     `${process.env.BASE_API_URL}/bankStatement?` +
       new URLSearchParams({
@@ -32,7 +32,7 @@ test("route POST /api/v1/expense/{bankStatementId} should return 201 created", a
     bankId: bankResponseBody.data[0].id,
   };
   const response = await fetch(
-    `${process.env.BASE_API_URL}/expense/${bankStatementId}`,
+    `${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`,
     {
       method: "POST",
       body: JSON.stringify(expense),

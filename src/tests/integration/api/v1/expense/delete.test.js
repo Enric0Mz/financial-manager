@@ -11,7 +11,7 @@ beforeAll(async () => {
   });
 });
 
-test("route DELETE api/v1/expense/{expenseId} should return 200 deleted", async () => {
+test("route DELETE api/v1/expense/credit/{expenseId} should return 200 deleted", async () => {
   const bankStatementResponse = await fetch(
     `${process.env.BASE_API_URL}/bankStatement?` +
       new URLSearchParams({
@@ -32,7 +32,7 @@ test("route DELETE api/v1/expense/{expenseId} should return 200 deleted", async 
     bankId: bankResponseBody.data[0].id,
   };
 
-  await fetch(`${process.env.BASE_API_URL}/expense/${bankStatementId}`, {
+  await fetch(`${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`, {
     method: "POST",
     body: JSON.stringify(expense),
   });
@@ -48,7 +48,7 @@ test("route DELETE api/v1/expense/{expenseId} should return 200 deleted", async 
   const expenseId = getExpensesListResponseBody.expenses[0].id;
 
   const response = await fetch(
-    `${process.env.BASE_API_URL}/expense/${expenseId}`,
+    `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
     {
       method: "DELETE",
     },
@@ -62,7 +62,7 @@ test("route DELETE api/v1/expense/{expenseId} should return 200 deleted", async 
   );
 
   const getDeletedExpenseResponse = await fetch(
-    `${process.env.BASE_API_URL}/expense/${expenseId}`,
+    `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
   );
 
   expect(getDeletedExpenseResponse.status).toBe(404);

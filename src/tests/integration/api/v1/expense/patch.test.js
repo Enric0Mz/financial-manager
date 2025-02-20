@@ -32,7 +32,7 @@ test("route PATCH api/v1/expense/{expenseId} should return 200 updated", async (
     bankId: bankResponseBody.data[0].id,
   };
 
-  await fetch(`${process.env.BASE_API_URL}/expense/${bankStatementId}`, {
+  await fetch(`${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`, {
     method: "POST",
     body: JSON.stringify(expense),
   });
@@ -54,7 +54,7 @@ test("route PATCH api/v1/expense/{expenseId} should return 200 updated", async (
   };
 
   const response = await fetch(
-    `${process.env.BASE_API_URL}/expense/${expenseId}`,
+    `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
     {
       method: "PATCH",
       body: JSON.stringify(updatedExpenseData),
@@ -69,7 +69,7 @@ test("route PATCH api/v1/expense/{expenseId} should return 200 updated", async (
   );
 
   const getUpdatedExpenseResponse = await fetch(
-    `${process.env.BASE_API_URL}/expense/${expenseId}`,
+    `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
   );
   const updatedExpense = await getUpdatedExpenseResponse.json();
 
