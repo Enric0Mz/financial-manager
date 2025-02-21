@@ -4,6 +4,10 @@ beforeAll(async () => {
   await setupDatabase({
     createMonths: ["january", "february"],
   });
+  await fetch(`${process.env.BASE_API_URL}/bank`, {
+    method: "POST",
+    body: JSON.stringify({ name: "Itaú" }),
+  });
 });
 
 test("route POST /api/v1/bankStatement/ should return 201 created", async () => {
@@ -33,19 +37,20 @@ test("route POST /api/v1/bankStatement should return an updated balance real bas
   const bankStatementResponseBody = await bankStatementResponse.json();
   const bankStatementId = bankStatementResponseBody.id;
 
+  const bankResponse = await fetch(`${process.env.BASE_API_URL}/bank`);
+  const bankResponseBody = await bankResponse.json();
+
   const expense = {
     name: "Compra mercado",
     description: "Compra de mercado da semana",
     total: 543.12,
+    bankId: bankResponseBody.data[0].id,
   };
 
-  const result = await fetch(
-    `${process.env.BASE_API_URL}/expense/${bankStatementId}`,
-    {
-      method: "POST",
-      body: JSON.stringify(expense),
-    },
-  );
+  await fetch(`${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`, {
+    method: "POST",
+    body: JSON.stringify(expense),
+  });
 
   await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
     method: "POST",
@@ -57,4 +62,10 @@ test("route POST /api/v1/bankStatement should return an updated balance real bas
 
   const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
   const responseBody = await response.json();
+
+  const validateBalanceReal =
+    responseBody.data[0].balanceInitial - expense.total;
+
+  expect(response.status).toBe(200);
+  expect(responseBody.data[0].balanceReal).toBe(validateBalanceReal);
 });

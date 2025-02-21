@@ -83,7 +83,6 @@ async function postHandler(req, res) {
       balanceInitial: salary.amount,
       balanceTotal: salary.amount,
       balanceReal: salary.amount,
-      initialBalance: salary.amount,
     },
   });
 
