@@ -81,7 +81,6 @@ model BankStatement {
   balanceInitial Float
   balanceTotal   Float
   balanceReal    Float
-  initialBalance Float
 }
 
 model Salary {
