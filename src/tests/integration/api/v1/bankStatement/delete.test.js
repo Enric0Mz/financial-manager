@@ -17,7 +17,7 @@ test("route DELETE /api/v1/BankStatement/{bankStatementId} should return 200 del
   );
 
   const getResponseBody = await getResponse.json();
-  const bankStatementId = getResponseBody.data.id;
+  const bankStatementId = getResponseBody.id;
   const response = await fetch(
     `${process.env.BASE_API_URL}/bankStatement/${bankStatementId}`,
     {

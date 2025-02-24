@@ -16,7 +16,7 @@ test("route POST /api/v1/extraIncome/{bankStatementId} should return 201 created
       }),
   );
   const getBankStatementResponseBody = await getBankStatementResponse.json();
-  const bankStatementId = getBankStatementResponseBody.data.id;
+  const bankStatementId = getBankStatementResponseBody.id;
   const extraIncomeName = "Bônus trimestral";
   const response = await fetch(
     `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,

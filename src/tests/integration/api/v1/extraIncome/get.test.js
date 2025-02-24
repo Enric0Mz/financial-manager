@@ -16,7 +16,7 @@ test("route GET api/v1/extraIncome/{bankStatementId} should return a list of ext
       }),
   );
   const getBankStatementResponseBody = await getBankStatementResponse.json();
-  const bankStatementId = getBankStatementResponseBody.data.id;
+  const bankStatementId = getBankStatementResponseBody.id;
   const extraIncomeAmount = 750.54;
   await fetch(`${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`, {
     method: "POST",
