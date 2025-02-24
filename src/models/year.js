@@ -1,4 +1,4 @@
-import prisma from "@infra/database";
+import prisma from "infra/database.js";
 
 async function findAll() {
   return await prisma.year.findMany();
