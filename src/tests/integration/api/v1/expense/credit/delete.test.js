@@ -2,7 +2,8 @@ import setupDatabase from "tests/setupTests";
 
 beforeAll(async () => {
   await setupDatabase({
-    createMonths: ["january", "february"],
+    createMonths: ["january"],
+    createBankStatements: [{ yearId: 2025, monthId: 1 }],
   });
   await fetch(`${process.env.BASE_API_URL}/bank`, {
     method: "POST",
@@ -10,23 +11,7 @@ beforeAll(async () => {
   });
 });
 
-test("route POST /api/v1/bankStatement/ should return 201 created", async () => {
-  const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
-    method: "POST",
-    body: JSON.stringify({
-      yearId: 2025,
-      monthId: 1,
-    }),
-  });
-
-  const responseBody = await response.json();
-
-  expect(response.status).toBe(201);
-  expect(responseBody.name).toBe("created");
-  expect(responseBody.message).toBe(`Bank statement created`);
-});
-
-test("route POST /api/v1/bankStatement should return an updated balance real based on last bankStatement", async () => {
+test("route DELETE api/v1/expense/credit/{expenseId} should return 200 deleted", async () => {
   const bankStatementResponse = await fetch(
     `${process.env.BASE_API_URL}/bankStatement?` +
       new URLSearchParams({
@@ -52,20 +37,33 @@ test("route POST /api/v1/bankStatement should return an updated balance real bas
     body: JSON.stringify(expense),
   });
 
-  await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
-    method: "POST",
-    body: JSON.stringify({
-      yearId: 2025,
-      monthId: 2,
-    }),
-  });
+  const getExpensesListResponse = await fetch(
+    `${process.env.BASE_API_URL}/bankStatement?` +
+      new URLSearchParams({
+        monthId: 1,
+        yearId: 2025,
+      }),
+  );
+  const getExpensesListResponseBody = await getExpensesListResponse.json();
+  const expenseId = getExpensesListResponseBody.expenses[0].id;
 
-  const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
+  const response = await fetch(
+    `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
+    {
+      method: "DELETE",
+    },
+  );
   const responseBody = await response.json();
 
-  const validateBalanceReal =
-    responseBody.data[0].balanceInitial - expense.total;
-
   expect(response.status).toBe(200);
-  expect(responseBody.data[0].balanceReal).toBe(validateBalanceReal);
+  expect(responseBody.name).toBe("deleted");
+  expect(responseBody.message).toBe(
+    `value with id ${expenseId} deleted successfuly`,
+  );
+
+  const getDeletedExpenseResponse = await fetch(
+    `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
+  );
+
+  expect(getDeletedExpenseResponse.status).toBe(404);
 });

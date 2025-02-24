@@ -25,6 +25,7 @@ async function getHandler(req, res) {
     const result = await prisma.bankStatement.findMany({
       include: {
         salary: true,
+        expenses: true,
       },
     });
     return res.status(200).json({ data: result });
@@ -40,10 +41,11 @@ async function getHandler(req, res) {
     },
     include: {
       salary: true,
+      expenses: true,
     },
   });
 
-  return res.status(200).json({ data: result });
+  return res.status(200).json(result);
 }
 
 async function postHandler(req, res) {
@@ -73,11 +75,12 @@ async function postHandler(req, res) {
       amount: true,
     },
   });
-
+  await prisma.bankStatement.findFirst({});
   await prisma.bankStatement.create({
     data: {
       salaryId: salary.id,
       yearMonthId: yearMonth.id,
+      balanceInitial: salary.amount,
       balanceTotal: salary.amount,
       balanceReal: salary.amount,
     },

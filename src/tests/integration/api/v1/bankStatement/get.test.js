@@ -21,7 +21,7 @@ test("route GET /api/v1/bankStatement/ should return a bank statement object for
   const responseBody = await response.json();
 
   expect(response.status).toBe(200);
-  expect(typeof responseBody.data).toBe("object");
+  expect(typeof responseBody).toBe("object");
 });
 
 test("route GET /api/v1/bankStatement/ should return a list of bank statements if no query params is provided", async () => {
