@@ -11,7 +11,7 @@ export default router.handler({
 });
 
 async function getHandler(req, res) {
-  const result = await year.findAll();
+  const result = await year.findMany();
   res.status(200).json({
     data: result,
   });

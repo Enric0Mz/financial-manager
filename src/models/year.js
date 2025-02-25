@@ -1,6 +1,6 @@
 import prisma from "infra/database.js";
 
-async function findAll() {
+async function findMany() {
   return await prisma.year.findMany();
 }
 
@@ -29,7 +29,7 @@ async function remove(id) {
 }
 
 const year = {
-  findAll,
+  findMany,
   findUnique,
   create,
   remove,
