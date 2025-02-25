@@ -12,7 +12,7 @@ beforeAll(async () => {
 describe("DELETE api/v1/year", () => {
   describe("anonymous user", () => {
     const year = 2025;
-    test("route DELETE api/v1/year/2025 should return status 200 deleted", async () => {
+    test("Deleting year", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "DELETE",
       });
@@ -23,7 +23,7 @@ describe("DELETE api/v1/year", () => {
       expect(responseBody.message).toBe(`value ${year} deleted successfuly`);
     });
 
-    test("route DELETE api/v1/year/9999 should return status 404 not found", async () => {
+    test("Trying to delete a year that do not exist", async () => {
       const year = 9999;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "DELETE",
@@ -36,7 +36,7 @@ describe("DELETE api/v1/year", () => {
       );
     });
 
-    test("tryng to delete with no id should return 405 invalid method", async () => {
+    test("Trying to delete year with no id", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year`, {
         method: "DELETE",
       });

@@ -18,7 +18,7 @@ describe("POST /api/v1/year", () => {
       expect(responseBody.name).toBe("created");
     });
 
-    test("Creating year should return conflict if year already exist ", async () => {
+    test("Creating year that already exist ", async () => {
       const year = 1996;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "POST",

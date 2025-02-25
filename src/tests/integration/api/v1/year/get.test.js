@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("GET /api/v1/year/", () => {
   describe("Anonymous user", () => {
-    test("fetching years", async () => {
+    test("Fetching years", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year`);
       const responseBody = await response.json();
 
@@ -19,7 +19,7 @@ describe("GET /api/v1/year/", () => {
       expect(Array.isArray(responseBody.data)).toBe(true);
     });
 
-    test("getting year based on id", async () => {
+    test("Getting year based on id", async () => {
       const year = 1996;
       await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "POST",
@@ -31,7 +31,7 @@ describe("GET /api/v1/year/", () => {
       expect(responseBody.data).toMatchObject({ yearNumber: year });
     });
 
-    test("getting year by id should return 404 if yearNumber do not exist", async () => {
+    test("Getting year by id of year that do not exist", async () => {
       const year = 9999;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`);
       const responseBody = await response.json();
