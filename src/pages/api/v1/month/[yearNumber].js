@@ -6,6 +6,9 @@ import {
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import year from "models/year.js";
+import month from "models/month.js";
+import yearMonth from "models/yearMonth.js";
 
 const router = createRouter();
 
@@ -19,26 +22,18 @@ export default router.handler({
 });
 
 function onErrorHandler(err, req, res) {
-  if (req.method === "POST") {
-    const body = req.body;
-    const responseError = new ConflictError(err, body);
-    return res.status(responseError.statusCode).json(responseError);
-  }
+  // if (req.method === "POST") {
+  //   const body = req.body;
+  //   const responseError = new ConflictError(err, body);
+  //   return res.status(responseError.statusCode).json(responseError);
+  // }
   return onInternalServerErrorHandler(err, req, res);
 }
 
 async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  const data = await prisma.yearMonth.findMany({
-    where: {
-      yearId: yearNumberValue,
-    },
-    select: {
-      month: true,
-    },
-  });
-  const result = data.map((item) => item.month);
+  const result = await year.findAssociatedMonths(yearNumberValue);
   return res.status(200).json({
     data: result,
   });
@@ -49,29 +44,21 @@ async function postHandler(req, res) {
   const yearNumberValue = parseInt(payload.yearNumber);
   const body = req.body;
 
-  const year = await prisma.year.findUnique({
-    where: {
-      yearNumber: yearNumberValue,
-    },
-  });
-  if (!year) {
+  const findYear = await year.findUnique(yearNumberValue);
+  if (!findYear) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
-  const month = await prisma.month.findFirst({
-    where: {
-      month: String(body[0]).toUpperCase() + String(body).slice(1),
-    },
+  const findMonth = await month.findFirst({
+    month: String(body[0]).toUpperCase() + String(body).slice(1),
   });
 
-  if (!month) {
+  if (!findMonth) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
 
-  await prisma.yearMonth.create({
-    data: {
-      monthId: month.numeric,
-      yearId: year.yearNumber,
-    },
+  await yearMonth.create({
+    monthId: findMonth.numeric,
+    yearId: findYear.yearNumber,
   });
 
   const responseSuccess = new httpSuccessCreated(
@@ -85,26 +72,23 @@ async function deleteHandler(req, res) {
   const yearNumberValue = parseInt(payload.yearNumber);
   const body = req.body;
 
-  const result = await prisma.yearMonth.findFirst({
-    where: {
-      month: {
-        month: String(body[0]).toUpperCase() + String(body).slice(1),
-      },
-      year: {
-        yearNumber: yearNumberValue,
-      },
+  const result = await yearMonth.findFirst({
+    month: {
+      month: String(body[0]).toUpperCase() + String(body).slice(1),
+    },
+    year: {
+      yearNumber: yearNumberValue,
     },
   });
   if (!result) {
     const responseError = new NotFoundError(body);
     return res.status(404).json(responseError);
   }
-  await prisma.yearMonth.deleteMany({
-    where: {
-      yearId: yearNumberValue,
-      monthId: result.monthId,
-    },
+  await yearMonth.deleteMany({
+    yearId: yearNumberValue,
+    monthId: result.monthId,
   });
+
   return res.status(200).json({
     name: "deleted",
     message: `value ${body} deleted sucessfuly`,

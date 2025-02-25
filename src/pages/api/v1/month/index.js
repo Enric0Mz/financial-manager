@@ -1,11 +1,11 @@
-import prisma from "@infra/database";
-import { MonthName } from "@prisma/client";
+import month from "models/month";
 import {
   onNoMatchHandler,
   onInternalServerErrorHandler,
 } from "helpers/handlers";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
+import { ConflictError } from "errors/http";
 
 const router = createRouter();
 
@@ -17,24 +17,11 @@ export default router.handler({
 });
 
 async function postHandler(req, res) {
-  let months = [];
-
-  if (req.method === "POST") {
-    for (const [index, [, month]] of Object.entries(
-      Object.entries(MonthName),
-    )) {
-      months.push({
-        month,
-        numeric: parseInt(index) + 1,
-      });
-    }
-    await prisma.month.createMany({
-      data: months,
-    });
-
-    const responseSuccess = new httpSuccessCreated(
-      "all months created successufuly",
-    );
-    res.status(responseSuccess.statusCode).json(responseSuccess);
+  const result = await month.createAllMonths();
+  if (!result) {
+    const responseError = new ConflictError("", "all months");
+    return res.status(responseError.statusCode).json(responseError);
   }
+  const responseSuccess = new httpSuccessCreated(result);
+  res.status(responseSuccess.statusCode).json(responseSuccess);
 }
