@@ -13,11 +13,12 @@ async function findUnique(id) {
 }
 
 async function create(id) {
-  return await prisma.year.create({
+  const result = await prisma.year.create({
     data: {
       yearNumber: id,
     },
   });
+  return result;
 }
 
 async function remove(id) {
@@ -28,26 +29,11 @@ async function remove(id) {
   });
 }
 
-async function findAssociatedMonths(id) {
-  const result = await prisma.year.findUnique({
-    where: { yearNumber: id },
-    include: {
-      months: {
-        include: {
-          month: true,
-        },
-      },
-    },
-  });
-  return result?.months.map((item) => item.month) || [];
-}
-
 const year = {
   findMany,
   findUnique,
   create,
   remove,
-  findAssociatedMonths,
 };
 
 export default year;
