@@ -32,7 +32,7 @@ function onErrorHandler(err, req, res) {
 async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  const result = await year.findAssociatedMonths(yearNumberValue);
+  const result = await month.findMany(yearNumberValue);
   return res.status(200).json({
     data: result,
   });
@@ -55,10 +55,7 @@ async function postHandler(req, res) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
 
-  await yearMonth.create({
-    monthId: findMonth.numeric,
-    yearId: findYear.yearNumber,
-  });
+  await yearMonth.create(findMonth.month, findYear.yearNumber);
 
   const responseSuccess = new httpSuccessCreated(
     `month ${body} created on ${yearNumberValue}`,
