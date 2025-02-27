@@ -41,14 +41,14 @@ async function getHandler(req, res) {
 async function postHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  const body = req.body;
+  const body = JSON.parse(req.body);
 
   const findYear = await year.findUnique(yearNumberValue);
   if (!findYear) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
   const findMonth = await month.findFirst({
-    month: String(body[0]).toUpperCase() + String(body).slice(1),
+    month: body.month,
   });
 
   if (!findMonth) {
@@ -58,7 +58,7 @@ async function postHandler(req, res) {
   await yearMonth.create(findMonth.month, findYear.yearNumber);
 
   const responseSuccess = new httpSuccessCreated(
-    `month ${body} created on ${yearNumberValue}`,
+    `month ${body.month} created on ${yearNumberValue}`,
   );
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
@@ -66,18 +66,17 @@ async function postHandler(req, res) {
 async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  const body = req.body;
-
+  const body = JSON.parse(req.body);
   const result = await yearMonth.findFirst({
     month: {
-      month: String(body[0]).toUpperCase() + String(body).slice(1),
+      month: body.month,
     },
     year: {
       yearNumber: yearNumberValue,
     },
   });
   if (!result) {
-    const responseError = new NotFoundError(body);
+    const responseError = new NotFoundError(body.month);
     return res.status(404).json(responseError);
   }
   await yearMonth.deleteMany({
@@ -87,7 +86,7 @@ async function deleteHandler(req, res) {
 
   return res.status(200).json({
     name: "deleted",
-    message: `value ${body} deleted sucessfuly`,
+    message: `value ${body.month} deleted sucessfuly`,
     status_code: 200,
   });
 }

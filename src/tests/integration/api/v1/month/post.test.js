@@ -23,12 +23,12 @@ describe("POST /api/v1/month", () => {
 
     test("Creating month january on year 2025", async () => {
       const year = 2025;
-      const month = "january";
+      const month = "January";
       const response = await fetch(
         `${process.env.BASE_API_URL}/month/${year}`,
         {
           method: "POST",
-          body: month,
+          body: JSON.stringify({ month }),
         },
       );
       const responseBody = await response.json();
@@ -40,12 +40,12 @@ describe("POST /api/v1/month", () => {
 
     test("Trying to insert month in non existent year", async () => {
       const year = 2020;
-      const month = "january";
+      const month = "January";
       const responseWithExpectedError = await fetch(
         `${process.env.BASE_API_URL}/month/${year}`,
         {
           method: "POST",
-          body: month,
+          body: JSON.stringify({ month }),
         },
       );
       const responseBodyWithExpectedError =
