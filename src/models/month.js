@@ -1,9 +1,11 @@
 import prisma from "infra/database.js";
 import { MonthName } from "@prisma/client";
 
-async function findFirst(filter) {
+async function findFirst(monthName) {
   return await prisma.month.findFirst({
-    where: filter,
+    where: {
+      month: monthName,
+    },
   });
 }
 async function findMany(year) {

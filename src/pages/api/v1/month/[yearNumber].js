@@ -47,14 +47,11 @@ async function postHandler(req, res) {
   if (!findYear) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
-  const findMonth = await month.findFirst({
-    month: body.month,
-  });
+  const findMonth = await month.findFirst(body.month);
 
   if (!findMonth) {
     return res.status(404).json(new NotFoundError(yearNumberValue));
   }
-
   await yearMonth.create(findMonth.month, findYear.yearNumber);
 
   const responseSuccess = new httpSuccessCreated(
@@ -67,22 +64,12 @@ async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
   const body = JSON.parse(req.body);
-  const result = await yearMonth.findFirst({
-    month: {
-      month: body.month,
-    },
-    year: {
-      yearNumber: yearNumberValue,
-    },
-  });
+  const result = await yearMonth.findFirst(body.month, yearNumberValue);
   if (!result) {
     const responseError = new NotFoundError(body.month);
     return res.status(404).json(responseError);
   }
-  await yearMonth.deleteMany({
-    yearId: yearNumberValue,
-    monthId: result.monthId,
-  });
+  await yearMonth.deleteMany(yearNumberValue, result.monthId);
 
   return res.status(200).json({
     name: "deleted",
