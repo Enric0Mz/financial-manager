@@ -1,21 +1,14 @@
-import prisma from "@infra/database";
 import { httpSuccessUpdated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
+import salary from "models/salary";
 
 export default async function putHandler(req, res) {
   const salaryId = req.query.salaryId;
-  const amountPayload = JSON.parse(req.body);
-  const amountValue = amountPayload.amount;
+  const body = JSON.parse(req.body);
+  const amountValue = body.amount;
 
   try {
-    await prisma.salary.update({
-      where: {
-        id: parseInt(salaryId),
-      },
-      data: {
-        amount: amountValue,
-      },
-    });
+    await salary.update(salaryId, amountValue);
   } catch {
     const responseError = new NotFoundError(salaryId);
     return res.status(responseError.statusCode).json(responseError);

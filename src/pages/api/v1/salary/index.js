@@ -3,7 +3,6 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
-import prisma from "@infra/database";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import putHandler from "./[salaryId]";
 import salary from "models/salary.js";
@@ -20,11 +19,7 @@ export default route.handler({
 });
 
 async function getHandler(req, res) {
-  const result = await prisma.salary.findFirst({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const result = await salary.findFirst();
 
   return res.status(200).json({
     data: {
