@@ -1,5 +1,6 @@
 import setup from "tests/setupDatabase.js";
 import orchestrator from "tests/orchestrator";
+import helperFunctions from "helpers/functions";
 
 const secondSalary = 4550.12;
 
@@ -9,6 +10,7 @@ beforeAll(async () => {
 
   const firstSalary = 3000.12;
   await setup.createSalary(firstSalary);
+  await helperFunctions.waitToCreate();
   await setup.createSalary(secondSalary);
 });
 
