@@ -7,6 +7,9 @@ import {
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
 import deleteHandler from "./[bankStatementId]";
+import yearMonth from "models/yearMonth";
+import salary from "models/salary";
+import bankStatement from "models/bankStatement";
 
 const route = createRouter();
 
@@ -49,42 +52,19 @@ async function getHandler(req, res) {
 }
 
 async function postHandler(req, res) {
-  const body = req.body;
-  const data = JSON.parse(body);
-  const yearMonth = await prisma.yearMonth.findFirst({
-    where: {
-      yearId: data.yearId,
-      monthId: data.monthId,
-    },
-    select: {
-      id: true,
-    },
-  });
-  if (!yearMonth) {
-    const responseError = new NotFoundError(
-      `[${data.yearId}, ${data.monthId}]`,
-    );
+  const body = JSON.parse(req.body);
+  const yearMonthResult = await yearMonth.findFirst(body.month, body.year);
+
+  if (!yearMonthResult) {
+    const responseError = new NotFoundError(`[${body.year}, ${body.month}]`);
     return res.status(responseError.statusCode).json(responseError);
   }
-  const salary = await prisma.salary.findFirst({
-    orderBy: {
-      createdAt: "desc",
-    },
-    select: {
-      id: true,
-      amount: true,
-    },
-  });
-  await prisma.bankStatement.findFirst({});
-  await prisma.bankStatement.create({
-    data: {
-      salaryId: salary.id,
-      yearMonthId: yearMonth.id,
-      balanceInitial: salary.amount,
-      balanceTotal: salary.amount,
-      balanceReal: salary.amount,
-    },
-  });
+
+  const salaryResult = await salary.findFirst();
+
+  const lastStatement = await bankStatement.findFirst();
+
+  await bankStatement.create(salaryResult, yearMonthResult.id, lastStatement);
 
   const responseSuccess = new httpSuccessCreated("Bank statement created");
 
