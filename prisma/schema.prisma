@@ -42,8 +42,7 @@ model Bank {
   name     String
   balance  Float     @default(0)
   expenses Expense[]
-  bankStatementId Int
-  bankStatement   BankStatement @relation(fields: [bankStatementId], references: [id])
+  banks BankBankStatement[] 
 }
 
 model Debit {
@@ -83,8 +82,16 @@ model BankStatement {
   balanceInitial Float
   balanceTotal   Float
   balanceReal    Float
-  bankId         Int?
-  banks          Bank[]
+  banks BankBankStatement[] 
+}
+
+model BankBankStatement {
+  bank  Bank @relation(fields: [bankId], references: [id])
+  bankId Int
+  bankStatement BankStatement @relation(fields: bankStatementId, references: [id])
+  bankStatementId Int
+
+  @@id ([bankId, bankStatementId])
 }
 
 model Salary {
