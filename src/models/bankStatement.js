@@ -11,7 +11,7 @@ async function findFirst() {
 
 async function findUnique(month, year) {
   const monthId = Month[month];
-  const result = await prisma.bankStatement.findFirst({
+  return await prisma.bankStatement.findFirst({
     // Always will find unique here
     where: {
       yearMonth: {
@@ -27,8 +27,6 @@ async function findUnique(month, year) {
       banks: true,
     },
   });
-
-  return result;
 }
 
 async function create(salary, yearMonthId, lastStatement) {

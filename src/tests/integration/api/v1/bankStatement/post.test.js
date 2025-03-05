@@ -54,7 +54,6 @@ describe("POST /api/v1/bankStatement", () => {
           new URLSearchParams(yearMonth),
       );
       const responseBody = await response.json();
-      console.log(responseBody);
 
       expect(response.status).toBe(200);
       expect(responseBody.balanceInitial).toBe(salary * 2);
