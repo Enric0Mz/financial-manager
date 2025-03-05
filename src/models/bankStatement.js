@@ -29,6 +29,15 @@ async function findUnique(month, year) {
   });
 }
 
+async function findMany() {
+  return await prisma.bankStatement.findMany({
+    include: {
+      salary: true,
+      expenses: true,
+    },
+  });
+}
+
 async function create(salary, yearMonthId, lastStatement) {
   let lastMonthBalance;
   if (lastStatement) {
@@ -54,6 +63,7 @@ const bankStatement = {
   create,
   findFirst,
   findUnique,
+  findMany,
 };
 
 export default bankStatement;

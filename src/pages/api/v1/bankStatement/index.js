@@ -25,12 +25,7 @@ export default route.handler({
 async function getHandler(req, res) {
   const queryParams = req.query;
   if (!(queryParams.month || queryParams.year)) {
-    const result = await prisma.bankStatement.findMany({
-      include: {
-        salary: true,
-        expenses: true,
-      },
-    });
+    const result = await bankStatement.findMany();
     return res.status(200).json({ data: result });
   }
   const result = await bankStatement.findUnique(
