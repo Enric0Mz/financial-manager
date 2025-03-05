@@ -1,4 +1,3 @@
-import prisma from "@infra/database";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -22,7 +21,7 @@ export default route.handler({
 });
 
 async function getHandler(req, res) {
-  const result = await prisma.bank.findMany();
+  const result = await bank.findMany();
 
   return res.status(200).json({ data: result });
 }

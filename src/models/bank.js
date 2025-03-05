@@ -1,5 +1,9 @@
 import prisma from "@infra/database";
 
+async function findMany() {
+  return await prisma.bank.findMany();
+}
+
 async function create(name) {
   await prisma.bank.create({
     data: { name },
@@ -8,6 +12,7 @@ async function create(name) {
 
 const bank = {
   create,
+  findMany,
 };
 
 export default bank;
