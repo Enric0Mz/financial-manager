@@ -1,4 +1,5 @@
 import prisma from "@infra/database";
+import Month from "./enum/month";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -6,6 +7,28 @@ async function findFirst() {
       createdAt: "desc",
     },
   });
+}
+
+async function findUnique(month, year) {
+  const monthId = Month[month];
+  const result = await prisma.bankStatement.findFirst({
+    // Always will find unique here
+    where: {
+      yearMonth: {
+        is: {
+          monthId: monthId,
+          yearId: parseInt(year),
+        },
+      },
+    },
+    include: {
+      salary: true,
+      expenses: true,
+      banks: true,
+    },
+  });
+
+  return result;
 }
 
 async function create(salary, yearMonthId, lastStatement) {
@@ -32,6 +55,7 @@ async function create(salary, yearMonthId, lastStatement) {
 const bankStatement = {
   create,
   findFirst,
+  findUnique,
 };
 
 export default bankStatement;
