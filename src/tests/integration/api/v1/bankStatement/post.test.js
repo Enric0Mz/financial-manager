@@ -1,6 +1,8 @@
 import setup from "tests/setupDatabase";
 import orchestrator from "tests/orchestrator";
 
+const salary = 4500;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -12,7 +14,7 @@ beforeAll(async () => {
   await setup.createYear(year);
   await setup.createMonthInYear(month, year);
   await setup.createMonthInYear(secondMonth, year);
-  await setup.createSalary(4500);
+  await setup.createSalary(salary);
 });
 
 describe("POST /api/v1/bankStatement", () => {
@@ -36,6 +38,28 @@ describe("POST /api/v1/bankStatement", () => {
       expect(responseBody.name).toBe("created");
       expect(responseBody.message).toBe(`Bank statement created`);
     });
+
+    test("Creating bankStatement with previous bankStatement", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "February",
+      };
+      await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
+        method: "POST",
+        body: JSON.stringify(yearMonth),
+      });
+
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(yearMonth),
+      );
+      const responseBody = await response.json();
+      console.log(responseBody);
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceInitial).toBe(salary * 2);
+    });
+
     test("Creating bankStatement with previous bankStatement that has one expense", async () => {
       const bankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bankStatement?` +
