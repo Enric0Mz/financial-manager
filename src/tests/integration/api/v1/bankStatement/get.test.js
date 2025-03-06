@@ -25,6 +25,8 @@ beforeAll(async () => {
   );
 });
 
+const salary = 4500;
+
 describe("GET /api/v1/bankStatement", () => {
   describe("Anonymous user", () => {
     test("Getting bank statement", async () => {
@@ -40,6 +42,7 @@ describe("GET /api/v1/bankStatement", () => {
 
       expect(response.status).toBe(200);
       expect(typeof responseBody).toBe("object");
+      expect(responseBody.balanceInitial).toBe(salary);
     });
 
     test("Fetching bank statement", async () => {
@@ -48,6 +51,7 @@ describe("GET /api/v1/bankStatement", () => {
 
       expect(response.status).toBe(200);
       expect(Array.isArray(responseBody.data)).toBe(true);
+      expect(responseBody.data[1].balanceInitial).toBe(salary * 2);
     });
   });
 });
