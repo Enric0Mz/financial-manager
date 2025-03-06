@@ -5,6 +5,7 @@ import month from "models/month";
 import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bank from "models/bank";
+import bankStatement from "models/bankStatement";
 
 async function createYear(yearId) {
   return await year.create(yearId);
@@ -26,12 +27,17 @@ async function createBank(name) {
   return await bank.create(name);
 }
 
+async function createBankStatement(salary, yearMonthId, lastBankStatement) {
+  return await bankStatement.create(salary, yearMonthId, lastBankStatement);
+}
+
 const setup = {
   createYear,
   createAllMonths,
   createMonthInYear,
   createSalary,
   createBank,
+  createBankStatement,
 };
 
 export default setup;

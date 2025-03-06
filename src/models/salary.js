@@ -9,7 +9,7 @@ async function findFirst() {
 }
 
 async function create(amount) {
-  await prisma.salary.create({
+  return await prisma.salary.create({
     data: {
       amount,
     },

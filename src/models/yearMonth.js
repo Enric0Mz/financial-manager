@@ -16,7 +16,7 @@ async function findFirst(monthName, yearId) {
 
 async function create(monthName, yearId) {
   const monthId = Month[monthName];
-  await prisma.yearMonth.create({
+  return await prisma.yearMonth.create({
     data: {
       monthId,
       yearId,

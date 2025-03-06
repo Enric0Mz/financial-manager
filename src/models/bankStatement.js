@@ -1,4 +1,4 @@
-import prisma from "@infra/database";
+import prisma from "infra/database.js";
 import Month from "./enum/month";
 
 async function findFirst() {
@@ -59,15 +59,17 @@ async function create(salary, yearMonthId, lastStatement, banks) {
       balanceInitial: balance,
       balanceTotal: balance,
       balanceReal: balance,
-      banks: {
-        create: banks.map((bank) => ({
-          bank: {
-            connect: {
-              id: bank.id,
-            },
-          },
-        })),
-      },
+      banks: banks
+        ? {
+            create: banks.map((bank) => ({
+              bank: {
+                connect: {
+                  id: bank.id,
+                },
+              },
+            })),
+          }
+        : undefined,
     },
   });
   return result;
