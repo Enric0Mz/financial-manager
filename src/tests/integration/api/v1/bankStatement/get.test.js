@@ -1,33 +1,53 @@
-import setupDatabase from "tests/setupTests";
+import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
 
 beforeAll(async () => {
-  await setupDatabase({
-    createMonths: ["january", "february"],
-    createBankStatements: [
-      { yearId: 2025, monthId: 1 },
-      { yearId: 2025, monthId: 2 },
-    ],
-  });
-});
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
 
-test("route GET /api/v1/bankStatement/ should return a bank statement object for specified month and year", async () => {
-  const response = await fetch(
-    `${process.env.BASE_API_URL}/bankStatement?` +
-      new URLSearchParams({
-        monthId: 1,
-        yearId: 2025,
-      }),
+  const year = 2025;
+  const january = "January";
+  const february = "February";
+  const salaryAmount = 4500;
+  await setup.createYear(year);
+  await setup.createAllMonths();
+  const monthInYearJanuary = await setup.createMonthInYear(january, year);
+  const monthInYearFebruary = await setup.createMonthInYear(february, year);
+  const salary = await setup.createSalary(salaryAmount);
+  const bankStatement = await setup.createBankStatement(
+    salary,
+    monthInYearJanuary.id,
   );
-  const responseBody = await response.json();
-
-  expect(response.status).toBe(200);
-  expect(typeof responseBody).toBe("object");
+  await setup.createBankStatement(
+    salary,
+    monthInYearFebruary.id,
+    bankStatement,
+  );
 });
 
-test("route GET /api/v1/bankStatement/ should return a list of bank statements if no query params is provided", async () => {
-  const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
-  const responseBody = await response.json();
+describe("GET /api/v1/bankStatement", () => {
+  describe("Anonymous user", () => {
+    test("Getting bank statement", async () => {
+      const january = {
+        month: "January",
+        year: 2025,
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(january),
+      );
+      const responseBody = await response.json();
 
-  expect(response.status).toBe(200);
-  expect(Array.isArray(responseBody.data)).toBe(true);
+      expect(response.status).toBe(200);
+      expect(typeof responseBody).toBe("object");
+    });
+
+    test("Fetching bank statement", async () => {
+      const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(Array.isArray(responseBody.data)).toBe(true);
+    });
+  });
 });
