@@ -1,6 +1,3 @@
-import prisma from "@infra/database";
-import { NotFoundError } from "errors/http";
-import { httpSuccessDeleted } from "helpers/httpSuccess";
 import bank from "models/bank";
 
 export async function putHandler(req, res) {
@@ -16,18 +13,11 @@ export async function deleteHandler(req, res) {
   const query = req.query;
   const bankId = parseInt(query.bankId);
 
-  try {
-    await prisma.bank.delete({
-      where: {
-        id: bankId,
-      },
-    });
-  } catch {
-    const responseError = new NotFoundError(bankId);
-    return res.status(responseError.statusCode).json(responseError);
+  const result = await bank.remove(bankId);
+  if (result.statusCode === 404) {
+    return res.status(result.statusCode).json(result);
   }
-  const responseSuccess = new httpSuccessDeleted(`with id ${bankId}`);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }
 
 export default function handler(req, res) {
