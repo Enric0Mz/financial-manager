@@ -2,19 +2,23 @@ import setup from "tests/setupDatabase";
 import orchestrator from "tests/orchestrator";
 
 const salary = 4500;
+const bank = "nuBank";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
   const year = 2025;
-  const month = "January";
-  const secondMonth = "February";
+  const january = "January";
+  const february = "February";
+  const march = "March";
   await setup.createAllMonths();
   await setup.createYear(year);
-  await setup.createMonthInYear(month, year);
-  await setup.createMonthInYear(secondMonth, year);
+  await setup.createMonthInYear(january, year);
+  await setup.createMonthInYear(february, year);
+  await setup.createMonthInYear(march, year);
   await setup.createSalary(salary);
+  await setup.createBank(bank);
 });
 
 describe("POST /api/v1/bankStatement", () => {
@@ -40,32 +44,34 @@ describe("POST /api/v1/bankStatement", () => {
     });
 
     test("Creating bankStatement with previous bankStatement", async () => {
-      const yearMonth = {
+      const february = {
         year: 2025,
         month: "February",
       };
       await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
         method: "POST",
-        body: JSON.stringify(yearMonth),
+        body: JSON.stringify(february),
       });
 
       const response = await fetch(
         `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(yearMonth),
+          new URLSearchParams(february),
       );
-      const responseBody = await response.json();
 
+      const responseBody = await response.json();
       expect(response.status).toBe(200);
       expect(responseBody.balanceInitial).toBe(salary * 2);
+      expect(responseBody.banks[0].bank.name).toBe(bank);
     });
 
     test("Creating bankStatement with previous bankStatement that has one expense", async () => {
+      const february = {
+        year: 2025,
+        month: "February",
+      };
       const bankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams({
-            monthId: 1,
-            yearId: 2025,
-          }),
+          new URLSearchParams(february),
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
       const bankStatementId = bankStatementResponseBody.id;
@@ -88,22 +94,29 @@ describe("POST /api/v1/bankStatement", () => {
         },
       );
 
+      const march = {
+        year: 2025,
+        month: "March",
+      };
+
       await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
         method: "POST",
-        body: JSON.stringify({
-          yearId: 2025,
-          monthId: 2,
-        }),
+        body: JSON.stringify(march),
       });
 
-      const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(march),
+      );
       const responseBody = await response.json();
 
       const validateBalanceReal =
-        responseBody.data[0].balanceInitial - expense.total;
+        bankStatementResponseBody.balanceReal +
+        responseBody.salary.amount -
+        expense.total;
 
       expect(response.status).toBe(200);
-      expect(responseBody.data[0].balanceReal).toBe(validateBalanceReal);
+      expect(responseBody.balanceReal).toBe(validateBalanceReal);
     });
   });
 });
