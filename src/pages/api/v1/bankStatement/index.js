@@ -1,5 +1,4 @@
 import { createRouter } from "next-connect";
-import prisma from "@infra/database";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -10,6 +9,7 @@ import deleteHandler from "./[bankStatementId]";
 import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bankStatement from "models/bankStatement";
+import bank from "models/bank";
 
 const route = createRouter();
 
@@ -49,7 +49,14 @@ async function postHandler(req, res) {
 
   const lastStatement = await bankStatement.findFirst();
 
-  await bankStatement.create(salaryResult, yearMonthResult.id, lastStatement);
+  const banks = await bank.findMany();
+
+  await bankStatement.create(
+    salaryResult,
+    yearMonthResult.id,
+    lastStatement,
+    banks,
+  );
 
   const responseSuccess = new httpSuccessCreated("Bank statement created");
 

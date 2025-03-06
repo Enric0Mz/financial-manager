@@ -24,7 +24,11 @@ async function findUnique(month, year) {
     include: {
       salary: true,
       expenses: true,
-      banks: true,
+      banks: {
+        include: {
+          bank: true,
+        },
+      },
     },
   });
 }
@@ -38,25 +42,35 @@ async function findMany() {
   });
 }
 
-async function create(salary, yearMonthId, lastStatement) {
+async function create(salary, yearMonthId, lastStatement, banks) {
   let lastMonthBalance;
   if (lastStatement) {
-    lastMonthBalance = lastStatement.balanceInitial;
+    lastMonthBalance = lastStatement.balanceReal;
   }
 
   const balance = lastMonthBalance
     ? salary.amount + lastMonthBalance
     : salary.amount;
 
-  await prisma.bankStatement.create({
+  const result = await prisma.bankStatement.create({
     data: {
       salaryId: salary.id,
       yearMonthId: yearMonthId,
       balanceInitial: balance,
       balanceTotal: balance,
       balanceReal: balance,
+      banks: {
+        create: banks.map((bank) => ({
+          bank: {
+            connect: {
+              id: bank.id,
+            },
+          },
+        })),
+      },
     },
   });
+  return result;
 }
 
 const bankStatement = {
