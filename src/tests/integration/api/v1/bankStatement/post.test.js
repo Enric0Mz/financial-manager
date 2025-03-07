@@ -57,8 +57,8 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/bankStatement?` +
           new URLSearchParams(february),
       );
-
       const responseBody = await response.json();
+      console.log(responseBody.banks[0].bank.name);
       expect(response.status).toBe(200);
       expect(responseBody.balanceInitial).toBe(salary * 2);
       expect(responseBody.banks[0].bank.name).toBe(bank);
@@ -76,14 +76,11 @@ describe("POST /api/v1/bankStatement", () => {
       const bankStatementResponseBody = await bankStatementResponse.json();
       const bankStatementId = bankStatementResponseBody.id;
 
-      const bankResponse = await fetch(`${process.env.BASE_API_URL}/bank`);
-      const bankResponseBody = await bankResponse.json();
-
       const expense = {
         name: "Compra mercado",
         description: "Compra de mercado da semana",
         total: 543.12,
-        bankId: bankResponseBody.data[0].id,
+        bankId: bankStatementResponseBody.banks[0].id,
       };
 
       await fetch(

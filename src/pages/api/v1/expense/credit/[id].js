@@ -42,7 +42,9 @@ async function getHanlder(req, res) {
 async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
-  const { name, description, total, bankId } = JSON.parse(req.body);
+  const { name, description, total, bankBankStatementId } = JSON.parse(
+    req.body,
+  );
 
   await prisma.bankStatement.update({
     where: {
@@ -54,7 +56,7 @@ async function postHandler(req, res) {
           name,
           description,
           total,
-          bankId,
+          bankBankStatementId,
         },
       },
     },
