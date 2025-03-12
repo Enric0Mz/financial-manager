@@ -6,6 +6,7 @@ import {
 } from "helpers/handlers";
 import { NotFoundError } from "errors/http";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
+import extraIncome from "models/extraIncome";
 
 const route = createRouter();
 
@@ -37,29 +38,11 @@ async function getHandler(req, res) {
 async function postHandler(req, res) {
   const query = req.query;
   const body = JSON.parse(req.body);
-  const extraIncomeName = body.name;
-  const extraIncomeAmount = body.amount;
   const bankStatementId = parseInt(query.Id);
 
-  try {
-    await prisma.extraIncome.create({
-      data: {
-        name: extraIncomeName,
-        amount: extraIncomeAmount,
-        bankStatments: {
-          connect: { id: bankStatementId },
-        },
-      },
-    });
-  } catch {
-    const responseError = new NotFoundError(bankStatementId);
-    return res.status(responseError.statusCode).json(responseError);
-  }
+  const result = await extraIncome.create(body, bankStatementId);
 
-  const responseSuccess = new httpSuccessCreated(
-    `Extra income '${extraIncomeName}' created`,
-  );
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }
 
 async function patchHandler(req, res) {

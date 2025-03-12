@@ -75,11 +75,22 @@ async function create(salary, yearMonthId, lastStatement, banks) {
   return result;
 }
 
+async function updateBalance(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceTotal: { increment: amount },
+      balanceReal: { increment: amount },
+    },
+  });
+}
+
 const bankStatement = {
   create,
   findFirst,
   findUnique,
   findMany,
+  updateBalance,
 };
 
 export default bankStatement;
