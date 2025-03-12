@@ -23,15 +23,7 @@ export default route.handler({
 async function getHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.Id);
-  const result = await prisma.extraIncome.findMany({
-    where: {
-      bankStatments: {
-        every: {
-          id: bankStatementId,
-        },
-      },
-    },
-  });
+  const result = await extraIncome.findMany(bankStatementId);
   return res.status(200).json({ data: result });
 }
 

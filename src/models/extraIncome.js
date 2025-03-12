@@ -2,6 +2,18 @@ import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 
+async function findMany(bankStatementId) {
+  return await prisma.extraIncome.findMany({
+    where: {
+      bankStatments: {
+        every: {
+          id: bankStatementId,
+        },
+      },
+    },
+  });
+}
+
 async function create(payload, bankStatementId) {
   try {
     const result = await prisma.extraIncome.create({
@@ -22,6 +34,7 @@ async function create(payload, bankStatementId) {
 
 const extraIncome = {
   create,
+  findMany,
 };
 
 export default extraIncome;
