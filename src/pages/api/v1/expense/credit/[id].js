@@ -4,12 +4,11 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import {
-  httpSuccessCreated,
-  httpSuccessDeleted,
-  httpSuccessUpdated,
-} from "helpers/httpSuccess";
+import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
+import bankStatement from "models/bankStatement";
+import expense from "models/expense";
+import bankBankStatment from "models/bankBankStatement";
 
 const route = createRouter();
 
@@ -42,54 +41,17 @@ async function getHanlder(req, res) {
 async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
-  const { name, description, total, bankBankStatementId } = JSON.parse(
-    req.body,
+  const body = JSON.parse(req.body);
+
+  const result = await bankStatement.updateWithExpense(body, bankStatementId);
+  const totalExpensesAmount = await expense.getTotalAmount(bankStatementId);
+  await bankStatement.decrementBalance(totalExpensesAmount, bankStatementId);
+  await bankBankStatment.updateBalance(
+    totalExpensesAmount,
+    body.bankBankStatementId,
   );
 
-  await prisma.bankStatement.update({
-    where: {
-      id: bankStatementId,
-    },
-    data: {
-      expenses: {
-        create: {
-          name,
-          description,
-          total,
-          bankBankStatementId,
-        },
-      },
-    },
-    include: {
-      expenses: true,
-    },
-  });
-  const totalExpenses = await prisma.expense.aggregate({
-    where: { bankStatementId: bankStatementId },
-    _sum: { total: true },
-  });
-  const totalExpensesValue = totalExpenses._sum.total || 0;
-
-  await prisma.bankStatement.update({
-    where: { id: bankStatementId },
-    data: {
-      balanceReal: {
-        decrement: totalExpensesValue,
-      },
-    },
-  });
-
-  await prisma.bank.update({
-    where: {
-      id: bankId,
-    },
-    data: {
-      balance: totalExpensesValue,
-    },
-  });
-
-  const responseSuccess = new httpSuccessCreated(`expense created`);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result.toJson());
 }
 
 async function patchHandler(req, res) {
