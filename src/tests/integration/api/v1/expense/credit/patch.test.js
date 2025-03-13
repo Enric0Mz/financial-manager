@@ -27,7 +27,7 @@ beforeAll(async () => {
 
 describe("PATCH /api/v1/expense/credit", () => {
   describe("Anonymous user", () => {
-    test("route PATCH api/v1/expense/{expenseId} should return 200 updated", async () => {
+    test("Updating expense", async () => {
       const expense = {
         name: "Compra mercado",
         description: "Compra de mercado da semana",
