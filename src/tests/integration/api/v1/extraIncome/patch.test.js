@@ -46,8 +46,8 @@ describe("PATCH /api/v1/extraIncome", () => {
       const patchResponseBody = await patchResponse.json();
 
       expect(patchResponse.status).toBe(200);
-      expect(patchResponseBody.data.name).toBe(updatedExtraIncome.name);
-      expect(patchResponseBody.data.amount).toBe(updatedExtraIncome.amount);
+      expect(patchResponseBody.name).toBe(updatedExtraIncome.name);
+      expect(patchResponseBody.amount).toBe(updatedExtraIncome.amount);
 
       const getUpdatedResponse = await fetch(
         `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,

@@ -40,14 +40,11 @@ async function postHandler(req, res) {
 async function patchHandler(req, res) {
   const query = req.query;
   const extraIncomeId = parseInt(query.Id);
-  const { name, amount } = JSON.parse(req.body);
+  const body = JSON.parse(req.body);
 
-  const updatedExtraIncome = await prisma.extraIncome.update({
-    where: { id: extraIncomeId },
-    data: { name, amount },
-  });
+  const updatedExtraIncome = await extraIncome.update(body, extraIncomeId);
 
-  return res.status(200).json({ data: updatedExtraIncome });
+  return res.status(200).json(updatedExtraIncome);
 }
 
 async function deleteHandler(req, res) {

@@ -32,9 +32,17 @@ async function create(payload, bankStatementId) {
   }
 }
 
+async function update(payload, id) {
+  return await prisma.extraIncome.update({
+    where: { id },
+    data: { name: payload.name, amount: payload.amount },
+  });
+}
+
 const extraIncome = {
   create,
   findMany,
+  update,
 };
 
 export default extraIncome;
