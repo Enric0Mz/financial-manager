@@ -58,7 +58,6 @@ describe("POST /api/v1/bankStatement", () => {
           new URLSearchParams(february),
       );
       const responseBody = await response.json();
-      console.log(responseBody.banks[0].bank.name);
       expect(response.status).toBe(200);
       expect(responseBody.balanceInitial).toBe(salary * 2);
       expect(responseBody.banks[0].bank.name).toBe(bank);

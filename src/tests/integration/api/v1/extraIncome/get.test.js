@@ -36,7 +36,6 @@ describe("GET /api/v1/extraIncome", () => {
         `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
       );
       const responseBody = await response.json();
-      console.log(responseBody);
 
       expect(response.status).toBe(200);
       expect(Array.isArray(responseBody.data)).toBe(true);
