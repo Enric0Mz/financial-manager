@@ -23,7 +23,7 @@ beforeAll(async () => {
 
 describe("DELETE /api/v1/extraIncome", () => {
   describe("Anonymous user", () => {
-    test("route DELETE api/v1/extraIncome/{extraIncomeId} should return 200 deleted", async () => {
+    test("Deleting extra income", async () => {
       const extraIncomeResponse = await fetch(
         `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
       );
