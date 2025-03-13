@@ -7,7 +7,7 @@ async function findMany() {
 }
 
 async function create(name) {
-  await prisma.bank.create({
+  return await prisma.bank.create({
     data: { name },
   });
 }

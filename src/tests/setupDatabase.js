@@ -28,8 +28,18 @@ async function createBank(name) {
   return await bank.create(name);
 }
 
-async function createBankStatement(salary, yearMonthId, lastBankStatement) {
-  return await bankStatement.create(salary, yearMonthId, lastBankStatement);
+async function createBankStatement(
+  salary,
+  yearMonthId,
+  lastBankStatement,
+  banks,
+) {
+  return await bankStatement.create(
+    salary,
+    yearMonthId,
+    lastBankStatement,
+    banks,
+  );
 }
 
 async function createExtraIncome(payload, bankStatementId) {

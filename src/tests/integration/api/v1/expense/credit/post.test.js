@@ -1,7 +1,7 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
-let bankStatementId;
+let bankStatementData;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -10,30 +10,32 @@ beforeAll(async () => {
   const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
-  const bank = "Itau";
+  const bankName = "Itau";
   await setup.createYear(year);
   await setup.createAllMonths();
   const yearMonth = await setup.createMonthInYear(january, year);
   const salary = await setup.createSalary(salaryAmount);
-  const bankStatement = await setup.createBankStatement(salary, yearMonth.id);
-  bankStatementId = bankStatement.id;
-  await setup.createBank(bank);
+  const bank = await setup.createBank(bankName);
+  const bankStatement = await setup.createBankStatement(
+    salary,
+    yearMonth.id,
+    undefined,
+    [bank],
+  );
+  bankStatementData = bankStatement;
 });
 
 describe("POST /api/v1/expense/credit", () => {
   describe("Anonymous user", () => {
     test("Creating credit expense", async () => {
-      const bankResponse = await fetch(`${process.env.BASE_API_URL}/bank`);
-      const bankResponseBody = await bankResponse.json();
-
       const expense = {
         name: "Compra mercado",
         description: "Compra de mercado da semana",
         total: 543.12,
-        bankId: bankResponseBody.data[0].id,
+        bankBankStatementId: bankStatementData.banks[0].id,
       };
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`,
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
         {
           method: "POST",
           body: JSON.stringify(expense),
@@ -43,7 +45,10 @@ describe("POST /api/v1/expense/credit", () => {
 
       expect(response.status).toBe(201);
       expect(responseBody.name).toBe("created");
-      expect(responseBody.message).toBe(`expense created`);
+      expect(responseBody.message).toBe(`expense ${expense.name} created`);
+      expect(responseBody.data.name).toBe(expense.name);
+      expect(responseBody.data.description).toBe(expense.description);
+      expect(responseBody.data.total).toBe(expense.total);
     });
   });
 });
