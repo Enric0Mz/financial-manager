@@ -27,7 +27,7 @@ beforeAll(async () => {
 
 describe("GET /api/v1/expense/credit", () => {
   describe("Anonymous user", () => {
-    test("route GET api/v1/expense/credit/{expenseId} should return one expense object", async () => {
+    test("Getting credit expense", async () => {
       const expense = {
         name: "Compra mercado",
         description: "Compra de mercado da semana",
