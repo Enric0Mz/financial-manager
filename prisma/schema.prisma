@@ -82,6 +82,7 @@ model BankBankStatement {
   bankId Int
   bankStatement BankStatement @relation(fields: bankStatementId, references: [id])
   bankStatementId Int
+  balance Float @default(0)
   expenses Expense[]
 
 }
