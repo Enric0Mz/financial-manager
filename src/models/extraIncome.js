@@ -26,7 +26,7 @@ async function create(payload, bankStatementId) {
         },
       },
     });
-    await bankStatement.updateBalance(payload.amount, bankStatementId);
+    await bankStatement.incrementBalance(payload.amount, bankStatementId);
     return new httpSuccessCreated(`Extra income ${result.name} created`);
   } catch {
     return new NotFoundError(bankStatementId);

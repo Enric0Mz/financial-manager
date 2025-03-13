@@ -1,5 +1,6 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
+import { httpSuccessCreated } from "helpers/httpSuccess";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -71,11 +72,15 @@ async function create(salary, yearMonthId, lastStatement, banks) {
           }
         : undefined,
     },
+    include: {
+      banks: true,
+    },
   });
+
   return result;
 }
 
-async function updateBalance(amount, id) {
+async function incrementBalance(amount, id) {
   await prisma.bankStatement.update({
     where: { id },
     data: {
@@ -85,12 +90,49 @@ async function updateBalance(amount, id) {
   });
 }
 
+async function decrementBalance(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceReal: { decrement: amount },
+    },
+  });
+}
+
+async function updateWithExpense(expense, id) {
+  const { name, description, total, bankBankStatementId } = expense;
+  const result = await prisma.bankStatement.update({
+    where: {
+      id,
+    },
+    data: {
+      expenses: {
+        create: {
+          name,
+          description,
+          total,
+          bankBankStatementId,
+        },
+      },
+    },
+    include: {
+      expenses: true,
+    },
+  });
+  return new httpSuccessCreated(
+    `expense ${result.expenses[0].name} created`,
+    result.expenses[0],
+  );
+}
+
 const bankStatement = {
   create,
   findFirst,
   findUnique,
   findMany,
-  updateBalance,
+  incrementBalance,
+  decrementBalance,
+  updateWithExpense,
 };
 
 export default bankStatement;
