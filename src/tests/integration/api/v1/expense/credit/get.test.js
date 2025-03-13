@@ -53,7 +53,6 @@ describe("GET /api/v1/expense/credit", () => {
       );
       const getBankStatementResponseBody =
         await getBankStatementResponse.json();
-      console.log(getBankStatementResponseBody);
 
       const response = await fetch(
         `${process.env.BASE_API_URL}/expense/credit/${getBankStatementResponseBody.expenses[0].id}`,

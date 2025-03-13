@@ -1,5 +1,13 @@
 import prisma from "infra/database.js";
 
+async function findUnique(id) {
+  return await prisma.expense.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
 async function getTotalAmount(bankStatementId) {
   const totalExpenses = await prisma.expense.aggregate({
     where: { bankStatementId: bankStatementId },
@@ -9,6 +17,7 @@ async function getTotalAmount(bankStatementId) {
 }
 
 const expense = {
+  findUnique,
   getTotalAmount,
 };
 

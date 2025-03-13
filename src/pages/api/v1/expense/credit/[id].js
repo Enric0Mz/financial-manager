@@ -26,15 +26,7 @@ async function getHanlder(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
 
-  const result = await prisma.expense.findUnique({
-    where: {
-      id: expenseId,
-    },
-  });
-  if (!result) {
-    const responseError = new NotFoundError(expenseId);
-    return res.status(responseError.statusCode).json(responseError);
-  }
+  const result = await expense.findUnique(expenseId);
   return res.status(200).json(result);
 }
 
