@@ -1,6 +1,7 @@
 import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
-import { httpSuccessCreated } from "helpers/httpSuccess";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
+import { NotFoundError } from "errors/http";
 
 async function findMany(bankStatementId) {
   return await prisma.extraIncome.findMany({
@@ -39,10 +40,24 @@ async function update(payload, id) {
   });
 }
 
+async function remove(id) {
+  try {
+    await prisma.extraIncome.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch {
+    return new NotFoundError(id);
+  }
+  return new httpSuccessDeleted(`with id ${id}`);
+}
+
 const extraIncome = {
   create,
   findMany,
   update,
+  remove,
 };
 
 export default extraIncome;
