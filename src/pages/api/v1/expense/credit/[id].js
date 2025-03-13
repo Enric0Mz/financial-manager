@@ -49,28 +49,9 @@ async function postHandler(req, res) {
 async function patchHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
-  const { name, description, total } = JSON.parse(req.body);
+  const body = JSON.parse(req.body);
 
-  const existingExpense = await prisma.expense.findUnique({
-    where: {
-      id: expenseId,
-    },
-  });
-  if (!existingExpense) {
-    const responseError = new NotFoundError(`with id ${expenseId}`);
-    return res.status(responseError.statusCode).json(responseError);
-  }
-
-  const result = await prisma.expense.update({
-    where: {
-      id: expenseId,
-    },
-    data: {
-      name: name ? name : existingExpense.name,
-      description: description ? description : existingExpense.description,
-      total: total ? total : existingExpense.total,
-    },
-  });
+  const result = await expense.update(body, expenseId);
 
   const responseSuccess = new httpSuccessUpdated(result.name);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
