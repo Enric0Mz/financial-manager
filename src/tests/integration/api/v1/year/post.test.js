@@ -1,32 +1,32 @@
-import setupDatabase from "tests/setupTests";
+import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
-  await setupDatabase({
-    createSalary: {
-      create: false,
-    },
-  });
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
 });
 
-test("route POST /api/v1/year should return 201 created", async () => {
-  const response = await fetch(`${process.env.BASE_API_URL}/year/1996`, {
-    method: "POST",
+describe("POST /api/v1/year", () => {
+  describe("Anonymous user", () => {
+    test("Creating year", async () => {
+      const year = 1996;
+      const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
+        method: "POST",
+      });
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(201);
+      expect(responseBody.name).toBe("created");
+    });
+
+    test("Creating year that already exist", async () => {
+      const year = 1996;
+      const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
+        method: "POST",
+      });
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(409);
+      expect(responseBody.name).toBe("conflict");
+    });
   });
-  expect(response.status).toBe(201);
-
-  const responseBody = await response.json();
-
-  expect(responseBody.name).toBe("created");
-});
-
-test("route POST /api/v1/year should return 409 conflict if year already exist", async () => {
-  const response = await fetch(`${process.env.BASE_API_URL}/year/1996`, {
-    method: "POST",
-  });
-
-  expect(response.status).toBe(409);
-
-  const responseBody = await response.json();
-
-  expect(responseBody.name).toBe("conflict");
 });

@@ -1,58 +1,61 @@
-import setupDatabase from "tests/setupTests";
+import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
+
+const extraIncome = { name: "Freelance Job", amount: 500.0 };
+
+let bankStatementId;
 
 beforeAll(async () => {
-  await setupDatabase({
-    createMonths: ["january"],
-    createBankStatements: [{ yearId: 2025, monthId: 1 }],
-  });
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+
+  const year = 2025;
+  const january = "January";
+  const salaryAmount = 4500;
+  await setup.createYear(year);
+  await setup.createAllMonths();
+  const yearMonth = await setup.createMonthInYear(january, year);
+  const salary = await setup.createSalary(salaryAmount);
+  const bankStatement = await setup.createBankStatement(salary, yearMonth.id);
+  bankStatementId = bankStatement.id;
+  await setup.createExtraIncome(extraIncome, bankStatementId);
 });
 
-test("route PATCH api/v1/extraIncome/{extraIncomeId} should update an extra income entry", async () => {
-  const getBankStatementResponse = await fetch(
-    `${process.env.BASE_API_URL}/bankStatement?` +
-      new URLSearchParams({
-        monthId: 1,
-        yearId: 2025,
-      }),
-  );
-  const getBankStatementResponseBody = await getBankStatementResponse.json();
-  const bankStatementId = getBankStatementResponseBody.id;
+describe("PATCH /api/v1/extraIncome", () => {
+  describe("Anonymous user", () => {
+    test("Updating extra income", async () => {
+      const extraIncomeResponse = await fetch(
+        `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
+      );
+      const extraIncomeResponseBody = await extraIncomeResponse.json();
 
-  await fetch(`${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`, {
-    method: "POST",
-    body: JSON.stringify({ name: "Freelance Job", amount: 500.0 }),
+      const extraIncomeId = extraIncomeResponseBody.data[0].id;
+
+      const updatedExtraIncome = {
+        name: "Updated Freelance Job",
+        amount: 750.0,
+      };
+
+      const patchResponse = await fetch(
+        `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(updatedExtraIncome),
+        },
+      );
+      const patchResponseBody = await patchResponse.json();
+
+      expect(patchResponse.status).toBe(200);
+      expect(patchResponseBody.name).toBe(updatedExtraIncome.name);
+      expect(patchResponseBody.amount).toBe(updatedExtraIncome.amount);
+
+      const getUpdatedResponse = await fetch(
+        `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
+      );
+      const getUpdatedBody = await getUpdatedResponse.json();
+
+      expect(getUpdatedBody.data[0].name).toBe(updatedExtraIncome.name);
+      expect(getUpdatedBody.data[0].amount).toBe(updatedExtraIncome.amount);
+    });
   });
-
-  const extraIncomeResponse = await fetch(
-    `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
-  );
-  const extraIncomeResponseBody = await extraIncomeResponse.json();
-
-  const extraIncomeId = extraIncomeResponseBody.data[0].id;
-
-  const updatedExtraIncome = {
-    name: "Updated Freelance Job",
-    amount: 750.0,
-  };
-
-  const patchResponse = await fetch(
-    `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(updatedExtraIncome),
-    },
-  );
-  const patchResponseBody = await patchResponse.json();
-
-  expect(patchResponse.status).toBe(200);
-  expect(patchResponseBody.data.name).toBe(updatedExtraIncome.name);
-  expect(patchResponseBody.data.amount).toBe(updatedExtraIncome.amount);
-
-  const getUpdatedResponse = await fetch(
-    `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
-  );
-  const getUpdatedBody = await getUpdatedResponse.json();
-
-  expect(getUpdatedBody.data[0].name).toBe(updatedExtraIncome.name);
-  expect(getUpdatedBody.data[0].amount).toBe(updatedExtraIncome.amount);
 });

@@ -1,46 +1,56 @@
-import setupDatabase from "tests/setupTests";
+import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
 
 beforeAll(async () => {
-  await setupDatabase();
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+
+  const amount = 4500;
+  await setup.createSalary(amount);
 });
 
-test("route PUT /api/v1/salary/{salaryId} should return 200 updated", async () => {
-  const newSalary = 5000;
-  const getSalaryId = await fetch(`${process.env.BASE_API_URL}/salary`);
-  const getSalaryIdBody = await getSalaryId.json();
-  const salaryId = await getSalaryIdBody.data.id;
-  const response = await fetch(
-    `${process.env.BASE_API_URL}/salary/${salaryId}`,
-    {
-      method: "PUT",
-      body: JSON.stringify({
-        amount: newSalary,
-      }),
-    },
-  );
-  const responseBody = await response.json();
+describe("PUT /api/v1/salary", () => {
+  describe("Anonymous user", () => {
+    test("Updating salary with salary id", async () => {
+      const getSalary = await fetch(`${process.env.BASE_API_URL}/salary`);
+      const getSalaryBody = await getSalary.json();
+      const salaryId = await getSalaryBody.data.id;
+      const updatedAmount = 5000;
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/salary/${salaryId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            amount: updatedAmount,
+          }),
+        },
+      );
+      const responseBody = await response.json();
 
-  expect(response.status).toBe(200);
-  expect(responseBody.name).toBe("updated");
-  expect(responseBody.message).toBe(`value updated to ${newSalary}`);
-});
+      expect(response.status).toBe(200);
+      expect(responseBody.name).toBe("updated");
+      expect(responseBody.message).toBe(`value updated to ${updatedAmount}`);
+    });
 
-test("route PUT /api/v1/salary/{salaryId} should return 404 if salary id doesent exist", async () => {
-  const salaryId = 333;
-  const response = await fetch(
-    `${process.env.BASE_API_URL}/salary/${salaryId}`,
-    {
-      method: "PUT",
-      body: JSON.stringify({
-        amount: 5000,
-      }),
-    },
-  );
-  const responseBody = await response.json();
+    test("Trying to update salary with non existent id", async () => {
+      const salaryId = 333;
+      const amount = 5000;
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/salary/${salaryId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            amount,
+          }),
+        },
+      );
+      const responseBody = await response.json();
 
-  expect(response.status).toBe(404);
-  expect(responseBody.name).toBe("not found");
-  expect(responseBody.message).toBe(
-    `Value ${salaryId} does not exist on table. Try another value`,
-  );
+      expect(response.status).toBe(404);
+      expect(responseBody.name).toBe("not found");
+      expect(responseBody.message).toBe(
+        `Value ${salaryId} does not exist on table. Try another value`,
+      );
+    });
+  });
 });
