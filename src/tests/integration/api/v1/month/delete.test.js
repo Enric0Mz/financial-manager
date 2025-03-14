@@ -32,7 +32,6 @@ describe("DELETE api/v1/month", () => {
     });
 
     test("Trying to delete month that does not exist", async () => {
-      const year = 2025;
       const month = "December";
       const response = await fetch(`${process.env.BASE_API_URL}/month/2025`, {
         method: "DELETE",
