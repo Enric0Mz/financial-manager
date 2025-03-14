@@ -1,11 +1,9 @@
 import { createRouter } from "next-connect";
-import prisma from "@infra/database";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
 import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
-import { NotFoundError } from "errors/http";
 import bankStatement from "models/bankStatement";
 import expense from "models/expense";
 import bankBankStatment from "models/bankBankStatement";
@@ -27,7 +25,7 @@ async function getHanlder(req, res) {
   const expenseId = parseInt(query.id);
 
   const result = await expense.findUnique(expenseId);
-  return res.status(200).json(result);
+  return res.status(result.statusCode || 200).json(result);
 }
 
 async function postHandler(req, res) {
@@ -61,16 +59,8 @@ async function deleteHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
 
-  try {
-    await prisma.expense.delete({
-      where: {
-        id: expenseId,
-      },
-    });
-  } catch {
-    const responseError = new NotFoundError(expenseId);
-    return res.status(responseError).json(responseError);
-  }
+  await expense.remove(expenseId);
+
   const responseSuccess = new httpSuccessDeleted(`with id ${expenseId}`);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }

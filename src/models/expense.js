@@ -8,7 +8,7 @@ async function findUnique(id) {
     },
   });
   if (!result) {
-    throw new NotFoundError(id);
+    return new NotFoundError(id);
   }
   return result;
 }
@@ -34,10 +34,23 @@ async function getTotalAmount(bankStatementId) {
   return totalExpenses._sum.total || 0;
 }
 
+async function remove(id) {
+  try {
+    await prisma.expense.delete({
+      where: {
+        id,
+      },
+    });
+  } catch {
+    throw new NotFoundError(id).toJSON();
+  }
+}
+
 const expense = {
   findUnique,
   update,
   getTotalAmount,
+  remove,
 };
 
 export default expense;
