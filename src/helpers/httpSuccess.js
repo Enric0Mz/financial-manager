@@ -1,14 +1,16 @@
 export class httpSuccessCreated {
-  constructor(message) {
+  constructor(message, object) {
     this.name = "created";
     this.message = message;
     this.statusCode = 201;
+    this.object = object;
   }
   toJson() {
     return {
       name: this.name,
       message: this.message,
       status_code: this.statusCode,
+      data: this.object,
     };
   }
 }

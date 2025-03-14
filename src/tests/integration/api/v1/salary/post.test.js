@@ -1,25 +1,26 @@
-import setupDatabase from "tests/setupTests";
+import orchestrator from "tests/orchestrator";
 
 beforeAll(async () => {
-  await setupDatabase({
-    createSalary: {
-      create: false,
-    },
-  });
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
 });
 
-test("route POST /api/v1/salary should return 201 created", async () => {
-  const salary = 2563.57;
-  const response = await fetch(`${process.env.BASE_API_URL}/salary/`, {
-    method: "POST",
-    body: JSON.stringify({
-      amount: salary,
-    }),
+describe("POST /api/v1/salary", () => {
+  describe("Anonymous user", () => {
+    test("Creating salary", async () => {
+      const amount = 2563.57;
+      const response = await fetch(`${process.env.BASE_API_URL}/salary/`, {
+        method: "POST",
+        body: JSON.stringify({
+          amount,
+        }),
+      });
+
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(201);
+      expect(responseBody.name).toBe("created");
+      expect(responseBody.message).toBe(`salary amount of ${amount} created.`);
+    });
   });
-
-  const responseBody = await response.json();
-
-  expect(response.status).toBe(201);
-  expect(responseBody.name).toBe("created");
-  expect(responseBody.message).toBe(`salary amount of ${salary} created.`);
 });

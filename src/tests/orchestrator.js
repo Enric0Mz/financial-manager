@@ -20,6 +20,12 @@ async function waitForAllServices() {
 }
 
 async function clearDatabase() {
+  await prisma.bankBankStatement.deleteMany({
+    where: {},
+  });
+  await prisma.bank.deleteMany({
+    where: {},
+  });
   await prisma.expense.deleteMany({
     where: {},
   });
@@ -39,9 +45,6 @@ async function clearDatabase() {
     where: {},
   });
   await prisma.extraIncome.deleteMany({
-    where: {},
-  });
-  await prisma.bank.deleteMany({
     where: {},
   });
 }

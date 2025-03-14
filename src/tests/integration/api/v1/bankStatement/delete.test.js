@@ -1,34 +1,49 @@
-import setupDatabase from "tests/setupTests";
+import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
 
 beforeAll(async () => {
-  await setupDatabase({
-    createMonths: ["january", "february"],
-    createBankStatements: [{ yearId: 2025, monthId: 1 }],
-  });
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+
+  const year = 2025;
+  const january = "January";
+  const salaryAmount = 4500;
+  await setup.createYear(year);
+  await setup.createAllMonths();
+  const monthInYear = await setup.createMonthInYear(january, year);
+  const salary = await setup.createSalary(salaryAmount);
+  await setup.createBankStatement(salary, monthInYear.id);
 });
 
-test("route DELETE /api/v1/BankStatement/{bankStatementId} should return 200 deleted", async () => {
-  const getResponse = await fetch(
-    `${process.env.BASE_API_URL}/bankStatement?` +
-      new URLSearchParams({
-        monthId: 1,
-        yearId: 2025,
-      }),
-  );
+describe("GET /api/v1/bank", () => {
+  describe("Anonymous user", () => {
+    test("Deleting bankStatement", async () => {
+      const january = {
+        month: "January",
+        year: 2025,
+      };
 
-  const getResponseBody = await getResponse.json();
-  const bankStatementId = getResponseBody.id;
-  const response = await fetch(
-    `${process.env.BASE_API_URL}/bankStatement/${bankStatementId}`,
-    {
-      method: "DELETE",
-    },
-  );
-  const responseBody = await response.json();
+      const bankStatement = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(january),
+      );
 
-  expect(response.status).toBe(200);
-  expect(responseBody.name).toBe("deleted");
-  expect(responseBody.message).toBe(
-    `value ${bankStatementId} deleted successfuly`,
-  );
+      const bankStatementResponse = await bankStatement.json();
+      const bankStatementId = bankStatementResponse.id;
+
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement/${bankStatementId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(responseBody.name).toBe("deleted");
+      expect(responseBody.message).toBe(
+        `value ${bankStatementId} deleted successfuly`,
+      );
+    });
+  });
 });

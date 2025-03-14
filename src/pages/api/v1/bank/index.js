@@ -1,4 +1,3 @@
-import prisma from "@infra/database";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -7,6 +6,7 @@ import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 import { putHandler } from "./[bankId]";
 import { deleteHandler } from "./[bankId]";
+import bank from "models/bank";
 
 const route = createRouter();
 
@@ -21,20 +21,16 @@ export default route.handler({
 });
 
 async function getHandler(req, res) {
-  const result = await prisma.bank.findMany();
+  const result = await bank.findMany();
 
   return res.status(200).json({ data: result });
 }
 
 async function postHandler(req, res) {
   const body = JSON.parse(req.body);
-  const name = body.name;
+  const name = body.bank;
 
-  await prisma.bank.create({
-    data: {
-      name,
-    },
-  });
+  await bank.create(name);
 
   const responseSuccess = new httpSuccessCreated(`bank ${name} created`);
 
