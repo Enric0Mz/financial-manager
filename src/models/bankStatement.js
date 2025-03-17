@@ -94,9 +94,29 @@ async function decrementBalance(amount, id) {
   await prisma.bankStatement.update({
     where: { id },
     data: {
+      balanceTotal: { decrement: amount },
       balanceReal: { decrement: amount },
     },
   });
+}
+
+async function decrementBalanceReal(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceReal: { decrement: amount },
+    },
+  });
+}
+
+async function updateDebitBalance(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      debitBalance: amount,
+    },
+  });
+  console.log("PASSOU");
 }
 
 async function updateWithExpense(expense, id) {
@@ -119,9 +139,11 @@ async function updateWithExpense(expense, id) {
       expenses: true,
     },
   });
+  const lastExpense = result.expenses[result.expenses.length - 1];
+
   return new httpSuccessCreated(
-    `expense ${result.expenses[0].name} created`,
-    result.expenses[0],
+    `expense ${lastExpense.name} created`,
+    lastExpense,
   );
 }
 
@@ -131,8 +153,10 @@ const bankStatement = {
   findUnique,
   findMany,
   incrementBalance,
+  decrementBalanceReal,
   decrementBalance,
   updateWithExpense,
+  updateDebitBalance,
 };
 
 export default bankStatement;
