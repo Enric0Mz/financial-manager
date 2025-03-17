@@ -113,10 +113,9 @@ async function updateDebitBalance(amount, id) {
   await prisma.bankStatement.update({
     where: { id },
     data: {
-      debitBalance: amount,
+      debitBalance: { increment: amount },
     },
   });
-  console.log("PASSOU");
 }
 
 async function updateWithExpense(expense, id) {

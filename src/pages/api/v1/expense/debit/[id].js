@@ -1,4 +1,5 @@
 import prisma from "@infra/database";
+import helperFunctions from "helpers/functions";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -20,12 +21,10 @@ async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
   const body = JSON.parse(req.body);
-  console.log(body);
+  const expenseAmount = body.total;
 
   const result = await bankStatement.updateWithExpense(body, bankStatementId);
-  const totalExpensesAmount = await expense.getTotalAmount(bankStatementId);
-  await bankStatement.decrementBalance(totalExpensesAmount, bankStatementId);
-  await bankStatement.updateDebitBalance(totalExpensesAmount, bankStatementId);
-  console.log(await prisma.bankStatement.findMany());
+  await bankStatement.decrementBalance(expenseAmount, bankStatementId);
+  await bankStatement.updateDebitBalance(expenseAmount, bankStatementId);
   return res.status(result.statusCode).json(result.toJson());
 }
