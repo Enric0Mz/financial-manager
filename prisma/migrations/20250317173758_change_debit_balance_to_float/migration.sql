@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "BankStatement" ALTER COLUMN "debitBalance" SET DEFAULT 0,
+ALTER COLUMN "debitBalance" SET DATA TYPE DOUBLE PRECISION;
