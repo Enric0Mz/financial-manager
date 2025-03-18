@@ -12,6 +12,7 @@ const route = createRouter();
 route.get(getHandler);
 route.post(postHandler);
 route.patch(patchHandler);
+route.delete(deleteHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
@@ -47,4 +48,13 @@ async function patchHandler(req, res) {
   const result = await expenseDebit.update(body, expenseId);
 
   return res.status(result.statusCode).json(result.toJson());
+}
+
+async function deleteHandler(req, res) {
+  const query = req.query;
+  const expenseId = parseInt(query.id);
+
+  const result = await expenseDebit.remove(expenseId);
+
+  return res.status(result.statusCode).json(result);
 }
