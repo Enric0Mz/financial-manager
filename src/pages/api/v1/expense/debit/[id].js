@@ -1,4 +1,3 @@
-import prisma from "@infra/database";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,

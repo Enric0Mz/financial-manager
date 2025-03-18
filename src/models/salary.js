@@ -28,7 +28,6 @@ async function update(id, amount) {
         amount: amount,
       },
     });
-    console.log(result);
     return new httpSuccessUpdated(result, result.amount);
   } catch {
     return new NotFoundError(id);

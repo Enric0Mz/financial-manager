@@ -1,6 +1,5 @@
 import { NotFoundError } from "errors/http";
 import prisma from "infra/database.js";
-import bankBankStatment from "./bankBankStatement";
 
 async function findUnique(id) {
   const result = await prisma.expense.findUnique({

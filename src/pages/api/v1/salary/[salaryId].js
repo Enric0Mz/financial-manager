@@ -1,5 +1,3 @@
-import { httpSuccessUpdated } from "helpers/httpSuccess";
-import { NotFoundError } from "errors/http";
 import salary from "models/salary";
 
 export default async function putHandler(req, res) {

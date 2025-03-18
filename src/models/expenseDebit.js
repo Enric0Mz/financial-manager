@@ -1,6 +1,7 @@
 import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
 import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
+import { NotFoundError } from "errors/http";
 
 async function findMany(bankStatementId) {
   return await prisma.expense.findMany({
