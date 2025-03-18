@@ -47,6 +47,8 @@ async function createExtraIncome(payload, bankStatementId) {
 }
 
 async function createDebitExpense(expense, bankStatementId) {
+  await bankStatement.decrementBalance(expense.total, bankStatementId);
+  await bankStatement.incrementDebitBalance(expense.total, bankStatementId);
   return await bankStatement.updateWithExpense(expense, bankStatementId);
 }
 
