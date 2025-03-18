@@ -57,7 +57,7 @@ async function patchHandler(req, res) {
 
   const result = await expense.update(body, expenseId);
 
-  const responseSuccess = new httpSuccessUpdated(result.name);
+  const responseSuccess = new httpSuccessUpdated(result);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
 

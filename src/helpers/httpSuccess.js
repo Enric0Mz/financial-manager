@@ -16,9 +16,9 @@ export class httpSuccessCreated {
 }
 
 export class httpSuccessUpdated {
-  constructor(result) {
+  constructor(result, value) {
     this.name = "updated";
-    this.message = `value updated to ${result.name}`;
+    this.message = `value updated to ${result.name || value}`;
     this.statusCode = 200;
     this.data = result;
   }
