@@ -5,7 +5,7 @@ import {
 } from "helpers/handlers";
 import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
-import expense from "models/expense";
+import expense from "models/expenseCredit";
 import bankBankStatment from "models/bankBankStatement";
 
 const route = createRouter();
@@ -34,8 +34,14 @@ async function postHandler(req, res) {
   const body = JSON.parse(req.body);
 
   const result = await bankStatement.updateWithExpense(body, bankStatementId);
-  const totalExpensesAmount = await expense.getTotalAmount(bankStatementId);
-  await bankStatement.decrementBalance(totalExpensesAmount, bankStatementId);
+  const totalExpensesAmount = await expense.getTotalAmount(
+    bankStatementId,
+    body.bankBankStatementId,
+  );
+  await bankStatement.decrementBalanceReal(
+    totalExpensesAmount,
+    bankStatementId,
+  );
   await bankBankStatment.updateBalance(
     totalExpensesAmount,
     body.bankBankStatementId,
@@ -51,7 +57,7 @@ async function patchHandler(req, res) {
 
   const result = await expense.update(body, expenseId);
 
-  const responseSuccess = new httpSuccessUpdated(result.name);
+  const responseSuccess = new httpSuccessUpdated(result);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
 

@@ -34,6 +34,12 @@ async function findUnique(month, year) {
   });
 }
 
+async function findById(id) {
+  return await prisma.bankStatement.findUnique({
+    where: { id },
+  });
+}
+
 async function findMany() {
   return await prisma.bankStatement.findMany({
     include: {
@@ -94,7 +100,47 @@ async function decrementBalance(amount, id) {
   await prisma.bankStatement.update({
     where: { id },
     data: {
+      balanceTotal: { decrement: amount },
       balanceReal: { decrement: amount },
+    },
+  });
+}
+
+async function decrementBalanceReal(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceReal: { decrement: amount },
+    },
+  });
+}
+
+async function incrementDebitBalance(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      debitBalance: { increment: amount },
+    },
+  });
+}
+
+async function updateDebitBalance(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      debitBalance: amount,
+    },
+  });
+}
+
+async function updateBalance(amount, id) {
+  const result = await findById(id);
+  const updatedValue = result.balanceInitial - amount;
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceTotal: updatedValue,
+      balanceReal: updatedValue,
     },
   });
 }
@@ -119,9 +165,11 @@ async function updateWithExpense(expense, id) {
       expenses: true,
     },
   });
+  const lastExpense = result.expenses[result.expenses.length - 1];
+
   return new httpSuccessCreated(
-    `expense ${result.expenses[0].name} created`,
-    result.expenses[0],
+    `expense ${lastExpense.name} created`,
+    lastExpense,
   );
 }
 
@@ -131,8 +179,12 @@ const bankStatement = {
   findUnique,
   findMany,
   incrementBalance,
+  decrementBalanceReal,
   decrementBalance,
   updateWithExpense,
+  incrementDebitBalance,
+  updateBalance,
+  updateDebitBalance,
 };
 
 export default bankStatement;

@@ -114,5 +114,57 @@ describe("POST /api/v1/bankStatement", () => {
       expect(response.status).toBe(200);
       expect(responseBody.balanceReal).toBe(validateBalanceReal);
     });
+    test("Creating debit expenses in a bank statement", async () => {
+      const march = {
+        year: 2025,
+        month: "March",
+      };
+
+      const bankStatementResponse = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(march),
+      );
+      const bankStatementResponseBody = await bankStatementResponse.json();
+
+      const expense1 = {
+        name: "Pix conta",
+        description: "Pix conta de luz",
+        total: 225.99,
+      };
+      const expense2 = {
+        name: "Compra mercado",
+        description: "Compra de mercado semana 2",
+        total: 325.85,
+      };
+
+      await fetch(
+        `${process.env.BASE_API_URL}/expense/debit/${bankStatementResponseBody.id}`,
+        {
+          method: "POST",
+          body: JSON.stringify(expense1),
+        },
+      );
+      await fetch(
+        `${process.env.BASE_API_URL}/expense/debit/${bankStatementResponseBody.id}`,
+        {
+          method: "POST",
+          body: JSON.stringify(expense2),
+        },
+      );
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(march),
+      );
+      const responseBody = await response.json();
+      const totalExpensesAmount = expense1.total + expense2.total;
+      const exepectedBalanceReal =
+        responseBody.balanceInitial - totalExpensesAmount;
+
+      expect(response.status).toBe(200);
+      expect(responseBody.debitBalance).toBe(totalExpensesAmount);
+      expect(responseBody.balanceReal).toBe(
+        parseFloat(exepectedBalanceReal.toFixed(2)),
+      );
+    });
   });
 });

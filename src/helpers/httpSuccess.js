@@ -16,10 +16,11 @@ export class httpSuccessCreated {
 }
 
 export class httpSuccessUpdated {
-  constructor(value) {
+  constructor(result, value) {
     this.name = "updated";
-    this.message = `value updated to ${value}`;
+    this.message = `value updated to ${result.name || value}`;
     this.statusCode = 200;
+    this.data = result;
   }
 
   toJson() {
@@ -27,6 +28,7 @@ export class httpSuccessUpdated {
       name: this.name,
       message: this.message,
       status_code: this.statusCode,
+      data: this.data,
     };
   }
 }
