@@ -14,21 +14,6 @@ async function findUnique(id) {
   return result;
 }
 
-async function findMany(bankStatementId) {
-  return await prisma.expense.findMany({
-    where: {
-      AND: [
-        {
-          bankStatementId,
-        },
-        {
-          bankBankStatementId: null,
-        },
-      ],
-    },
-  });
-}
-
 async function update(payload, id) {
   const existingExpense = await findUnique(id);
   return await prisma.expense.update({
@@ -43,24 +28,8 @@ async function update(payload, id) {
 }
 
 async function getTotalAmount(bankStatementId, bankBankStatementId) {
-  if (!bankBankStatementId) {
-    return await debitTotalExpenses(bankStatementId);
-  }
   return await creditTotalExpenses(bankStatementId, bankBankStatementId);
 
-  async function debitTotalExpenses(bankStatementId) {
-    const totalExpenses = await prisma.expense.aggregate({
-      where: {
-        bankStatementId: bankStatementId,
-        NOT: {
-          bankBankStatementId,
-        },
-      },
-      _sum: { total: true },
-    });
-
-    return totalExpenses._sum.total || 0;
-  }
   async function creditTotalExpenses(bankStatementId, bankBankStatementId) {
     const totalExpenses = await prisma.expense.aggregate({
       where: { AND: [{ bankStatementId }, { bankBankStatementId }] },
@@ -85,7 +54,6 @@ async function remove(id) {
 
 const expense = {
   findUnique,
-  findMany,
   update,
   getTotalAmount,
   remove,

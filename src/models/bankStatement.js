@@ -34,6 +34,12 @@ async function findUnique(month, year) {
   });
 }
 
+async function findById(id) {
+  return await prisma.bankStatement.findUnique({
+    where: { id },
+  });
+}
+
 async function findMany() {
   return await prisma.bankStatement.findMany({
     include: {
@@ -109,11 +115,32 @@ async function decrementBalanceReal(amount, id) {
   });
 }
 
-async function updateDebitBalance(amount, id) {
+async function incrementDebitBalance(amount, id) {
   await prisma.bankStatement.update({
     where: { id },
     data: {
       debitBalance: { increment: amount },
+    },
+  });
+}
+
+async function updateDebitBalance(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      debitBalance: amount,
+    },
+  });
+}
+
+async function updateBalance(amount, id) {
+  const result = await findById(id);
+  const updatedValue = result.balanceInitial - amount;
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceTotal: updatedValue,
+      balanceReal: updatedValue,
     },
   });
 }
@@ -155,6 +182,8 @@ const bankStatement = {
   decrementBalanceReal,
   decrementBalance,
   updateWithExpense,
+  incrementDebitBalance,
+  updateBalance,
   updateDebitBalance,
 };
 
