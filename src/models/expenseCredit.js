@@ -26,12 +26,17 @@ async function update(payload, id) {
   });
 }
 
-async function getTotalAmount(bankStatementId) {
-  const totalExpenses = await prisma.expense.aggregate({
-    where: { bankStatementId: bankStatementId },
-    _sum: { total: true },
-  });
-  return totalExpenses._sum.total || 0;
+async function getTotalAmount(bankStatementId, bankBankStatementId) {
+  return await creditTotalExpenses(bankStatementId, bankBankStatementId);
+
+  async function creditTotalExpenses(bankStatementId, bankBankStatementId) {
+    const totalExpenses = await prisma.expense.aggregate({
+      where: { AND: [{ bankStatementId }, { bankBankStatementId }] },
+      _sum: { total: true },
+    });
+
+    return totalExpenses._sum.total || 0;
+  }
 }
 
 async function remove(id) {
