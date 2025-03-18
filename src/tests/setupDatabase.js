@@ -46,6 +46,10 @@ async function createExtraIncome(payload, bankStatementId) {
   return await extraIncome.create(payload, bankStatementId);
 }
 
+async function createDebitExpense(expense, bankStatementId) {
+  return await bankStatement.updateWithExpense(expense, bankStatementId);
+}
+
 const setup = {
   createYear,
   createAllMonths,
@@ -54,6 +58,7 @@ const setup = {
   createBank,
   createBankStatement,
   createExtraIncome,
+  createDebitExpense,
 };
 
 export default setup;

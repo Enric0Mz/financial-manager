@@ -1,5 +1,6 @@
 import { NotFoundError } from "errors/http";
 import prisma from "infra/database.js";
+import bankBankStatment from "./bankBankStatement";
 
 async function findUnique(id) {
   const result = await prisma.expense.findUnique({
@@ -11,6 +12,21 @@ async function findUnique(id) {
     return new NotFoundError(id);
   }
   return result;
+}
+
+async function findMany(bankStatementId) {
+  return await prisma.expense.findMany({
+    where: {
+      AND: [
+        {
+          bankStatementId,
+        },
+        {
+          bankBankStatementId: null,
+        },
+      ],
+    },
+  });
 }
 
 async function update(payload, id) {
@@ -69,6 +85,7 @@ async function remove(id) {
 
 const expense = {
   findUnique,
+  findMany,
   update,
   getTotalAmount,
   remove,

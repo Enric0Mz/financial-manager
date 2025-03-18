@@ -1,5 +1,3 @@
-import prisma from "@infra/database";
-import helperFunctions from "helpers/functions";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -10,12 +8,22 @@ import { createRouter } from "next-connect";
 
 const route = createRouter();
 
+route.get(getHandler);
 route.post(postHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });
+
+async function getHandler(req, res) {
+  const query = req.query;
+  const bankStatementId = parseInt(query.id);
+
+  const result = await expense.findMany(bankStatementId);
+
+  return res.status(200).json({ data: result });
+}
 
 async function postHandler(req, res) {
   const query = req.query;
