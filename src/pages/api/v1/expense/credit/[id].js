@@ -5,7 +5,7 @@ import {
 } from "helpers/handlers";
 import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
-import expense from "models/expense";
+import expense from "models/expenseCredit";
 import bankBankStatment from "models/bankBankStatement";
 
 const route = createRouter();
