@@ -1,6 +1,6 @@
 import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
-import { httpSuccessUpdated } from "helpers/httpSuccess";
+import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 
 async function findMany(bankStatementId) {
   return await prisma.expense.findMany({
@@ -68,11 +68,31 @@ async function debitTotalExpenses(bankStatementId) {
   return totalExpenses._sum.total || 0;
 }
 
+async function remove(id) {
+  const existingExpense = await findUnique(id);
+  await prisma.expense.delete({
+    where: { id },
+  });
+  const expensesAmount = await debitTotalExpenses(
+    existingExpense.bankStatementId,
+  );
+  await bankStatement.updateBalance(
+    expensesAmount,
+    existingExpense.bankStatementId,
+  );
+  await bankStatement.updateDebitBalance(
+    expensesAmount,
+    existingExpense.bankStatementId,
+  );
+  return new httpSuccessDeleted(`with id ${id}`);
+}
+
 const expenseDebit = {
   findMany,
   findUnique,
   update,
   debitTotalExpenses,
+  remove,
 };
 
 export default expenseDebit;
