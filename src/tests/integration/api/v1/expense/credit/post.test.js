@@ -88,5 +88,27 @@ describe("POST /api/v1/expense/credit", () => {
         expense1.total + expense2.total,
       );
     });
+
+    test("Creating expense without required fields", async () => {
+      const expense = {
+        name: "Gasto sem campos",
+      };
+
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
+        {
+          method: "POST",
+          body: JSON.stringify(expense),
+        },
+      );
+      const responseBody = await response.json();
+      console.log(responseBody);
+
+      expect(response.status).toBe(422);
+      expect(responseBody.name).toBe("unprocessable entity");
+      expect(responseBody.message).toBe(
+        "fields [total,bankBankStatementId] not found",
+      );
+    });
   });
 });
