@@ -102,7 +102,6 @@ describe("POST /api/v1/expense/credit", () => {
         },
       );
       const responseBody = await response.json();
-      console.log(responseBody);
 
       expect(response.status).toBe(422);
       expect(responseBody.name).toBe("unprocessable entity");

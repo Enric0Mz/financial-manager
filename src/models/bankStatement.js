@@ -1,6 +1,7 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import { UnprocessableEntityError } from "errors/http";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -152,6 +153,9 @@ async function updateBalance(amount, id) {
 
 async function updateWithExpense(expense, id) {
   const { name, description, total, bankBankStatementId } = expense;
+
+  searchForMissingFields(expense);
+
   const result = await prisma.bankStatement.update({
     where: {
       id,
@@ -176,6 +180,21 @@ async function updateWithExpense(expense, id) {
     `expense ${lastExpense.name} created`,
     lastExpense,
   );
+
+  function searchForMissingFields(fields) {
+    const missingFields = [];
+
+    if (!fields.name) missingFields.push("name");
+    if (!fields.total) missingFields.push("total");
+    if (!fields.bankBankStatementId) missingFields.push("bankBankStatementId");
+
+    if (missingFields.length > 0) {
+      throw new UnprocessableEntityError(
+        "Missing required fields",
+        missingFields,
+      );
+    }
+  }
 }
 
 const bankStatement = {

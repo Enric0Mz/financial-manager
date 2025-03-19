@@ -6,7 +6,7 @@ export function onNoMatchHandler(req, res) {
 }
 
 export function onInternalServerErrorHandler(err, req, res) {
-  const responseError = new InternalServerError(err);
+  const responseError = new InternalServerError(err, err.statusCode);
   console.info(responseError);
   return res.status(responseError.statusCode).json(responseError);
 }
