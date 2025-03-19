@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
 let bankStatementData;
+let expense;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -23,25 +24,19 @@ beforeAll(async () => {
     [bank],
   );
   bankStatementData = bankStatement;
+  expense = {
+    name: "Compra mercado",
+    description: "Compra de mercado da semana",
+    total: 543.12,
+    bankBankStatementId: bankStatementData.banks[0].id,
+  };
+
+  await setup.createCreditExpense(expense, bankStatement.id);
 });
 
 describe("GET /api/v1/expense/credit", () => {
   describe("Anonymous user", () => {
     test("Getting credit expense", async () => {
-      const expense = {
-        name: "Compra mercado",
-        description: "Compra de mercado da semana",
-        total: 543.12,
-        bankBankStatementId: bankStatementData.banks[0].id,
-      };
-      await fetch(
-        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
-        {
-          method: "POST",
-          body: JSON.stringify(expense),
-        },
-      );
-
       const yearMonth = {
         month: "January",
         year: 2025,

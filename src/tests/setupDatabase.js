@@ -46,6 +46,15 @@ async function createExtraIncome(payload, bankStatementId) {
   return await extraIncome.create(payload, bankStatementId);
 }
 
+async function createCreditExpense(expense, bankStatementId) {
+  await bankStatement.decrementBalanceReal(expense.total, bankStatementId);
+  await bankStatement.incrementBalance(
+    expense.total,
+    expense.bankBankStatementId,
+  );
+  return await bankStatement.updateWithExpense(expense, bankStatementId);
+}
+
 async function createDebitExpense(expense, bankStatementId) {
   await bankStatement.decrementBalance(expense.total, bankStatementId);
   await bankStatement.incrementDebitBalance(expense.total, bankStatementId);
@@ -60,6 +69,7 @@ const setup = {
   createBank,
   createBankStatement,
   createExtraIncome,
+  createCreditExpense,
   createDebitExpense,
 };
 
