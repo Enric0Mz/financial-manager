@@ -6,7 +6,7 @@ import {
 import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
 import expense from "models/expenseCredit";
-import bankBankStatment from "models/bankBankStatement";
+import bankBankStatement from "models/bankBankStatement";
 import prisma from "@infra/database";
 
 const route = createRouter();
@@ -37,7 +37,10 @@ async function postHandler(req, res) {
   const result = await bankStatement.updateWithExpense(body, bankStatementId);
 
   await bankStatement.decrementBalanceReal(body.total, bankStatementId);
-  await bankBankStatment.incrementBalance(body.total, body.bankBankStatementId);
+  await bankBankStatement.incrementBalance(
+    body.total,
+    body.bankBankStatementId,
+  );
   return res.status(result.statusCode).json(result.toJson());
 }
 
@@ -47,9 +50,7 @@ async function patchHandler(req, res) {
   const body = JSON.parse(req.body);
 
   const result = await expense.update(body, expenseId);
-
-  const responseSuccess = new httpSuccessUpdated(result);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }
 
 async function deleteHandler(req, res) {

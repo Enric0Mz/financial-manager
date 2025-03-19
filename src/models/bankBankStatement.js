@@ -18,9 +18,9 @@ async function incrementBalance(amount, id) {
   });
 }
 
-const bankBankStatment = {
+const bankBankStatement = {
   updateBalance,
   incrementBalance,
 };
 
-export default bankBankStatment;
+export default bankBankStatement;

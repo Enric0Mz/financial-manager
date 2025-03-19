@@ -1,5 +1,8 @@
 import { NotFoundError } from "errors/http";
 import prisma from "infra/database.js";
+import bankStatement from "./bankStatement";
+import bankBankStatement from "./bankBankStatement";
+import { httpSuccessUpdated } from "helpers/httpSuccess";
 
 async function findUnique(id) {
   const result = await prisma.expense.findUnique({
@@ -15,7 +18,7 @@ async function findUnique(id) {
 
 async function update(payload, id) {
   const existingExpense = await findUnique(id);
-  return await prisma.expense.update({
+  const result = await prisma.expense.update({
     where: {
       id,
     },
@@ -24,19 +27,30 @@ async function update(payload, id) {
       ...payload,
     },
   });
+  if (payload.total) {
+    const expensesAmount = await creditTotalExpenses(
+      existingExpense.bankStatementId,
+      existingExpense.bankBankStatementId,
+    );
+    await bankStatement.updateBalanceReal(
+      expensesAmount,
+      existingExpense.bankStatementId,
+    );
+    await bankBankStatement.updateBalance(
+      expensesAmount,
+      existingExpense.bankBankStatementId,
+    );
+  }
+  return new httpSuccessUpdated(result);
 }
 
-async function getTotalAmount(bankStatementId, bankBankStatementId) {
-  return await creditTotalExpenses(bankStatementId, bankBankStatementId);
+async function creditTotalExpenses(bankStatementId, bankBankStatementId) {
+  const totalExpenses = await prisma.expense.aggregate({
+    where: { AND: [{ bankStatementId }, { bankBankStatementId }] },
+    _sum: { total: true },
+  });
 
-  async function creditTotalExpenses(bankStatementId, bankBankStatementId) {
-    const totalExpenses = await prisma.expense.aggregate({
-      where: { AND: [{ bankStatementId }, { bankBankStatementId }] },
-      _sum: { total: true },
-    });
-
-    return totalExpenses._sum.total || 0;
-  }
+  return totalExpenses._sum.total || 0;
 }
 
 async function remove(id) {
@@ -54,7 +68,7 @@ async function remove(id) {
 const expense = {
   findUnique,
   update,
-  getTotalAmount,
+  getTotalAmount: creditTotalExpenses,
   remove,
 };
 
