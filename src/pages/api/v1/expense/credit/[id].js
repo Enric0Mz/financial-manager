@@ -57,8 +57,7 @@ async function deleteHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
 
-  await expense.remove(expenseId);
+  const result = await expense.remove(expenseId);
 
-  const responseSuccess = new httpSuccessDeleted(`with id ${expenseId}`);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }

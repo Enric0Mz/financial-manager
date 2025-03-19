@@ -2,7 +2,7 @@ import { NotFoundError } from "errors/http";
 import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
 import bankBankStatement from "./bankBankStatement";
-import { httpSuccessUpdated } from "helpers/httpSuccess";
+import { httpSuccessUpdated, httpSuccessDeleted } from "helpers/httpSuccess";
 
 async function findUnique(id) {
   const result = await prisma.expense.findUnique({
@@ -54,17 +54,24 @@ async function creditTotalExpenses(bankStatementId, bankBankStatementId) {
 }
 
 async function remove(id) {
-  try {
-    await prisma.expense.delete({
-      where: {
-        id,
-      },
-    });
-  } catch {
-    throw new NotFoundError(id).toJSON();
-  }
+  const existingExpense = await findUnique(id);
+  await prisma.expense.delete({
+    where: { id },
+  });
+  const expensesAmount = await creditTotalExpenses(
+    existingExpense.bankStatementId,
+    existingExpense.bankBankStatementId,
+  );
+  await bankStatement.updateBalanceReal(
+    expensesAmount,
+    existingExpense.bankStatementId,
+  );
+  await bankBankStatement.updateBalance(
+    expensesAmount,
+    existingExpense.bankBankStatementId,
+  );
+  return new httpSuccessDeleted(`with id ${id}`);
 }
-
 const expense = {
   findUnique,
   update,
