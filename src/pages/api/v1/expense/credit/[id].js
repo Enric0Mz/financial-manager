@@ -7,6 +7,7 @@ import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
 import expense from "models/expenseCredit";
 import bankBankStatment from "models/bankBankStatement";
+import prisma from "@infra/database";
 
 const route = createRouter();
 
@@ -34,19 +35,9 @@ async function postHandler(req, res) {
   const body = JSON.parse(req.body);
 
   const result = await bankStatement.updateWithExpense(body, bankStatementId);
-  const totalExpensesAmount = await expense.getTotalAmount(
-    bankStatementId,
-    body.bankBankStatementId,
-  );
-  await bankStatement.decrementBalanceReal(
-    totalExpensesAmount,
-    bankStatementId,
-  );
-  await bankBankStatment.updateBalance(
-    totalExpensesAmount,
-    body.bankBankStatementId,
-  );
 
+  await bankStatement.decrementBalanceReal(body.total, bankStatementId);
+  await bankBankStatment.incrementBalance(body.total, body.bankBankStatementId);
   return res.status(result.statusCode).json(result.toJson());
 }
 

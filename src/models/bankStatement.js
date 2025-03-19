@@ -45,6 +45,11 @@ async function findMany() {
     include: {
       salary: true,
       expenses: true,
+      banks: {
+        include: {
+          bank: true,
+        },
+      },
     },
   });
 }

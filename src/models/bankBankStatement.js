@@ -9,8 +9,18 @@ async function updateBalance(amount, id) {
   });
 }
 
+async function incrementBalance(amount, id) {
+  await prisma.bankBankStatement.update({
+    where: { id },
+    data: {
+      balance: { increment: amount },
+    },
+  });
+}
+
 const bankBankStatment = {
   updateBalance,
+  incrementBalance,
 };
 
 export default bankBankStatment;
