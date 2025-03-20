@@ -22,7 +22,7 @@ beforeAll(async () => {
     undefined,
     [bank],
   );
-  bankStatementData = bankStatement;
+  bankStatementData = bankStatement.data;
 });
 
 const expense1 = { total: 543.12 };

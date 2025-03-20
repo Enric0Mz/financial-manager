@@ -24,8 +24,8 @@ beforeAll(async () => {
     undefined,
     [bank],
   );
-  await setup.createDebitExpense(expense, bankStatement.id);
-  bankStatementData = bankStatement;
+  bankStatementData = bankStatement.data;
+  await setup.createDebitExpense(expense, bankStatementData.id);
 });
 
 describe("PATCH /api/v1/expense/debit", () => {

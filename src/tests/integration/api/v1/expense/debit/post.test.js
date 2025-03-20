@@ -15,7 +15,7 @@ beforeAll(async () => {
   const yearMonth = await setup.createMonthInYear(january, year);
   const salary = await setup.createSalary(salaryAmount);
   const bankStatement = await setup.createBankStatement(salary, yearMonth.id);
-  bankStatementData = bankStatement;
+  bankStatementData = bankStatement.data;
 });
 
 describe("POST /api/v1/expense/debit", () => {

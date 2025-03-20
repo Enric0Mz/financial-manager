@@ -17,7 +17,7 @@ beforeAll(async () => {
   const yearMonth = await setup.createMonthInYear(january, year);
   const salary = await setup.createSalary(salaryAmount);
   const bankStatement = await setup.createBankStatement(salary, yearMonth.id);
-  bankStatementId = bankStatement.id;
+  bankStatementId = bankStatement.data.id;
   await setup.createExtraIncome(extraIncome, bankStatementId);
 });
 

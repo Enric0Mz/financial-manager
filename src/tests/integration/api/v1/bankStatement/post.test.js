@@ -180,8 +180,6 @@ describe("POST /api/v1/bankStatement", () => {
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
 
-      console.log("Antes", bankStatementResponseBody);
-
       const expense = {
         name: "Cinema",
         description: "Filme da Disney novo",
@@ -225,7 +223,6 @@ describe("POST /api/v1/bankStatement", () => {
       );
       const newBankStatementResponseBody =
         await newBankStatementResponse.json();
-      console.log(newBankStatementResponseBody);
 
       expect(newBankStatementResponseBody.data.balanceReal).toBe(
         responseBody.balanceReal + responseBody.salary.amount,

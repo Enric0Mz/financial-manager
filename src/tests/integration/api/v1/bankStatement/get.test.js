@@ -21,7 +21,7 @@ beforeAll(async () => {
   await setup.createBankStatement(
     salary,
     monthInYearFebruary.id,
-    bankStatement,
+    bankStatement.data,
   );
 });
 

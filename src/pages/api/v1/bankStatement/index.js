@@ -3,7 +3,6 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
 import deleteHandler from "./[bankStatementId]";
 import yearMonth from "models/yearMonth";
@@ -58,5 +57,5 @@ async function postHandler(req, res) {
     banks,
   );
 
-  return res.status(result.statusCode).json(result.toJson());
+  return res.status(result.status_code).json(result);
 }

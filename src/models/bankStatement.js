@@ -89,7 +89,7 @@ async function create(salary, yearMonthId, lastStatement, banks) {
     },
   });
 
-  return new httpSuccessCreated("Bank statement created", result);
+  return new httpSuccessCreated("Bank statement created", result).toJson();
 }
 
 async function incrementBalance(amount, id) {
