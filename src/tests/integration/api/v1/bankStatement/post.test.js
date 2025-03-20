@@ -168,5 +168,68 @@ describe("POST /api/v1/bankStatement", () => {
         parseFloat(exepectedBalanceReal.toFixed(2)),
       );
     });
+    test("Including credit expense in previous bank statement to validate balance", async () => {
+      const march = {
+        year: 2025,
+        month: "March",
+      };
+
+      const bankStatementResponse = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(march),
+      );
+      const bankStatementResponseBody = await bankStatementResponse.json();
+
+      console.log("Antes", bankStatementResponseBody);
+
+      const expense = {
+        name: "Cinema",
+        description: "Filme da Disney novo",
+        total: 125.56,
+        bankBankStatementId: bankStatementResponseBody.banks[0].id,
+      };
+      await fetch(
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatementResponseBody.id}`,
+        {
+          method: "POST",
+          body: JSON.stringify(expense),
+        },
+      );
+
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(march),
+      );
+      const responseBody = await response.json();
+      const expectBalanceReal =
+        bankStatementResponseBody.balanceReal - expense.total;
+
+      expect(responseBody.balanceTotal).toBe(
+        bankStatementResponseBody.balanceTotal,
+      );
+      expect(responseBody.balanceReal).toBe(
+        parseFloat(expectBalanceReal.toFixed(2)),
+      );
+
+      const april = {
+        year: 2025,
+        month: "April",
+      };
+
+      const newBankStatementResponse = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement`,
+        {
+          method: "POST",
+          body: JSON.stringify(april),
+        },
+      );
+      const newBankStatementResponseBody =
+        await newBankStatementResponse.json();
+      console.log(newBankStatementResponseBody);
+
+      expect(newBankStatementResponseBody.data.balanceReal).toBe(
+        responseBody.balanceReal + responseBody.salary.amount,
+      );
+    });
   });
 });
