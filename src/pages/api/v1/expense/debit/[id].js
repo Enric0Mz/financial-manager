@@ -33,7 +33,11 @@ async function postHandler(req, res) {
   const body = JSON.parse(req.body);
   const expenseAmount = body.total;
 
-  const result = await bankStatement.updateWithExpense(body, bankStatementId);
+  const result = await bankStatement.updateWithExpense(
+    body,
+    bankStatementId,
+    true,
+  );
   await bankStatement.decrementBalance(expenseAmount, bankStatementId);
   await bankStatement.incrementDebitBalance(expenseAmount, bankStatementId);
   return res.status(result.statusCode).json(result.toJson());

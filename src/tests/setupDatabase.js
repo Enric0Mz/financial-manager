@@ -6,6 +6,7 @@ import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bank from "models/bank";
 import bankStatement from "models/bankStatement";
+import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 
 async function createYear(yearId) {
@@ -46,10 +47,19 @@ async function createExtraIncome(payload, bankStatementId) {
   return await extraIncome.create(payload, bankStatementId);
 }
 
+async function createCreditExpense(expense, bankStatementId) {
+  await bankStatement.decrementBalanceReal(expense.total, bankStatementId);
+  await bankBankStatement.incrementBalance(
+    expense.total,
+    expense.bankBankStatementId,
+  );
+  return await bankStatement.updateWithExpense(expense, bankStatementId, false);
+}
+
 async function createDebitExpense(expense, bankStatementId) {
   await bankStatement.decrementBalance(expense.total, bankStatementId);
   await bankStatement.incrementDebitBalance(expense.total, bankStatementId);
-  return await bankStatement.updateWithExpense(expense, bankStatementId);
+  return await bankStatement.updateWithExpense(expense, bankStatementId, true);
 }
 
 const setup = {
@@ -60,6 +70,7 @@ const setup = {
   createBank,
   createBankStatement,
   createExtraIncome,
+  createCreditExpense,
   createDebitExpense,
 };
 

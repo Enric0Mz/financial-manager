@@ -3,10 +3,9 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
 import expense from "models/expenseCredit";
-import bankBankStatment from "models/bankBankStatement";
+import bankBankStatement from "models/bankBankStatement";
 
 const route = createRouter();
 
@@ -33,20 +32,17 @@ async function postHandler(req, res) {
   const bankStatementId = parseInt(query.id);
   const body = JSON.parse(req.body);
 
-  const result = await bankStatement.updateWithExpense(body, bankStatementId);
-  const totalExpensesAmount = await expense.getTotalAmount(
+  const result = await bankStatement.updateWithExpense(
+    body,
     bankStatementId,
-    body.bankBankStatementId,
-  );
-  await bankStatement.decrementBalanceReal(
-    totalExpensesAmount,
-    bankStatementId,
-  );
-  await bankBankStatment.updateBalance(
-    totalExpensesAmount,
-    body.bankBankStatementId,
+    false,
   );
 
+  await bankStatement.decrementBalanceReal(body.total, bankStatementId);
+  await bankBankStatement.incrementBalance(
+    body.total,
+    body.bankBankStatementId,
+  );
   return res.status(result.statusCode).json(result.toJson());
 }
 
@@ -56,17 +52,14 @@ async function patchHandler(req, res) {
   const body = JSON.parse(req.body);
 
   const result = await expense.update(body, expenseId);
-
-  const responseSuccess = new httpSuccessUpdated(result);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }
 
 async function deleteHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
 
-  await expense.remove(expenseId);
+  const result = await expense.remove(expenseId);
 
-  const responseSuccess = new httpSuccessDeleted(`with id ${expenseId}`);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }

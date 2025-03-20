@@ -45,12 +45,30 @@ export class InvalidHttpMethodError extends Error {
 }
 
 export class InternalServerError extends Error {
-  constructor(cause) {
+  constructor(cause, statusCode) {
     super("Internal server error.", {
       cause: cause,
     });
-    this.name = "internal server error";
-    this.statusCode = 500;
+    this.message = cause.message;
+    this.name = cause.name || "internal server error";
+    this.statusCode = statusCode || 500;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class UnprocessableEntityError extends Error {
+  constructor(cause, fields) {
+    super(`fields [${fields}] not found`, {
+      cause,
+    });
+    this.name = "unprocessable entity";
+    this.statusCode = 422;
   }
   toJSON() {
     return {
