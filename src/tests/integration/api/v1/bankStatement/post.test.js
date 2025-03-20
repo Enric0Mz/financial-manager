@@ -12,11 +12,13 @@ beforeAll(async () => {
   const january = "January";
   const february = "February";
   const march = "March";
+  const april = "April";
   await setup.createAllMonths();
   await setup.createYear(year);
   await setup.createMonthInYear(january, year);
   await setup.createMonthInYear(february, year);
   await setup.createMonthInYear(march, year);
+  await setup.createMonthInYear(april, year);
   await setup.createSalary(salary);
   await setup.createBank(bank);
 });
@@ -63,7 +65,7 @@ describe("POST /api/v1/bankStatement", () => {
       expect(responseBody.banks[0].bank.name).toBe(bank);
     });
 
-    test("Creating bankStatement with previous bankStatement that has one expense", async () => {
+    test("Creating bankStatement with previous bankStatement that has one credit expense", async () => {
       const february = {
         year: 2025,
         month: "February",
