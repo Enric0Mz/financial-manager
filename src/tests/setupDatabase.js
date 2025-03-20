@@ -53,13 +53,13 @@ async function createCreditExpense(expense, bankStatementId) {
     expense.total,
     expense.bankBankStatementId,
   );
-  return await bankStatement.updateWithExpense(expense, bankStatementId);
+  return await bankStatement.updateWithExpense(expense, bankStatementId, false);
 }
 
 async function createDebitExpense(expense, bankStatementId) {
   await bankStatement.decrementBalance(expense.total, bankStatementId);
   await bankStatement.incrementDebitBalance(expense.total, bankStatementId);
-  return await bankStatement.updateWithExpense(expense, bankStatementId);
+  return await bankStatement.updateWithExpense(expense, bankStatementId, true);
 }
 
 const setup = {

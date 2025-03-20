@@ -162,10 +162,10 @@ async function updateBalanceReal(amount, id) {
   });
 }
 
-async function updateWithExpense(expense, id) {
+async function updateWithExpense(expense, id, isDebit) {
   const { name, description, total, bankBankStatementId } = expense;
 
-  searchForMissingFields(expense);
+  searchForMissingFields(expense, isDebit);
 
   const result = await prisma.bankStatement.update({
     where: {
@@ -192,12 +192,15 @@ async function updateWithExpense(expense, id) {
     lastExpense,
   );
 
-  function searchForMissingFields(fields) {
+  function searchForMissingFields(fields, isDebit) {
     const missingFields = [];
 
     if (!fields.name) missingFields.push("name");
     if (!fields.total) missingFields.push("total");
-    if (!fields.bankBankStatementId) missingFields.push("bankBankStatementId");
+    if (!isDebit) {
+      if (!fields.bankBankStatementId)
+        missingFields.push("bankBankStatementId");
+    }
 
     if (missingFields.length > 0) {
       throw new UnprocessableEntityError(
