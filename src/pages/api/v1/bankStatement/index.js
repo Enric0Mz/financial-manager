@@ -51,14 +51,12 @@ async function postHandler(req, res) {
 
   const banks = await bank.findMany();
 
-  await bankStatement.create(
+  const result = await bankStatement.create(
     salaryResult,
     yearMonthResult.id,
     lastStatement,
     banks,
   );
 
-  const responseSuccess = new httpSuccessCreated("Bank statement created");
-
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result.toJson());
 }
