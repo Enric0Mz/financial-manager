@@ -3,11 +3,9 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessDeleted, httpSuccessUpdated } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
 import expense from "models/expenseCredit";
 import bankBankStatement from "models/bankBankStatement";
-import prisma from "@infra/database";
 
 const route = createRouter();
 
