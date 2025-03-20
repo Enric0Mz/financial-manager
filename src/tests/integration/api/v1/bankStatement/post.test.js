@@ -79,7 +79,7 @@ describe("POST /api/v1/bankStatement", () => {
         name: "Compra mercado",
         description: "Compra de mercado da semana",
         total: 543.12,
-        bankId: bankStatementResponseBody.banks[0].id,
+        bankBankStatementId: bankStatementResponseBody.banks[0].id,
       };
 
       await fetch(
