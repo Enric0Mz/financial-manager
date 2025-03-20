@@ -3,7 +3,6 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
 import deleteHandler from "./[bankStatementId]";
 import yearMonth from "models/yearMonth";
@@ -51,14 +50,12 @@ async function postHandler(req, res) {
 
   const banks = await bank.findMany();
 
-  await bankStatement.create(
+  const result = await bankStatement.create(
     salaryResult,
     yearMonthResult.id,
     lastStatement,
     banks,
   );
 
-  const responseSuccess = new httpSuccessCreated("Bank statement created");
-
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.status_code).json(result);
 }
