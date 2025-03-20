@@ -1,6 +1,7 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import { UnprocessableEntityError } from "errors/http";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -45,6 +46,11 @@ async function findMany() {
     include: {
       salary: true,
       expenses: true,
+      banks: {
+        include: {
+          bank: true,
+        },
+      },
     },
   });
 }
@@ -145,8 +151,22 @@ async function updateBalance(amount, id) {
   });
 }
 
-async function updateWithExpense(expense, id) {
+async function updateBalanceReal(amount, id) {
+  const result = await findById(id);
+  const updatedValue = result.balanceInitial - amount;
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceReal: updatedValue,
+    },
+  });
+}
+
+async function updateWithExpense(expense, id, isDebit) {
   const { name, description, total, bankBankStatementId } = expense;
+
+  searchForMissingFields(expense, isDebit);
+
   const result = await prisma.bankStatement.update({
     where: {
       id,
@@ -171,6 +191,24 @@ async function updateWithExpense(expense, id) {
     `expense ${lastExpense.name} created`,
     lastExpense,
   );
+
+  function searchForMissingFields(fields, isDebit) {
+    const missingFields = [];
+
+    if (!fields.name) missingFields.push("name");
+    if (!fields.total) missingFields.push("total");
+    if (!isDebit) {
+      if (!fields.bankBankStatementId)
+        missingFields.push("bankBankStatementId");
+    }
+
+    if (missingFields.length > 0) {
+      throw new UnprocessableEntityError(
+        "Missing required fields",
+        missingFields,
+      );
+    }
+  }
 }
 
 const bankStatement = {
@@ -184,6 +222,7 @@ const bankStatement = {
   updateWithExpense,
   incrementDebitBalance,
   updateBalance,
+  updateBalanceReal,
   updateDebitBalance,
 };
 
