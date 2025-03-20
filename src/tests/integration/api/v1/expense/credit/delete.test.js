@@ -23,7 +23,7 @@ beforeAll(async () => {
     undefined,
     [bank],
   );
-  bankStatementData = bankStatement;
+  bankStatementData = bankStatement.data;
   expense = {
     name: "Compra mercado",
     description: "Compra de mercado da semana",
@@ -31,12 +31,12 @@ beforeAll(async () => {
     bankBankStatementId: bankStatementData.banks[0].id,
   };
 
-  await setup.createCreditExpense(expense, bankStatement.id);
+  await setup.createCreditExpense(expense, bankStatementData.id);
 });
 
 describe("DELETE /api/v1/expense/credit", () => {
   describe("Anonymous user", () => {
-    test("route DELETE api/v1/expense/credit/{expenseId} should return 200 deleted", async () => {
+    test("Deleting credit expense", async () => {
       const yearMonth = {
         month: "January",
         year: 2025,

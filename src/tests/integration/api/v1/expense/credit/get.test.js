@@ -23,7 +23,7 @@ beforeAll(async () => {
     undefined,
     [bank],
   );
-  bankStatementData = bankStatement;
+  bankStatementData = bankStatement.data;
   expense = {
     name: "Compra mercado",
     description: "Compra de mercado da semana",
@@ -31,7 +31,7 @@ beforeAll(async () => {
     bankBankStatementId: bankStatementData.banks[0].id,
   };
 
-  await setup.createCreditExpense(expense, bankStatement.id);
+  await setup.createCreditExpense(expense, bankStatementData.id);
 });
 
 describe("GET /api/v1/expense/credit", () => {
