@@ -2,6 +2,10 @@ import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
 const extraIncome = { name: "Freelance Job", amount: 500.0 };
+const updatedExtraIncome = {
+  name: "Updated Freelance Job",
+  amount: 750.0,
+};
 
 let bankStatementId;
 
@@ -31,11 +35,6 @@ describe("PATCH /api/v1/extraIncome", () => {
 
       const extraIncomeId = extraIncomeResponseBody.data[0].id;
 
-      const updatedExtraIncome = {
-        name: "Updated Freelance Job",
-        amount: 750.0,
-      };
-
       const patchResponse = await fetch(
         `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
         {
@@ -56,6 +55,25 @@ describe("PATCH /api/v1/extraIncome", () => {
 
       expect(getUpdatedBody.data[0].name).toBe(updatedExtraIncome.name);
       expect(getUpdatedBody.data[0].amount).toBe(updatedExtraIncome.amount);
+    });
+    test("Getting bank statement to check if amount was correctly updated", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(yearMonth),
+      );
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceTotal).toBe(
+        responseBody.balanceInitial + updatedExtraIncome.amount,
+      );
+      expect(responseBody.balanceReal).toBe(
+        responseBody.balanceInitial + updatedExtraIncome.amount,
+      );
     });
   });
 });

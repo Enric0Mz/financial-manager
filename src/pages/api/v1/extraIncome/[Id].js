@@ -31,7 +31,7 @@ async function postHandler(req, res) {
 
   const result = await extraIncome.create(body, bankStatementId);
 
-  return res.status(result.statusCode).json(result);
+  return res.status(result.statusCode).json(result.toJson());
 }
 
 async function patchHandler(req, res) {
