@@ -42,6 +42,7 @@ describe("GET /api/v1/extraIncome", () => {
       expect(responseBody.data[0].amount).toBe(extraIncome1.amount);
       expect(responseBody.data[1].amount).toBe(extraIncome2.amount);
     });
+
     test("Validate bank statement data with extra income added", async () => {
       const yearMonth = {
         year: 2025,

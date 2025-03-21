@@ -43,7 +43,6 @@ describe("POST /api/v1/extraIncome", () => {
         },
       );
       const responseBody = await response.json();
-
       expect(response.status).toBe(201);
       expect(responseBody.name).toBe("created");
       expect(responseBody.message).toBe(
