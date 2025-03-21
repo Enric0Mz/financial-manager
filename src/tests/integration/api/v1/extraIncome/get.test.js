@@ -42,5 +42,26 @@ describe("GET /api/v1/extraIncome", () => {
       expect(responseBody.data[0].amount).toBe(extraIncome1.amount);
       expect(responseBody.data[1].amount).toBe(extraIncome2.amount);
     });
+    test("Validate bank statement data with extra income added", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(yearMonth),
+      );
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceTotal).toBe(
+        responseBody.balanceInitial +
+          (extraIncome1.amount + extraIncome2.amount),
+      );
+      expect(responseBody.balanceReal).toBe(
+        responseBody.balanceInitial +
+          (extraIncome1.amount + extraIncome2.amount),
+      );
+    });
   });
 });
