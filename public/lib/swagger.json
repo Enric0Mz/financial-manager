@@ -14,7 +14,78 @@
   "paths": {
     "/year": {
       "get": {
-        "summary": "List all years"
+        "summary": "List years",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfYears"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/year/{yearNumber}": {
+      "post": {
+        "summary": "Create year",
+        "parameters": [
+          {
+            "name": "yearNumber",
+            "in": "path",
+            "description": "Number of year",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Year successfully created"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Year": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2025
+          }
+        }
+      },
+      "ListOfYears": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Year"
+            }
+          }
+        }
+      },
+      "Month": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "January"
+          },
+          "year": {
+            "$ref": "#/components/schemas/Year"
+          }
+        }
       }
     }
   }
