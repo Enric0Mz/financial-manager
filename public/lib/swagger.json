@@ -1,19 +1,20 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "API Documentation",
+    "title": "Financial Manager - Documentation",
     "version": "1.0.0",
     "description": "Documentation of routes in the application"
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api/v1",
+      "url": "https://potential-space-parakeet-w6qpg5rw47737qg-3000.app.github.dev/api/v1",
       "description": "Servidor Local"
     }
   ],
   "paths": {
     "/year": {
       "get": {
+        "tags": ["Year"],
         "summary": "List years",
         "responses": {
           "200": {
@@ -25,12 +26,23 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       }
     },
     "/year/{yearNumber}": {
       "post": {
+        "tags": ["Year"],
         "summary": "Create year",
         "parameters": [
           {
@@ -45,8 +57,25 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Year successfully created"
+          "201": {
+            "description": "Year successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpSuccess"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
           }
         }
       }
@@ -86,7 +115,49 @@
             "$ref": "#/components/schemas/Year"
           }
         }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "format": "int64",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal server error."
+          },
+          "name": {
+            "type": "string",
+            "example": "internal server error"
+          }
+        }
+      },
+      "HttpSuccess": {
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "format": "int64",
+            "example": 200
+          },
+          "name": {
+            "type": "string",
+            "example": "resource created"
+          },
+          "message": {
+            "type": "string",
+            "example": "Success message."
+          }
+        }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Year",
+      "description": "Manage year resource"
+    }
+  ]
 }
