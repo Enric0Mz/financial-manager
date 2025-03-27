@@ -78,6 +78,44 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["Year"],
+        "summary": "Delete year",
+        "parameters": [
+          {
+            "name": "yearNumber",
+            "in": "path",
+            "description": "Number of year",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Year successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpSuccess"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -144,7 +182,7 @@
           },
           "name": {
             "type": "string",
-            "example": "resource created"
+            "example": "CRUD operation performed successfuly"
           },
           "message": {
             "type": "string",
