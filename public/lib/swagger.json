@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://potential-space-parakeet-w6qpg5rw47737qg-3000.app.github.dev/api/v1",
+      "url": "http://localhost:3000/api/v1",
       "description": "Servidor Local"
     }
   ],
@@ -117,6 +117,121 @@
           }
         }
       }
+    },
+    "/month/{yearNumber}": {
+      "get": {
+        "tags": ["Month"],
+        "summary": "List months",
+        "parameters": [
+          {
+            "name": "yearNumber",
+            "in": "path",
+            "description": "Number of year",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfMonths"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Month"],
+        "summary": "Create month in year",
+        "parameters": [
+          {
+            "name": "yearNumber",
+            "in": "path",
+            "description": "Number of year",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonthCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthCreate"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/month": {
+      "post": {
+        "tags": ["Month"],
+        "summary": "Create all months of the year",
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpSuccess"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -145,12 +260,49 @@
       "Month": {
         "type": "object",
         "properties": {
-          "name": {
+          "numeric": {
+            "type": "integer",
+            "format": "int64",
+            "default": 1,
+            "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+          },
+          "month": {
+            "type": "string",
+            "default": "January",
+            "enum": [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December"
+            ]
+          }
+        }
+      },
+      "ListOfMonths": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Month"
+            }
+          }
+        }
+      },
+      "MonthCreate": {
+        "type": "object",
+        "properties": {
+          "month": {
             "type": "string",
             "example": "January"
-          },
-          "year": {
-            "$ref": "#/components/schemas/Year"
           }
         }
       },
@@ -182,7 +334,7 @@
           },
           "name": {
             "type": "string",
-            "example": "CRUD operation performed successfuly"
+            "example": "operation performed successfuly"
           },
           "message": {
             "type": "string",
@@ -196,6 +348,10 @@
     {
       "name": "Year",
       "description": "Manage year resource"
+    },
+    {
+      "name": "Month",
+      "description": "Manage month resource"
     }
   ]
 }
