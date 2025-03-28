@@ -30,7 +30,7 @@ async function getHandler(req, res) {
 }
 
 async function postHandler(req, res) {
-  const body = JSON.parse(req.body);
+  const body = req.body;
   await salary.create(body.amount);
   const responseSuccess = new httpSuccessCreated(
     `salary amount of ${body.amount} created.`,

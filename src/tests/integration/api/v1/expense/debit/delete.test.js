@@ -40,6 +40,9 @@ describe("DELETE /api/v1/expense/debit", () => {
         `${process.env.BASE_API_URL}/expense/debit/${expenseResponseBody.data[0].id}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
       const responseBody = await response.json();

@@ -46,6 +46,9 @@ describe("PATCH /api/v1/expense/debit", () => {
         `${process.env.BASE_API_URL}/expense/debit/${expenseResponseBody.data[0].id}`,
         {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(updatedEXpense),
         },
       );
