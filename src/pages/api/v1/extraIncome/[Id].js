@@ -26,18 +26,18 @@ async function getHandler(req, res) {
 
 async function postHandler(req, res) {
   const query = req.query;
-  const body = JSON.parse(req.body);
+  const body = req.body;
   const bankStatementId = parseInt(query.Id);
 
   const result = await extraIncome.create(body, bankStatementId);
 
-  return res.status(result.statusCode).json(result);
+  return res.status(result.statusCode).json(result.toJson());
 }
 
 async function patchHandler(req, res) {
   const query = req.query;
   const extraIncomeId = parseInt(query.Id);
-  const body = JSON.parse(req.body);
+  const body = req.body;
 
   const updatedExtraIncome = await extraIncome.update(body, extraIncomeId);
 

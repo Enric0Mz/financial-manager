@@ -151,6 +151,16 @@ async function updateBalance(amount, id) {
   });
 }
 
+async function updateBalanceForExtraIncome(amount, id) {
+  await prisma.bankStatement.update({
+    where: { id },
+    data: {
+      balanceTotal: amount,
+      balanceReal: amount,
+    },
+  });
+}
+
 async function updateBalanceReal(amount, id) {
   const result = await findById(id);
   const updatedValue = result.balanceInitial - amount;
@@ -222,6 +232,7 @@ const bankStatement = {
   updateWithExpense,
   incrementDebitBalance,
   updateBalance,
+  updateBalanceForExtraIncome,
   updateBalanceReal,
   updateDebitBalance,
 };

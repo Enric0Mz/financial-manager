@@ -35,6 +35,9 @@ describe("DELETE /api/v1/extraIncome", () => {
         `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
       const responseBody = await response.json();
@@ -44,6 +47,21 @@ describe("DELETE /api/v1/extraIncome", () => {
       expect(responseBody.message).toBe(
         `value with id ${extraIncomeId} deleted successfuly`,
       );
+    });
+    test("Getting bank statement to check if amount was correctly deleted", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement?` +
+          new URLSearchParams(yearMonth),
+      );
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceTotal).toBe(responseBody.balanceInitial);
+      expect(responseBody.balanceReal).toBe(responseBody.balanceInitial);
     });
   });
 });

@@ -23,6 +23,9 @@ describe("PUT /api/v1/bank", () => {
         `${process.env.BASE_API_URL}/bank/${bankId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
       const responseBody = await response.json();

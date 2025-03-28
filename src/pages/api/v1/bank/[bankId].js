@@ -3,7 +3,7 @@ import bank from "models/bank";
 export async function putHandler(req, res) {
   const query = req.query;
   const bankId = parseInt(query.bankId);
-  const body = JSON.parse(req.body);
+  const body = req.body;
 
   const result = await bank.update(bankId, body.name);
   return res.status(200).json(result);

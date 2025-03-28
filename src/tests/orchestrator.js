@@ -29,6 +29,9 @@ async function clearDatabase() {
   await prisma.expense.deleteMany({
     where: {},
   });
+  await prisma.extraIncome.deleteMany({
+    where: {},
+  });
   await prisma.bankStatement.deleteMany({
     where: {},
   });
@@ -42,9 +45,6 @@ async function clearDatabase() {
     where: {},
   });
   await prisma.salary.deleteMany({
-    where: {},
-  });
-  await prisma.extraIncome.deleteMany({
     where: {},
   });
 }

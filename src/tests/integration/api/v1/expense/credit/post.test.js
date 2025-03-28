@@ -41,6 +41,9 @@ describe("POST /api/v1/expense/credit", () => {
         `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense1),
         },
       );
@@ -64,6 +67,9 @@ describe("POST /api/v1/expense/credit", () => {
         `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense2),
         },
       );
@@ -98,6 +104,9 @@ describe("POST /api/v1/expense/credit", () => {
         `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense),
         },
       );

@@ -59,6 +59,9 @@ describe("PATCH /api/v1/expense/credit", () => {
         `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
         {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(updatedExpenseData),
         },
       );
@@ -95,6 +98,9 @@ describe("PATCH /api/v1/expense/credit", () => {
         `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
         {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(updatedExpenseData),
         },
       );

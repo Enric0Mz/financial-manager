@@ -61,8 +61,7 @@ model BankStatement {
   createdAt      DateTime            @default(now())
   salaryId       Int
   salary         Salary              @relation(fields: [salaryId], references: [id])
-  extraIncomeId  Int?
-  extraIncome    ExtraIncome?        @relation(fields: [extraIncomeId], references: [id])
+  extraIncomes   ExtraIncome[]
   userId         Int?
   user           User?               @relation(fields: [userId], references: [id])
   expenseId      Int?
@@ -98,7 +97,8 @@ model ExtraIncome {
   name          String?
   amount        Float
   createdAt     DateTime        @default(now())
-  bankStatments BankStatement[]
+  bankStatementId Int
+  bankStatement BankStatement @relation(fields: [bankStatementId], references: [id])
 }
 
 enum MonthName {
