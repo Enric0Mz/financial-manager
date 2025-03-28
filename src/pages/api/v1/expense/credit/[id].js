@@ -30,7 +30,7 @@ async function getHanlder(req, res) {
 async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
-  const body = JSON.parse(req.body);
+  const body = req.body;
 
   const result = await bankStatement.updateWithExpense(
     body,
@@ -49,7 +49,7 @@ async function postHandler(req, res) {
 async function patchHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
-  const body = JSON.parse(req.body);
+  const body = req.body;
 
   const result = await expense.update(body, expenseId);
   return res.status(result.statusCode).json(result);

@@ -15,6 +15,9 @@ describe("DELETE api/v1/year", () => {
     test("Deleting year", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseBody = await response.json();
 
@@ -27,6 +30,9 @@ describe("DELETE api/v1/year", () => {
       const year = 9999;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseBody = await response.json();
       expect(response.status).toBe(404);
@@ -39,6 +45,9 @@ describe("DELETE api/v1/year", () => {
     test("Trying to delete year with no id", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseBody = await response.json();
 

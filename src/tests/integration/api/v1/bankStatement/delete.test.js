@@ -35,6 +35,9 @@ describe("GET /api/v1/bank", () => {
         `${process.env.BASE_API_URL}/bankStatement/${bankStatementId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
       const responseBody = await response.json();

@@ -21,6 +21,9 @@ describe("DELETE api/v1/month", () => {
         `${process.env.BASE_API_URL}/month/${year}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ month }),
         },
       );
@@ -35,6 +38,9 @@ describe("DELETE api/v1/month", () => {
       const month = "December";
       const response = await fetch(`${process.env.BASE_API_URL}/month/2025`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ month }),
       });
       const responseBody = await response.json();
@@ -53,6 +59,9 @@ describe("DELETE api/v1/month", () => {
         `${process.env.BASE_API_URL}/month/${year}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ month }),
         },
       );

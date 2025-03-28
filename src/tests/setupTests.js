@@ -25,6 +25,9 @@ async function setupDatabase({
     for (const month of createMonths) {
       await fetch(`${BASE_API_URL}/month/2025`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: month,
       });
     }
@@ -32,6 +35,9 @@ async function setupDatabase({
   if (createSalary.create) {
     await fetch(`${BASE_API_URL}/salary`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ amount: createSalary.value }),
     });
   }
@@ -40,6 +46,9 @@ async function setupDatabase({
     for (const { yearId, monthId } of createBankStatements) {
       await fetch(`${BASE_API_URL}/bankStatement`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ monthId, yearId }),
       });
     }

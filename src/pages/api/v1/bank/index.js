@@ -27,7 +27,7 @@ async function getHandler(req, res) {
 }
 
 async function postHandler(req, res) {
-  const body = JSON.parse(req.body);
+  const body = req.body;
   const name = body.bank;
 
   await bank.create(name);

@@ -1,4 +1,4 @@
-import { NotFoundError, ConflictError } from "errors/http.js";
+import { NotFoundError } from "errors/http.js";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -21,11 +21,6 @@ export default router.handler({
 });
 
 function onErrorHandler(err, req, res) {
-  if (req.method === "POST") {
-    const body = req.body;
-    const responseError = new ConflictError(err, body);
-    return res.status(responseError.statusCode).json(responseError);
-  }
   return onInternalServerErrorHandler(err, req, res);
 }
 
@@ -41,7 +36,7 @@ async function getHandler(req, res) {
 async function postHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  const body = JSON.parse(req.body);
+  const body = req.body;
 
   const findYear = await year.findUnique(yearNumberValue);
   if (!findYear) {
@@ -63,7 +58,7 @@ async function postHandler(req, res) {
 async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  const body = JSON.parse(req.body);
+  const body = req.body;
   const result = await yearMonth.findFirst(body.month, yearNumberValue);
   if (!result) {
     const responseError = new NotFoundError(body.month);
