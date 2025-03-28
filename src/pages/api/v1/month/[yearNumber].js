@@ -1,4 +1,4 @@
-import { NotFoundError, ConflictError } from "errors/http.js";
+import { NotFoundError } from "errors/http.js";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
@@ -21,11 +21,6 @@ export default router.handler({
 });
 
 function onErrorHandler(err, req, res) {
-  if (req.method === "POST") {
-    const body = req.body;
-    const responseError = new ConflictError(err, body);
-    return res.status(responseError.statusCode).json(responseError);
-  }
   return onInternalServerErrorHandler(err, req, res);
 }
 
