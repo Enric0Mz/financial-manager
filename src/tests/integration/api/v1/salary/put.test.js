@@ -20,6 +20,9 @@ describe("PUT /api/v1/salary", () => {
         `${process.env.BASE_API_URL}/salary/${salaryId}`,
         {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             amount: updatedAmount,
           }),
@@ -39,6 +42,9 @@ describe("PUT /api/v1/salary", () => {
         `${process.env.BASE_API_URL}/salary/${salaryId}`,
         {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             amount,
           }),

@@ -39,6 +39,9 @@ describe("PATCH /api/v1/extraIncome", () => {
         `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
         {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(updatedExtraIncome),
         },
       );

@@ -39,6 +39,9 @@ describe("POST /api/v1/extraIncome", () => {
         `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(extraIncome),
         },
       );

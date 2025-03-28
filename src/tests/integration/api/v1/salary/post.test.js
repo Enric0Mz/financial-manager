@@ -11,6 +11,9 @@ describe("POST /api/v1/salary", () => {
       const amount = 2563.57;
       const response = await fetch(`${process.env.BASE_API_URL}/salary/`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           amount,
         }),

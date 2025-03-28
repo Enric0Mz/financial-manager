@@ -35,6 +35,9 @@ describe("DELETE /api/v1/extraIncome", () => {
         `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
       const responseBody = await response.json();

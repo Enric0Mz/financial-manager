@@ -36,7 +36,7 @@ async function getHandler(req, res) {
 }
 
 async function postHandler(req, res) {
-  const body = JSON.parse(req.body);
+  const body = req.body;
   const yearMonthResult = await yearMonth.findFirst(body.month, body.year);
 
   if (!yearMonthResult) {

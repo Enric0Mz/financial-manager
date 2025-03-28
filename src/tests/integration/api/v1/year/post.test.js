@@ -11,6 +11,9 @@ describe("POST /api/v1/year", () => {
       const year = 1996;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseBody = await response.json();
 
@@ -22,6 +25,9 @@ describe("POST /api/v1/year", () => {
       const year = 1996;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseBody = await response.json();
 

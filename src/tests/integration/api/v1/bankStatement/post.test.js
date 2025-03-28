@@ -34,6 +34,9 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/bankStatement`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(yearMonth),
         },
       );
@@ -52,6 +55,9 @@ describe("POST /api/v1/bankStatement", () => {
       };
       await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(february),
       });
 
@@ -88,6 +94,9 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/expense/credit/${bankStatementId}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense),
         },
       );
@@ -99,6 +108,9 @@ describe("POST /api/v1/bankStatement", () => {
 
       await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(march),
       });
 
@@ -143,6 +155,9 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/expense/debit/${bankStatementResponseBody.id}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense1),
         },
       );
@@ -150,6 +165,9 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/expense/debit/${bankStatementResponseBody.id}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense2),
         },
       );
@@ -190,6 +208,9 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/expense/credit/${bankStatementResponseBody.id}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(expense),
         },
       );
@@ -218,6 +239,9 @@ describe("POST /api/v1/bankStatement", () => {
         `${process.env.BASE_API_URL}/bankStatement`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(april),
         },
       );

@@ -24,6 +24,9 @@ describe("PUT /api/v1/bank", () => {
         `${process.env.BASE_API_URL}/bank/${bankId}`,
         {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(updateBankData),
         },
       );

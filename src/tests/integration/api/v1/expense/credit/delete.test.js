@@ -53,6 +53,9 @@ describe("DELETE /api/v1/expense/credit", () => {
         `${process.env.BASE_API_URL}/expense/credit/${expenseId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
       );
       const responseBody = await response.json();

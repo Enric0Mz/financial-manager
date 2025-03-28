@@ -14,6 +14,9 @@ describe("POST /api/v1/month", () => {
     test("Creating all months of the year", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/month`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const responseBody = await response.json();
 
@@ -28,6 +31,9 @@ describe("POST /api/v1/month", () => {
         `${process.env.BASE_API_URL}/month/${year}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ month }),
         },
       );
@@ -45,6 +51,9 @@ describe("POST /api/v1/month", () => {
         `${process.env.BASE_API_URL}/month/${year}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ month }),
         },
       );
