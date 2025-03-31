@@ -279,6 +279,69 @@
           }
         }
       }
+    },
+    "/salary": {
+      "get": {
+        "tags": ["Salary"],
+        "summary": "Get most recent salary",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Salary"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Salary"],
+        "summary": "Create salary",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SalaryCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpSuccess"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -353,6 +416,29 @@
           }
         }
       },
+      "Salary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "salary": {
+            "type": "float",
+            "example": 5453.65
+          }
+        }
+      },
+      "SalaryCreate": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "float",
+            "example": 5453.65
+          }
+        }
+      },
       "InternalServerError": {
         "type": "object",
         "properties": {
@@ -399,6 +485,10 @@
     {
       "name": "Month",
       "description": "Manage month resource"
+    },
+    {
+      "name": "Salary",
+      "description": "Manage salary resource"
     }
   ]
 }
