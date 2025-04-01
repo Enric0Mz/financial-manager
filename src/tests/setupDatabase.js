@@ -22,7 +22,8 @@ async function createMonthInYear(month, year) {
 }
 
 async function createSalary(amount) {
-  return await salary.create(amount);
+  let result = await salary.create(amount);
+  return result.object;
 }
 
 async function createBank(name) {

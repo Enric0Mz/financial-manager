@@ -1,21 +1,33 @@
-import { httpSuccessUpdated } from "helpers/httpSuccess";
-import { NotFoundError } from "errors/http";
+import { httpSuccessCreated, httpSuccessUpdated } from "helpers/httpSuccess";
+import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import prisma from "infra/database.js";
 
 async function findFirst() {
-  return await prisma.salary.findFirst({
+  const result = await prisma.salary.findFirst({
     orderBy: {
       createdAt: "desc",
     },
   });
+  if (!result) {
+    throw new NotFoundError("salary");
+  }
+  return result;
 }
 
 async function create(amount) {
-  return await prisma.salary.create({
+  validateAmount(amount);
+  const result = await prisma.salary.create({
     data: {
       amount,
     },
   });
+  return new httpSuccessCreated(`salary amount of ${amount} created.`, result);
+
+  function validateAmount(amount) {
+    if (typeof amount != "number") {
+      throw new UnprocessableEntityError(`${amount} is not a float`, "amount");
+    }
+  }
 }
 
 async function update(id, amount) {

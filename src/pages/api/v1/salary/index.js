@@ -3,7 +3,6 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import putHandler from "./[salaryId]";
 import salary from "models/salary.js";
 
@@ -21,20 +20,12 @@ export default route.handler({
 async function getHandler(req, res) {
   const result = await salary.findFirst();
 
-  return res.status(200).json({
-    data: {
-      id: result.id,
-      salary: result.amount,
-    },
-  });
+  return res.status(200).json(result);
 }
 
 async function postHandler(req, res) {
   const body = req.body;
-  await salary.create(body.amount);
-  const responseSuccess = new httpSuccessCreated(
-    `salary amount of ${body.amount} created.`,
-  );
+  const result = await salary.create(body.amount);
 
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result.toJson());
 }
