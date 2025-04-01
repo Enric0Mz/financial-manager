@@ -21,12 +21,7 @@ export default route.handler({
 async function getHandler(req, res) {
   const result = await salary.findFirst();
 
-  return res.status(200).json({
-    data: {
-      id: result.id,
-      salary: result.amount,
-    },
-  });
+  return res.status(200).json(result);
 }
 
 async function postHandler(req, res) {

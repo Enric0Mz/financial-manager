@@ -3,11 +3,15 @@ import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import prisma from "infra/database.js";
 
 async function findFirst() {
-  return await prisma.salary.findFirst({
+  const result = await prisma.salary.findFirst({
     orderBy: {
       createdAt: "desc",
     },
   });
+  if (!result) {
+    throw new NotFoundError("salary");
+  }
+  return result;
 }
 
 async function create(amount) {
