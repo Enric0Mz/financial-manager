@@ -115,7 +115,7 @@ describe("POST /api/v1/expense/credit", () => {
       expect(response.status).toBe(422);
       expect(responseBody.name).toBe("unprocessable entity");
       expect(responseBody.message).toBe(
-        "fields [total,bankBankStatementId] not found",
+        "fields [total,bankBankStatementId] not found or found in incorrect format",
       );
     });
   });

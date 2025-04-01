@@ -64,7 +64,7 @@ export class InternalServerError extends Error {
 
 export class UnprocessableEntityError extends Error {
   constructor(cause, fields) {
-    super(`fields [${fields}] not found`, {
+    super(`fields [${fields}] not found or found in incorrect format`, {
       cause,
     });
     this.name = "unprocessable entity";
