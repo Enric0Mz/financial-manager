@@ -3,7 +3,6 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import putHandler from "./[salaryId]";
 import salary from "models/salary.js";
 
