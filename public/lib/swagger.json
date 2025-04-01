@@ -9,6 +9,14 @@
     {
       "url": "http://localhost:3000/api/v1",
       "description": "Servidor Local"
+    },
+    {
+      "url": "https://financial-manager-jrr7f1c13-enricos-projects-fd57fa6f.vercel.app/api/v1",
+      "description": "Servidor Preview"
+    },
+    {
+      "url": "https://financial-manager-gyp2cc03e-enricos-projects-fd57fa6f.vercel.app/api/v1",
+      "description": "Servidor Production"
     }
   ],
   "paths": {
