@@ -14,7 +14,7 @@ describe("PUT /api/v1/salary", () => {
     test("Updating salary with salary id", async () => {
       const getSalary = await fetch(`${process.env.BASE_API_URL}/salary`);
       const getSalaryBody = await getSalary.json();
-      const salaryId = await getSalaryBody.data.id;
+      const salaryId = await getSalaryBody.id;
       const updatedAmount = 5000;
       const response = await fetch(
         `${process.env.BASE_API_URL}/salary/${salaryId}`,

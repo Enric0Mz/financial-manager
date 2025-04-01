@@ -21,7 +21,7 @@ describe("GET api/v1/salary", () => {
       const responseBody = await response.json();
 
       expect(response.status).toBe(200);
-      expect(responseBody.data.salary).toEqual(secondSalary);
+      expect(responseBody.amount).toEqual(secondSalary);
     });
   });
 });
