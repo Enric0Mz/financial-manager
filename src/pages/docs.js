@@ -1,9 +1,9 @@
 import { createSwaggerSpec } from "next-swagger-doc";
 import dynamic from "next/dynamic";
 import "swagger-ui-react/swagger-ui.css";
-import HttpSuccess from "./schemas/HttpSuccess";
-import { Year, ListOfYears } from "./schemas/year";
-import InternalServerError from "./schemas/HttpError";
+import HttpSuccess from "../components/schemas/HttpSuccess";
+import { Year, ListOfYears } from "../components/schemas/year";
+import InternalServerError from "../components/schemas/HttpError";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
