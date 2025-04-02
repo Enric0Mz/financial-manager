@@ -26,6 +26,51 @@ function onErrorHandler(err, req, res) {
   return res.status(404).json(responseError);
 }
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/year/{yearNumber}": {
+ *     "get": {
+ *       "tags": ["Year"],
+ *       "summary": "Get year",
+ *       "parameters": [
+ *         {
+ *           "name": "yearNumber",
+ *           "in": "path",
+ *           "description": "Number of year",
+ *           "required": true,
+ *           "schema": {
+ *             "type": "integer",
+ *             "format": "int64"
+ *           }
+ *         }
+ *       ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/Year"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
@@ -37,6 +82,51 @@ async function getHandler(req, res) {
   return res.status(200).json({ data: result });
 }
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/year/{yearNumber}": {
+ *     "post": {
+ *       "tags": ["Year"],
+ *       "summary": "Create year",
+ *       "parameters": [
+ *         {
+ *           "name": "yearNumber",
+ *           "in": "path",
+ *           "description": "Number of year",
+ *           "required": true,
+ *           "schema": {
+ *             "type": "integer",
+ *             "format": "int64"
+ *           }
+ *         }
+ *       ],
+ *       "responses": {
+ *         "201": {
+ *           "description": "Year successfully created",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 async function postHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
@@ -47,6 +137,51 @@ async function postHandler(req, res) {
   return res.status(responseSuccess.statusCode).json(responseSuccess);
 }
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/year/{yearNumber}": {
+ *     "delete": {
+ *       "tags": ["Year"],
+ *       "summary": "Delete year",
+ *       "parameters": [
+ *         {
+ *           "name": "yearNumber",
+ *           "in": "path",
+ *           "description": "Number of year",
+ *           "required": true,
+ *           "schema": {
+ *             "type": "integer",
+ *             "format": "int64"
+ *           }
+ *         }
+ *       ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Year successfully deleted",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
