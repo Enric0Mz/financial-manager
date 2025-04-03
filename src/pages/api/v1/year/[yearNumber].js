@@ -1,6 +1,7 @@
-import { ConflictError, NotFoundError } from "errors/http.js";
-import { onNoMatchHandler } from "helpers/handlers";
-import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
 import { createRouter } from "next-connect";
 import year from "models/year";
 
@@ -12,19 +13,8 @@ router.delete(deleteHandler);
 
 export default router.handler({
   onNoMatch: onNoMatchHandler,
-  onError: onErrorHandler,
+  onError: onInternalServerErrorHandler,
 });
-
-function onErrorHandler(err, req, res) {
-  const payload = req.query;
-  const yearNumberValue = parseInt(payload.yearNumber);
-  if (req.method === "POST") {
-    const responseError = new ConflictError(err, yearNumberValue);
-    return res.status(409).json(responseError);
-  }
-  const responseError = new NotFoundError(yearNumberValue);
-  return res.status(404).json(responseError);
-}
 
 /**
  * @swagger
@@ -75,11 +65,7 @@ async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
   const result = await year.findUnique(yearNumberValue);
-  if (!result) {
-    const responseError = new NotFoundError(yearNumberValue);
-    return res.status(404).json(responseError);
-  }
-  return res.status(200).json({ data: result });
+  return res.status(200).json(result);
 }
 
 /**
@@ -130,11 +116,8 @@ async function getHandler(req, res) {
 async function postHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  await year.create(yearNumberValue);
-  const responseSuccess = new httpSuccessCreated(
-    `value ${yearNumberValue} inserted into database`,
-  );
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  const result = await year.create(yearNumberValue);
+  return res.status(result.statusCode).json(result);
 }
 
 /**
@@ -185,7 +168,6 @@ async function postHandler(req, res) {
 async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  await year.remove(yearNumberValue);
-  const responseSuccess = new httpSuccessDeleted(yearNumberValue);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  const result = await year.remove(yearNumberValue);
+  return res.status(result.statusCode).json(result);
 }
