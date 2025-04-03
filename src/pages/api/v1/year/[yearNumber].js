@@ -2,7 +2,6 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 import year from "models/year";
 
@@ -169,7 +168,6 @@ async function postHandler(req, res) {
 async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  await year.remove(yearNumberValue);
-  const responseSuccess = new httpSuccessDeleted(yearNumberValue);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  const result = await year.remove(yearNumberValue);
+  return res.status(result.statusCode).json(result);
 }

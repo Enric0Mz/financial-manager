@@ -1,6 +1,6 @@
 import prisma from "infra/database.js";
 import { ConflictError, NotFoundError } from "errors/http";
-import { httpSuccessCreated } from "helpers/httpSuccess";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 
 async function findMany() {
   return await prisma.year.findMany();
@@ -32,11 +32,16 @@ async function create(id) {
 }
 
 async function remove(id) {
-  return await prisma.year.delete({
-    where: {
-      yearNumber: id,
-    },
-  });
+  try {
+    await prisma.year.delete({
+      where: {
+        yearNumber: id,
+      },
+    });
+    return new httpSuccessDeleted(id);
+  } catch {
+    throw new NotFoundError(id);
+  }
 }
 
 const year = {
