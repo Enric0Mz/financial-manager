@@ -2,13 +2,17 @@ import prisma from "infra/database.js";
 import { MonthName } from "@prisma/client";
 import { ConflictError } from "errors/http";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import { NotFoundError } from "errors/http";
 
 async function findFirst(monthName) {
-  return await prisma.month.findFirst({
+  const result = await prisma.month.findFirst({
     where: {
       month: monthName,
     },
   });
+  if (!result) {
+    throw new NotFoundError(monthName);
+  }
 }
 async function findMany(year) {
   return await prisma.month.findMany({

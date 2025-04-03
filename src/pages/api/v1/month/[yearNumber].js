@@ -17,12 +17,8 @@ router.delete(deleteHandler);
 
 export default router.handler({
   onNoMatch: onNoMatchHandler,
-  onError: onErrorHandler,
+  onError: onInternalServerErrorHandler,
 });
-
-function onErrorHandler(err, req, res) {
-  return onInternalServerErrorHandler(err, req, res);
-}
 
 async function getHandler(req, res) {
   const payload = req.query;
@@ -38,21 +34,9 @@ async function postHandler(req, res) {
   const yearNumberValue = parseInt(payload.yearNumber);
   const body = req.body;
 
-  const findYear = await year.findUnique(yearNumberValue);
-  if (!findYear) {
-    return res.status(404).json(new NotFoundError(yearNumberValue));
-  }
-  const findMonth = await month.findFirst(body.month);
+  const result = await yearMonth.create(body.month, yearNumberValue);
 
-  if (!findMonth) {
-    return res.status(404).json(new NotFoundError(yearNumberValue));
-  }
-  await yearMonth.create(findMonth.month, findYear.yearNumber);
-
-  const responseSuccess = new httpSuccessCreated(
-    `month ${body.month} created on ${yearNumberValue}`,
-  );
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result);
 }
 
 async function deleteHandler(req, res) {
