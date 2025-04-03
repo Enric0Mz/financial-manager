@@ -117,11 +117,8 @@ async function getHandler(req, res) {
 async function postHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
-  await year.create(yearNumberValue);
-  const responseSuccess = new httpSuccessCreated(
-    `value ${yearNumberValue} inserted into database`,
-  );
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  const result = await year.create(yearNumberValue);
+  return res.status(result.statusCode).json(result);
 }
 
 /**
