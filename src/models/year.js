@@ -1,15 +1,20 @@
 import prisma from "infra/database.js";
+import { NotFoundError } from "errors/http";
 
 async function findMany() {
   return await prisma.year.findMany();
 }
 
 async function findUnique(id) {
-  return await prisma.year.findUnique({
+  const result = await prisma.year.findUnique({
     where: {
       yearNumber: id,
     },
   });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
 }
 
 async function create(id) {
