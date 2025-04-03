@@ -31,7 +31,7 @@ describe("GET /api/v1/year/", () => {
       const responseBody = await response.json();
 
       expect(response.status).toBe(200);
-      expect(responseBody.data).toMatchObject({ yearNumber: year });
+      expect(responseBody).toMatchObject({ yearNumber: year });
     });
 
     test("Getting year by id of year that do not exist", async () => {
