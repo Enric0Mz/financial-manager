@@ -1,9 +1,10 @@
 import { createSwaggerSpec } from "next-swagger-doc";
 import dynamic from "next/dynamic";
 import "swagger-ui-react/swagger-ui.css";
-import HttpSuccess from "../components/schemas/HttpSuccess";
-import { Year, ListOfYears } from "../components/schemas/year";
 import InternalServerError from "../components/schemas/HttpError";
+import HttpSuccess from "../components/schemas/HttpSuccess";
+import { ListOfMonths, Month, MonthCreate } from "../components/schemas/month";
+import { ListOfYears, Year } from "../components/schemas/year";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -26,6 +27,9 @@ export async function getStaticProps() {
           Year,
           ListOfYears,
           InternalServerError,
+          Month,
+          ListOfMonths,
+          MonthCreate
         },
       },
       tags: [
