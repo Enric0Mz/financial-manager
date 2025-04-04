@@ -16,11 +16,11 @@ beforeAll(async () => {
   const salary = await setup.createSalary(salaryAmount);
   const bankStatement = await setup.createBankStatement(
     salary,
-    monthInYearJanuary.id,
+    monthInYearJanuary.object.id,
   );
   await setup.createBankStatement(
     salary,
-    monthInYearFebruary.id,
+    monthInYearFebruary.object.id,
     bankStatement.data,
   );
 });

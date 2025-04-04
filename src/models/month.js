@@ -1,12 +1,18 @@
 import prisma from "infra/database.js";
 import { MonthName } from "@prisma/client";
+import { ConflictError } from "errors/http";
+import { httpSuccessCreated } from "helpers/httpSuccess";
+import { NotFoundError } from "errors/http";
 
 async function findFirst(monthName) {
-  return await prisma.month.findFirst({
+  const result = await prisma.month.findFirst({
     where: {
       month: monthName,
     },
   });
+  if (!result) {
+    throw new NotFoundError(monthName);
+  }
 }
 async function findMany(year) {
   return await prisma.month.findMany({
@@ -21,21 +27,29 @@ async function findMany(year) {
 }
 
 async function createAllMonths() {
-  const result = await prisma.month.findMany();
-  if (result.length !== 0) {
-    return;
+  const exists = await prisma.month.findFirst();
+  if (exists) {
+    throw new ConflictError("", "all months");
   }
-  let months = [];
-  for (const [index, [, month]] of Object.entries(Object.entries(MonthName))) {
-    months.push({
-      month,
-      numeric: parseInt(index) + 1,
-    });
-  }
-  await prisma.month.createMany({
+
+  const months = createMonthsObject();
+  const result = await prisma.month.createMany({
     data: months,
   });
-  return "all months created successufuly";
+  return new httpSuccessCreated("All months created successfuly", result);
+
+  function createMonthsObject() {
+    let months = [];
+    for (const [index, [, month]] of Object.entries(
+      Object.entries(MonthName),
+    )) {
+      months.push({
+        month,
+        numeric: parseInt(index) + 1,
+      });
+    }
+    return months;
+  }
 }
 
 const month = {

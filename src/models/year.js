@@ -1,32 +1,47 @@
 import prisma from "infra/database.js";
+import { ConflictError, NotFoundError } from "errors/http";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 
 async function findMany() {
   return await prisma.year.findMany();
 }
 
 async function findUnique(id) {
-  return await prisma.year.findUnique({
+  const result = await prisma.year.findUnique({
     where: {
       yearNumber: id,
     },
   });
-}
-
-async function create(id) {
-  const result = await prisma.year.create({
-    data: {
-      yearNumber: id,
-    },
-  });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
   return result;
 }
 
+async function create(id) {
+  try {
+    const result = await prisma.year.create({
+      data: {
+        yearNumber: id,
+      },
+    });
+    return new httpSuccessCreated(`value ${id} inserted into database`, result);
+  } catch (err) {
+    throw new ConflictError(err, id);
+  }
+}
+
 async function remove(id) {
-  return await prisma.year.delete({
-    where: {
-      yearNumber: id,
-    },
-  });
+  try {
+    await prisma.year.delete({
+      where: {
+        yearNumber: id,
+      },
+    });
+    return new httpSuccessDeleted(id);
+  } catch {
+    throw new NotFoundError(id);
+  }
 }
 
 const year = {
