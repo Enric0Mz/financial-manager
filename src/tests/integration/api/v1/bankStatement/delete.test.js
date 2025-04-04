@@ -12,7 +12,7 @@ beforeAll(async () => {
   await setup.createAllMonths();
   const monthInYear = await setup.createMonthInYear(january, year);
   const salary = await setup.createSalary(salaryAmount);
-  await setup.createBankStatement(salary, monthInYear.id);
+  await setup.createBankStatement(salary, monthInYear.object.id);
 });
 
 describe("GET /api/v1/bank", () => {

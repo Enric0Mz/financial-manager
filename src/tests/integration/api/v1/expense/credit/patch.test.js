@@ -19,7 +19,7 @@ beforeAll(async () => {
   const bank = await setup.createBank(bankName);
   const bankStatement = await setup.createBankStatement(
     salary,
-    yearMonth.id,
+    yearMonth.object.id,
     undefined,
     [bank],
   );
