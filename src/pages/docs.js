@@ -6,6 +6,12 @@ import HttpSuccess from "../components/schemas/HttpSuccess";
 import { ListOfMonths, Month, MonthCreate } from "../components/schemas/month";
 import { ListOfYears, Year } from "../components/schemas/year";
 import { Salary, SalaryCreate } from "../components/schemas/salary";
+import {
+  Bank,
+  BankCreate,
+  BankUpdate,
+  ListOfBanks,
+} from "../components/schemas/bank";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -36,6 +42,10 @@ export async function getStaticProps() {
           MonthCreate,
           Salary,
           SalaryCreate,
+          Bank,
+          BankCreate,
+          BankUpdate,
+          ListOfBanks,
         },
       },
       tags: [
@@ -50,6 +60,10 @@ export async function getStaticProps() {
         {
           name: "Salary",
           description: "Manage salary resource",
+        },
+        {
+          name: "Bank",
+          description: "Manage bank resource",
         },
       ],
     },
