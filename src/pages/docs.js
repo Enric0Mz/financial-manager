@@ -17,6 +17,11 @@ import {
   ListOfBankStatements,
 } from "components/schemas/bankStatement";
 import { YearMonth } from "components/schemas/yearMonth";
+import {
+  ExtraIncome,
+  ExtraIncomeCreate,
+  ListOfExtraIncome,
+} from "components/schemas/extraIncome";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -54,6 +59,9 @@ export async function getStaticProps() {
           BankStatement,
           ListOfBankStatements,
           YearMonth,
+          ExtraIncome,
+          ListOfExtraIncome,
+          ExtraIncomeCreate,
         },
       },
       tags: [
@@ -76,6 +84,10 @@ export async function getStaticProps() {
         {
           name: "Bank Statement",
           description: "Manage your expenses, debits and gains over the months",
+        },
+        {
+          name: "Extra Income",
+          description: "Add extra earnings to make up your salary",
         },
       ],
     },
