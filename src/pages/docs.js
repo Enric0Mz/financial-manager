@@ -1,17 +1,22 @@
 import { createSwaggerSpec } from "next-swagger-doc";
 import dynamic from "next/dynamic";
 import "swagger-ui-react/swagger-ui.css";
-import InternalServerError from "../components/schemas/HttpError";
-import HttpSuccess from "../components/schemas/HttpSuccess";
-import { ListOfMonths, Month, MonthCreate } from "../components/schemas/month";
-import { ListOfYears, Year } from "../components/schemas/year";
-import { Salary, SalaryCreate } from "../components/schemas/salary";
+import InternalServerError from "components/schemas/HttpError";
+import HttpSuccess from "components/schemas/HttpSuccess";
+import { ListOfMonths, Month, MonthCreate } from "components/schemas/month";
+import { ListOfYears, Year } from "components/schemas/year";
+import { Salary, SalaryCreate } from "components/schemas/salary";
 import {
   Bank,
   BankCreate,
   BankUpdate,
   ListOfBanks,
-} from "../components/schemas/bank";
+} from "components/schemas/bank";
+import {
+  BankStatement,
+  ListOfBankStatements,
+} from "components/schemas/bankStatement";
+import { YearMonth } from "components/schemas/yearMonth";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -46,6 +51,9 @@ export async function getStaticProps() {
           BankCreate,
           BankUpdate,
           ListOfBanks,
+          BankStatement,
+          ListOfBankStatements,
+          YearMonth,
         },
       },
       tags: [
@@ -64,6 +72,10 @@ export async function getStaticProps() {
         {
           name: "Bank",
           description: "Manage bank resource",
+        },
+        {
+          name: "Bank Statement",
+          description: "Manage your expenses, debits and gains over the months",
         },
       ],
     },
