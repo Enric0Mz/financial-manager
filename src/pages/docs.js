@@ -21,6 +21,9 @@ export async function getStaticProps() {
       info: {
         title: "Financial Manager API ",
         version: "1.0",
+        description:
+          "Documentation of routes available in financial-manager application",
+        contact: "enricovmarquezz@gmail.com",
       },
       components: {
         schemas: {
