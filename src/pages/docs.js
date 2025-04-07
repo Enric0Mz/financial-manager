@@ -5,6 +5,7 @@ import InternalServerError from "../components/schemas/HttpError";
 import HttpSuccess from "../components/schemas/HttpSuccess";
 import { ListOfMonths, Month, MonthCreate } from "../components/schemas/month";
 import { ListOfYears, Year } from "../components/schemas/year";
+import { Salary, SalaryCreate } from "../components/schemas/salary";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -30,6 +31,8 @@ export async function getStaticProps() {
           Month,
           ListOfMonths,
           MonthCreate,
+          Salary,
+          SalaryCreate,
         },
       },
       tags: [
