@@ -22,6 +22,11 @@ import {
   ExtraIncomeCreate,
   ListOfExtraIncome,
 } from "components/schemas/extraIncome";
+import {
+  CreditExpense,
+  CreditExpenseCreate,
+  CreditExpenseUpdate,
+} from "components/schemas/expense";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -62,6 +67,9 @@ export async function getStaticProps() {
           ExtraIncome,
           ListOfExtraIncome,
           ExtraIncomeCreate,
+          CreditExpense,
+          CreditExpenseCreate,
+          CreditExpenseUpdate,
         },
       },
       tags: [
@@ -87,7 +95,15 @@ export async function getStaticProps() {
         },
         {
           name: "Extra Income",
-          description: "Add extra earnings to make up your salary",
+          description: "Manage extra earnings to make up your salary",
+        },
+        {
+          name: "Expense - Credit",
+          description: "Manage your credit expenses",
+        },
+        {
+          name: "Expense - Debit",
+          description: "Manage your debit expenses",
         },
       ],
     },
