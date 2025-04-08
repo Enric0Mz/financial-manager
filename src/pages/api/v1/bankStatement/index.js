@@ -21,6 +21,40 @@ export default route.handler({
   onError: onInternalServerErrorHandler,
 });
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bankStatement": {
+ *     "get": {
+ *       "tags": ["Bank Statement"],
+ *       "summary": "List bankStatements",
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/ListOfBankStatements"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function getHandler(req, res) {
   const queryParams = req.query;
   if (!(queryParams.month || queryParams.year)) {
@@ -34,6 +68,50 @@ async function getHandler(req, res) {
 
   return res.status(200).json(result);
 }
+
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bankStatement": {
+ *     "post": {
+ *       "tags": ["Bank Statement"],
+ *       "summary": "Create bank statement",
+ *       "requestBody": {
+ *          "description": "Bank Statement year/month",
+ *          "content": {
+ *            "application/json": {
+ *              "schema": {
+ *                "$ref": "#/components/schemas/YearMonth"
+ *              }
+ *            }
+ *          }
+ *        },
+ *       "responses": {
+ *         "201": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 
 async function postHandler(req, res) {
   const body = req.body;

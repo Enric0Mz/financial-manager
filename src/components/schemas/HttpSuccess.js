@@ -14,6 +14,13 @@ const HttpSuccess = {
       type: "string",
       example: "Success message.",
     },
+    data: {
+      type: "object",
+      example: {
+        id: 1,
+        name: "example object",
+      },
+    },
   },
 };
 

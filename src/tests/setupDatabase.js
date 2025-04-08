@@ -36,7 +36,6 @@ async function createBankStatement(
   lastBankStatement,
   banks,
 ) {
-  console.log(yearMonthId);
   return await bankStatement.create(
     salary,
     yearMonthId,
