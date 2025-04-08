@@ -18,6 +18,52 @@ export default route.handler({
   onError: onInternalServerErrorHandler,
 });
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/expense/debit/{expenseId}": {
+ *     "get": {
+ *       "tags": ["Expense - Debit"],
+ *       "summary": "TODO: change to fetch",
+ *       "parameters": [
+ *      {
+ *       "name": "expenseId",
+ *        "in": "path",
+ *        "description": "Id of a debit expense",
+ *        "required": true,
+ *        "schema": {
+ *          "type": "integer",
+ *          "format": "int64"
+ *          }
+ *       }
+ *     ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/Expense"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function getHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
@@ -27,6 +73,61 @@ async function getHandler(req, res) {
   return res.status(200).json({ data: result });
 }
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/expense/debit/{bankStatementId}": {
+ *     "post": {
+ *       "tags": ["Expense - Debit"],
+ *       "summary": "Create debit expense",
+ *       "parameters": [
+ *      {
+ *       "name": "bankStatementId",
+ *        "in": "path",
+ *        "description": "Id of a bank statement",
+ *        "required": true,
+ *        "schema": {
+ *          "type": "integer",
+ *          "format": "int64"
+ *          }
+ *       }
+ *     ],
+ *      "requestBody": {
+ *          "description": "Debit expense body",
+ *          "content": {
+ *            "application/json": {
+ *              "schema": {
+ *                "$ref": "#/components/schemas/DebitExpenseCreate"
+ *              }
+ *            }
+ *          }
+ *        },
+ *       "responses": {
+ *         "201": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
@@ -43,6 +144,62 @@ async function postHandler(req, res) {
   return res.status(result.statusCode).json(result.toJson());
 }
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/expense/debit/{expenseId}": {
+ *     "patch": {
+ *       "tags": ["Expense - Debit"],
+ *       "summary": "Update debit expense",
+ *        "requestBody": {
+ *          "description": "Debit expense body",
+ *          "content": {
+ *            "application/json": {
+ *              "schema": {
+ *                "$ref": "#/components/schemas/ExpenseUpdate"
+ *              }
+ *            }
+ *          }
+ *        },
+ *        "parameters": [
+ *      {
+ *       "name": "expenseId",
+ *        "in": "path",
+ *        "description": "Id of a debit expense",
+ *        "required": true,
+ *        "schema": {
+ *          "type": "integer",
+ *          "format": "int64"
+ *          }
+ *       }
+ *     ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function patchHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
@@ -52,6 +209,52 @@ async function patchHandler(req, res) {
 
   return res.status(result.statusCode).json(result.toJson());
 }
+
+/**
+ * @swagger
+ * {
+ *   "/api/v1/expense/debit/{expenseId}": {
+ *     "delete": {
+ *       "tags": ["Expense - Debit"],
+ *       "summary": "Delete debit expense",
+ *        "parameters": [
+ *      {
+ *       "name": "expenseId",
+ *        "in": "path",
+ *        "description": "Id of a debit expense",
+ *        "required": true,
+ *        "schema": {
+ *          "type": "integer",
+ *          "format": "int64"
+ *          }
+ *       }
+ *     ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 
 async function deleteHandler(req, res) {
   const query = req.query;
