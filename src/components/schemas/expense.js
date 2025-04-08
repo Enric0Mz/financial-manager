@@ -1,4 +1,4 @@
-export const CreditExpense = {
+export const Expense = {
   type: "object",
   properties: {
     id: {
@@ -64,7 +64,26 @@ export const CreditExpenseCreate = {
   },
 };
 
-export const CreditExpenseUpdate = {
+export const ExpenseUpdate = {
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      example: "Exemplo de compra",
+    },
+    description: {
+      type: "string",
+      example: "Exemplo de descricao de compra",
+    },
+    total: {
+      type: "number",
+      format: "float",
+      example: 432.19,
+    },
+  },
+};
+
+export const DebitExpenseCreate = {
   type: "object",
   properties: {
     name: {

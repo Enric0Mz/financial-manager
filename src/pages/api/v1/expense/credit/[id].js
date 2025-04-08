@@ -44,7 +44,7 @@ export default route.handler({
  *           "content": {
  *             "application/json": {
  *               "schema": {
- *                 "$ref": "#/components/schemas/CreditExpense"
+ *                 "$ref": "#/components/schemas/Expense"
  *               }
  *             }
  *           }
@@ -160,7 +160,7 @@ async function postHandler(req, res) {
  *          "content": {
  *            "application/json": {
  *              "schema": {
- *                "$ref": "#/components/schemas/CreditExpenseUpdate"
+ *                "$ref": "#/components/schemas/ExpenseUpdate"
  *              }
  *            }
  *          }
