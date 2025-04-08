@@ -1,10 +1,33 @@
 import { createSwaggerSpec } from "next-swagger-doc";
 import dynamic from "next/dynamic";
 import "swagger-ui-react/swagger-ui.css";
-import InternalServerError from "../components/schemas/HttpError";
-import HttpSuccess from "../components/schemas/HttpSuccess";
-import { ListOfMonths, Month, MonthCreate } from "../components/schemas/month";
-import { ListOfYears, Year } from "../components/schemas/year";
+import InternalServerError from "components/schemas/HttpError";
+import HttpSuccess from "components/schemas/HttpSuccess";
+import { ListOfMonths, Month, MonthCreate } from "components/schemas/month";
+import { ListOfYears, Year } from "components/schemas/year";
+import { Salary, SalaryCreate } from "components/schemas/salary";
+import {
+  Bank,
+  BankCreate,
+  BankUpdate,
+  ListOfBanks,
+} from "components/schemas/bank";
+import {
+  BankStatement,
+  ListOfBankStatements,
+} from "components/schemas/bankStatement";
+import { YearMonth } from "components/schemas/yearMonth";
+import {
+  ExtraIncome,
+  ExtraIncomeCreate,
+  ListOfExtraIncome,
+} from "components/schemas/extraIncome";
+import {
+  Expense,
+  CreditExpenseCreate,
+  ExpenseUpdate,
+  DebitExpenseCreate,
+} from "components/schemas/expense";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -20,6 +43,9 @@ export async function getStaticProps() {
       info: {
         title: "Financial Manager API ",
         version: "1.0",
+        description:
+          "Documentation of routes available in financial-manager application",
+        contact: "enricovmarquezz@gmail.com",
       },
       components: {
         schemas: {
@@ -30,6 +56,22 @@ export async function getStaticProps() {
           Month,
           ListOfMonths,
           MonthCreate,
+          Salary,
+          SalaryCreate,
+          Bank,
+          BankCreate,
+          BankUpdate,
+          ListOfBanks,
+          BankStatement,
+          ListOfBankStatements,
+          YearMonth,
+          ExtraIncome,
+          ListOfExtraIncome,
+          ExtraIncomeCreate,
+          Expense,
+          CreditExpenseCreate,
+          ExpenseUpdate,
+          DebitExpenseCreate,
         },
       },
       tags: [
@@ -44,6 +86,26 @@ export async function getStaticProps() {
         {
           name: "Salary",
           description: "Manage salary resource",
+        },
+        {
+          name: "Bank",
+          description: "Manage bank resource",
+        },
+        {
+          name: "Bank Statement",
+          description: "Manage your expenses, debits and gains over the months",
+        },
+        {
+          name: "Extra Income",
+          description: "Manage extra earnings to make up your salary",
+        },
+        {
+          name: "Expense - Credit",
+          description: "Manage your credit expenses",
+        },
+        {
+          name: "Expense - Debit",
+          description: "Manage your debit expenses",
         },
       ],
     },

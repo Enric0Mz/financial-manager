@@ -20,11 +20,89 @@ export default route.handler({
   onError: onInternalServerErrorHandler,
 });
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bank": {
+ *     "get": {
+ *       "tags": ["Bank"],
+ *       "summary": "List banks",
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/ListOfBanks"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function getHandler(req, res) {
   const result = await bank.findMany();
 
   return res.status(200).json({ data: result });
 }
+
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bank": {
+ *     "post": {
+ *       "tags": ["Bank"],
+ *       "summary": "Create bank",
+ *        "requestBody": {
+ *        "description": "Bank body",
+ *        "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/BankCreate"
+ *               }
+ *             }
+ *           }
+ *         },
+ *       "responses": {
+ *         "201": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 
 async function postHandler(req, res) {
   const body = req.body;

@@ -92,6 +92,7 @@ async function getHandler(req, res) {
  *       }
  *     ],
  *       "requestBody": {
+ *        "description": "Month body",
  *        "content": {
  *             "application/json": {
  *               "schema": {

@@ -1,5 +1,61 @@
 import bank from "models/bank";
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bank/{bankId}": {
+ *     "put": {
+ *       "tags": ["Bank"],
+ *       "summary": "Update bank",
+ *        "requestBody": {
+ *          "description": "Bank body",
+ *          "content": {
+ *            "application/json": {
+ *              "schema": {
+ *                "$ref": "#/components/schemas/BankUpdate"
+ *              }
+ *            }
+ *          }
+ *        },
+ *        "parameters": [
+ *      {
+ *       "name": "bankId",
+ *        "in": "path",
+ *        "description": "Id of a bank",
+ *        "required": true,
+ *        "schema": {
+ *          "type": "integer",
+ *          "format": "int64"
+ *          }
+ *       }
+ *     ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 export async function putHandler(req, res) {
   const query = req.query;
   const bankId = parseInt(query.bankId);
@@ -8,6 +64,52 @@ export async function putHandler(req, res) {
   const result = await bank.update(bankId, body.name);
   return res.status(200).json(result);
 }
+
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bank/{bankId}": {
+ *     "delete": {
+ *       "tags": ["Bank"],
+ *       "summary": "Delete bank",
+ *       "parameters": [
+ *         {
+ *           "name": "bankId",
+ *           "in": "path",
+ *           "description": "Id of a bank",
+ *           "required": true,
+ *           "schema": {
+ *             "type": "integer",
+ *             "format": "int64"
+ *           }
+ *         }
+ *       ],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Year successfully deleted",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
 
 export async function deleteHandler(req, res) {
   const query = req.query;
