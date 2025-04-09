@@ -52,8 +52,8 @@ describe("GET /api/v1/extraIncome", () => {
         month: "January",
       };
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(yearMonth),
+        `${process.env.BASE_API_URL}/bankStatement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
       );
       const responseBody = await response.json();
 
