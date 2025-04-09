@@ -5,7 +5,6 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  const year = 2025;
   const january = "January";
   const february = "February";
   const salaryAmount = 4500;
@@ -25,18 +24,16 @@ beforeAll(async () => {
   );
 });
 
+const year = 2025;
 const salary = 4500;
 
-describe("GET /api/v1/bankStatement", () => {
+describe("GET /api/v1/bankStatement/{id}", () => {
   describe("Anonymous user", () => {
     test("Getting bank statement", async () => {
-      const january = {
-        month: "January",
-        year: 2025,
-      };
+      const month = "January";
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(january),
+        `${process.env.BASE_API_URL}/bankStatement/${year}?` +
+          new URLSearchParams({ month }),
       );
       const responseBody = await response.json();
 
@@ -46,7 +43,9 @@ describe("GET /api/v1/bankStatement", () => {
     });
 
     test("Fetching bank statement", async () => {
-      const response = await fetch(`${process.env.BASE_API_URL}/bankStatement`);
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bankStatement/${year}`,
+      );
       const responseBody = await response.json();
 
       expect(response.status).toBe(200);

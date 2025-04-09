@@ -1,6 +1,54 @@
 import prisma from "@infra/database";
 import { NotFoundError } from "errors/http";
 import { httpSuccessDeleted } from "helpers/httpSuccess";
+import bankStatement from "models/bankStatement";
+
+/**
+ * @swagger
+ * {
+ *   "/api/v1/bankStatement/{yearNumber}": {
+ *     "get": {
+ *       "tags": ["Bank Statement"],
+ *       "summary": "List bankStatements",
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/ListOfBankStatements"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
+export async function getHandler(req, res) {
+  const queryParams = req.query;
+  const { id, month } = queryParams;
+
+  if (!month) {
+    const result = await bankStatement.findMany();
+    return res.status(200).json({ data: result });
+  }
+  const result = await bankStatement.findUnique(month, id);
+
+  return res.status(200).json(result);
+}
 
 /**
  * @swagger
@@ -48,7 +96,7 @@ import { httpSuccessDeleted } from "helpers/httpSuccess";
  * }
  */
 
-export default async function deleteHandler(req, res) {
+export async function deleteHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
 
@@ -64,4 +112,9 @@ export default async function deleteHandler(req, res) {
   }
   const responseSuccess = new httpSuccessDeleted(bankStatementId);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
+}
+
+export default async function handler(req, res) {
+  if (req.method === "GET") return getHandler(req, res);
+  if (req.method === "DELETE") return deleteHandler(req, res);
 }
