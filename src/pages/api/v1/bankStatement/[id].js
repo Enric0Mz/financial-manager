@@ -50,7 +50,7 @@ import { httpSuccessDeleted } from "helpers/httpSuccess";
 
 export default async function deleteHandler(req, res) {
   const query = req.query;
-  const bankStatementId = parseInt(query.bankStatementId);
+  const bankStatementId = parseInt(query.id);
 
   try {
     await prisma.bankStatement.delete({

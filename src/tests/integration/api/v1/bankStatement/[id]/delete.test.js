@@ -15,7 +15,7 @@ beforeAll(async () => {
   await setup.createBankStatement(salary, monthInYear.object.id);
 });
 
-describe("GET /api/v1/bank", () => {
+describe("GET /api/v1/bankStatement/{id}", () => {
   describe("Anonymous user", () => {
     test("Deleting bankStatement", async () => {
       const january = {

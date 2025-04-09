@@ -4,7 +4,7 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { NotFoundError } from "errors/http";
-import deleteHandler from "./[bankStatementId]";
+import deleteHandler from "./[id]";
 import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bankStatement from "models/bankStatement";
