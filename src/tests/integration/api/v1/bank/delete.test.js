@@ -12,7 +12,7 @@ beforeAll(async () => {
   await setup.createBank(nuBank);
 });
 
-describe("PUT /api/v1/bank", () => {
+describe("DELETE /api/v1/bank", () => {
   describe("Anonymous user", () => {
     test("Deleting bank", async () => {
       const bankReponse = await fetch(`${process.env.BASE_API_URL}/bank`);
