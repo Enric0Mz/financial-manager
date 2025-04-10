@@ -3,6 +3,7 @@ import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
 import bankBankStatement from "./bankBankStatement";
 import { httpSuccessUpdated, httpSuccessDeleted } from "helpers/httpSuccess";
+import { validateAndParseAmount } from "helpers/validators";
 
 async function findUnique(id) {
   const result = await prisma.expense.findUnique({
@@ -17,6 +18,9 @@ async function findUnique(id) {
 }
 
 async function update(payload, id) {
+  if (payload.total !== undefined) {
+    payload.total = validateAndParseAmount(payload.total);
+  }
   const existingExpense = await findUnique(id);
   const result = await prisma.expense.update({
     where: {

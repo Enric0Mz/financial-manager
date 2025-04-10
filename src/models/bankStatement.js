@@ -2,6 +2,7 @@ import prisma from "infra/database.js";
 import Month from "./enum/month";
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import { NotFoundError, UnprocessableEntityError } from "errors/http";
+import { validateAndParseAmount } from "helpers/validators";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -188,6 +189,8 @@ async function updateWithExpense(expense, id, isDebit) {
 
   searchForMissingFields(expense, isDebit);
 
+  const fixedAmount = validateAndParseAmount(total);
+
   const result = await prisma.bankStatement.update({
     where: {
       id,
@@ -197,7 +200,7 @@ async function updateWithExpense(expense, id, isDebit) {
         create: {
           name,
           description,
-          total,
+          total: fixedAmount,
           bankBankStatementId,
         },
       },
