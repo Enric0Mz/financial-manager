@@ -14,12 +14,16 @@ async function findMany(bankStatementId) {
 }
 
 async function findUnique(id) {
-  return await prisma.extraIncome.findUnique({
+  const result = await prisma.extraIncome.findUnique({
     where: { id },
     include: {
       bankStatement: true,
     },
   });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
 }
 
 async function create(payload, bankStatementId) {
@@ -38,7 +42,7 @@ async function create(payload, bankStatementId) {
       result,
     );
   } catch {
-    return new NotFoundError(bankStatementId);
+    throw new NotFoundError(bankStatementId);
   }
 }
 
