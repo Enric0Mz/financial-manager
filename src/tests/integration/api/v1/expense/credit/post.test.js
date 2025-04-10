@@ -80,7 +80,7 @@ describe("POST /api/v1/expense/credit", () => {
       expect(responseBody.name).toBe("created");
 
       const bankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/fetch/${year}`,
+        `${process.env.BASE_API_URL}/bank-statement/fetch/${year}`,
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
 

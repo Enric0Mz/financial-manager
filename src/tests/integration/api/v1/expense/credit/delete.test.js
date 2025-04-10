@@ -43,7 +43,7 @@ describe("DELETE /api/v1/expense/credit", () => {
       };
 
       const getExpensesListResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${yearMonth.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
           new URLSearchParams({ month: yearMonth.month }),
       );
       const getExpensesListResponseBody = await getExpensesListResponse.json();

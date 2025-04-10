@@ -20,7 +20,7 @@ describe("GET /api/v1/bankStatement/{id}", () => {
   describe("Anonymous user", () => {
     test("Deleting bankStatement", async () => {
       const bankStatement = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${year}?` +
           new URLSearchParams({ month }),
       );
 
@@ -28,7 +28,7 @@ describe("GET /api/v1/bankStatement/{id}", () => {
       const bankStatementId = bankStatementResponse.id;
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${bankStatementId}`,
+        `${process.env.BASE_API_URL}/bank-statement/${bankStatementId}`,
         {
           method: "DELETE",
           headers: {

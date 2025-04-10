@@ -31,7 +31,7 @@ describe("POST /api/v1/bankStatement", () => {
         month: "January",
       };
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement`,
+        `${process.env.BASE_API_URL}/bank-statement`,
         {
           method: "POST",
           headers: {
@@ -53,7 +53,7 @@ describe("POST /api/v1/bankStatement", () => {
         year: 2025,
         month: "February",
       };
-      await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
+      await fetch(`${process.env.BASE_API_URL}/bank-statement`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ describe("POST /api/v1/bankStatement", () => {
       });
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${february.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${february.year}?` +
           new URLSearchParams({ month: february.month }),
       );
       const responseBody = await response.json();
@@ -77,7 +77,7 @@ describe("POST /api/v1/bankStatement", () => {
         month: "February",
       };
       const bankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${february.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${february.year}?` +
           new URLSearchParams({ month: february.month }),
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
@@ -106,7 +106,7 @@ describe("POST /api/v1/bankStatement", () => {
         month: "March",
       };
 
-      await fetch(`${process.env.BASE_API_URL}/bankStatement`, {
+      await fetch(`${process.env.BASE_API_URL}/bank-statement`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ describe("POST /api/v1/bankStatement", () => {
       });
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${march.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
       );
       const responseBody = await response.json();
@@ -135,7 +135,7 @@ describe("POST /api/v1/bankStatement", () => {
       };
 
       const bankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${march.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
@@ -172,7 +172,7 @@ describe("POST /api/v1/bankStatement", () => {
         },
       );
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${march.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
       );
       const responseBody = await response.json();
@@ -193,7 +193,7 @@ describe("POST /api/v1/bankStatement", () => {
       };
 
       const bankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${march.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
@@ -216,7 +216,7 @@ describe("POST /api/v1/bankStatement", () => {
       );
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${march.year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
       );
       const responseBody = await response.json();
@@ -236,7 +236,7 @@ describe("POST /api/v1/bankStatement", () => {
       };
 
       const newBankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement`,
+        `${process.env.BASE_API_URL}/bank-statement`,
         {
           method: "POST",
           headers: {

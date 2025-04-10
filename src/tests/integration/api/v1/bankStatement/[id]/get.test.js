@@ -32,7 +32,7 @@ describe("GET /api/v1/bankStatement/{id}", () => {
     test("Getting bank statement", async () => {
       const month = "January";
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${year}?` +
+        `${process.env.BASE_API_URL}/bank-statement/${year}?` +
           new URLSearchParams({ month }),
       );
       const responseBody = await response.json();
@@ -44,7 +44,7 @@ describe("GET /api/v1/bankStatement/{id}", () => {
 
     test("Fetching bank statement", async () => {
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/fetch/${year}`,
+        `${process.env.BASE_API_URL}/bank-statement/fetch/${year}`,
       );
       const responseBody = await response.json();
 
