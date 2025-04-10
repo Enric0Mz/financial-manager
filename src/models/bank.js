@@ -6,6 +6,16 @@ async function findMany() {
   return await prisma.bank.findMany();
 }
 
+async function findUnique(id) {
+  const result = await prisma.bank.findUnique({
+    where: { id },
+  });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
+}
+
 async function create(name) {
   return await prisma.bank.create({
     data: { name },
@@ -13,6 +23,7 @@ async function create(name) {
 }
 
 async function update(id, name) {
+  await findUnique(id);
   return await prisma.bank.update({
     where: {
       id,
