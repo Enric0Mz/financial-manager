@@ -1,4 +1,18 @@
 import bankStatement from "models/bankStatement";
+import { createRouter } from "next-connect";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
+
+const route = createRouter();
+
+route.get(fetchHandler);
+
+export default route.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
 
 /**
  * @swagger
@@ -46,7 +60,7 @@ import bankStatement from "models/bankStatement";
  * }
  */
 
-export default async function fetchHandler(req, res) {
+async function fetchHandler(req, res) {
   const query = req.query;
   const yearNumber = query.id;
 

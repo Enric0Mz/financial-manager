@@ -2,6 +2,21 @@ import prisma from "@infra/database";
 import { NotFoundError } from "errors/http";
 import { httpSuccessDeleted } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
+import { createRouter } from "next-connect";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
+
+const route = createRouter();
+
+route.get(getHandler);
+route.delete(deleteHandler);
+
+export default route.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
 
 /**
  * @swagger
@@ -143,9 +158,4 @@ export async function deleteHandler(req, res) {
   }
   const responseSuccess = new httpSuccessDeleted(bankStatementId);
   return res.status(responseSuccess.statusCode).json(responseSuccess);
-}
-
-export default async function handler(req, res) {
-  if (req.method === "GET") return getHandler(req, res);
-  if (req.method === "DELETE") return deleteHandler(req, res);
 }

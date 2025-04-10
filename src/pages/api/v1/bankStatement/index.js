@@ -4,9 +4,6 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { NotFoundError } from "errors/http";
-import { deleteHandler } from "./[id]";
-import { getHandler } from "./[id]";
-import fetchHandler from "./fetch/[id]";
 import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bankStatement from "models/bankStatement";
@@ -14,10 +11,7 @@ import bank from "models/bank";
 
 const route = createRouter();
 
-route.get(getHandler);
-route.get(fetchHandler);
 route.post(postHandler);
-route.delete(deleteHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
