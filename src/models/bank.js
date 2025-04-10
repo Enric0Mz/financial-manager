@@ -35,15 +35,12 @@ async function update(id, name) {
 }
 
 async function remove(id) {
-  try {
-    await prisma.bank.delete({
-      where: {
-        id: id,
-      },
-    });
-  } catch {
-    return new NotFoundError(id);
-  }
+  await findUnique(id);
+  await prisma.bank.delete({
+    where: {
+      id: id,
+    },
+  });
   return new httpSuccessDeleted(`with id ${id}`);
 }
 
