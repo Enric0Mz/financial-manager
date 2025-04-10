@@ -34,5 +34,19 @@ describe("POST /api/v1/year", () => {
       expect(response.status).toBe(409);
       expect(responseBody.name).toBe("conflict");
     });
+
+    test("Creating year out of range", async () => {
+      const year = 333;
+      const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const responseBody = await response.json();
+      console.log(responseBody);
+      expect(response.status).toBe(422);
+      expect(responseBody.name).toBe("unprocessable entity");
+    });
   });
 });

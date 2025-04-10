@@ -2,6 +2,7 @@ import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
+import { validateAndParseAmount } from "helpers/validators";
 
 async function findMany(bankStatementId) {
   return await prisma.extraIncome.findMany({
@@ -14,20 +15,25 @@ async function findMany(bankStatementId) {
 }
 
 async function findUnique(id) {
-  return await prisma.extraIncome.findUnique({
+  const result = await prisma.extraIncome.findUnique({
     where: { id },
     include: {
       bankStatement: true,
     },
   });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
 }
 
 async function create(payload, bankStatementId) {
+  const fixedAmount = validateAndParseAmount(payload.amount);
   try {
     const result = await prisma.extraIncome.create({
       data: {
         name: payload.name,
-        amount: payload.amount,
+        amount: fixedAmount,
         bankStatementId,
       },
     });
@@ -38,11 +44,14 @@ async function create(payload, bankStatementId) {
       result,
     );
   } catch {
-    return new NotFoundError(bankStatementId);
+    throw new NotFoundError(bankStatementId);
   }
 }
 
 async function update(payload, id) {
+  if (payload.amount !== undefined) {
+    payload.amount = validateAndParseAmount(payload.amount);
+  }
   const existingExtraIncome = await findUnique(id);
 
   const { name, amount } = existingExtraIncome;

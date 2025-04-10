@@ -37,13 +37,25 @@ describe("PATCH /api/v1/expense/debit", () => {
         total: 241.08,
       };
 
+      const yearMonth = {
+        month: "January",
+        year: 2025,
+      };
+
+      const getBankStatementResponse = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+      );
+      const getBankStatementResponseBody =
+        await getBankStatementResponse.json();
+
       const expenseResponse = await fetch(
-        `${process.env.BASE_API_URL}/expense/debit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/debit/${getBankStatementResponseBody.expenses[0].id}`,
       );
       const expenseResponseBody = await expenseResponse.json();
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/debit/${expenseResponseBody.data[0].id}`,
+        `${process.env.BASE_API_URL}/expense/debit/${expenseResponseBody.id}`,
         {
           method: "PATCH",
           headers: {
