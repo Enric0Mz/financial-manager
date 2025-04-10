@@ -72,7 +72,10 @@ export const ListOfBankStatements = {
   type: "object",
   properties: {
     data: {
-      $ref: "#/components/schemas/BankStatement",
+      type: "array",
+      items: {
+        $ref: "#/components/schemas/BankStatement",
+      },
     },
   },
 };

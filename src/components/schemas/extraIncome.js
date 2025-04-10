@@ -31,7 +31,10 @@ export const ListOfExtraIncome = {
   type: "object",
   properties: {
     data: {
-      $ref: "#/components/schemas/ExtraIncome",
+      type: "array",
+      items: {
+        $ref: "#/components/schemas/ExtraIncome",
+      },
     },
   },
 };
