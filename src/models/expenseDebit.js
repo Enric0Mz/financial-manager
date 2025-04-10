@@ -25,7 +25,7 @@ async function findUnique(id) {
     },
   });
   if (!result) {
-    return new NotFoundError(id);
+    throw new NotFoundError(id);
   }
   return result;
 }
