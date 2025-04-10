@@ -1,5 +1,9 @@
 import prisma from "infra/database.js";
-import { ConflictError, NotFoundError } from "errors/http";
+import {
+  ConflictError,
+  NotFoundError,
+  UnprocessableEntityError,
+} from "errors/http";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 
 async function findMany() {
@@ -19,6 +23,7 @@ async function findUnique(id) {
 }
 
 async function create(id) {
+  validateYearRange(id);
   try {
     const result = await prisma.year.create({
       data: {
@@ -28,6 +33,17 @@ async function create(id) {
     return new httpSuccessCreated(`value ${id} inserted into database`, result);
   } catch (err) {
     throw new ConflictError(err, id);
+  }
+
+  function validateYearRange(year) {
+    const isYearValid = year >= 1900 && year <= 2098;
+    const errorMessage = "Invalid in year range of (1899 <> 2099)";
+    if (!isYearValid) {
+      throw new UnprocessableEntityError(
+        errorMessage,
+        `${year}, that is ${errorMessage}`,
+      );
+    }
   }
 }
 
