@@ -24,7 +24,7 @@ export default route.handler({
  *   "/api/v1/expense/debit/{expenseId}": {
  *     "get": {
  *       "tags": ["Expense - Debit"],
- *       "summary": "TODO: change to fetch",
+ *       "summary": "Get debit expense",
  *       "parameters": [
  *      {
  *       "name": "expenseId",
@@ -66,11 +66,11 @@ export default route.handler({
 
 async function getHandler(req, res) {
   const query = req.query;
-  const bankStatementId = parseInt(query.id);
+  const expenseId = parseInt(query.id);
 
-  const result = await expenseDebit.findMany(bankStatementId);
+  const result = await expenseDebit.findUnique(expenseId);
 
-  return res.status(200).json({ data: result });
+  return res.status(200).json(result);
 }
 
 /**

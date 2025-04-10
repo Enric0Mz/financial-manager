@@ -1,19 +1,22 @@
+import { validateAndParseAmount } from "helpers/validators";
 import prisma from "infra/database.js";
 
 async function updateBalance(amount, id) {
+  const fixedAmount = validateAndParseAmount(amount);
   await prisma.bankBankStatement.update({
     where: { id },
     data: {
-      balance: amount,
+      balance: fixedAmount,
     },
   });
 }
 
 async function incrementBalance(amount, id) {
+  const fixedAmount = validateAndParseAmount(amount);
   await prisma.bankBankStatement.update({
     where: { id },
     data: {
-      balance: { increment: amount },
+      balance: { increment: fixedAmount },
     },
   });
 }

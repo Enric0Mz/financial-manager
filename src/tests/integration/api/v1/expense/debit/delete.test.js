@@ -31,13 +31,25 @@ beforeAll(async () => {
 describe("DELETE /api/v1/expense/debit", () => {
   describe("Anonymous user", () => {
     test("Deleting expense", async () => {
+      const yearMonth = {
+        month: "January",
+        year: 2025,
+      };
+
+      const getBankStatementResponse = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+      );
+      const getBankStatementResponseBody =
+        await getBankStatementResponse.json();
+
       const expenseResponse = await fetch(
-        `${process.env.BASE_API_URL}/expense/debit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/debit/${getBankStatementResponseBody.expenses[0].id}`,
       );
       const expenseResponseBody = await expenseResponse.json();
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/debit/${expenseResponseBody.data[0].id}`,
+        `${process.env.BASE_API_URL}/expense/debit/${expenseResponseBody.id}`,
         {
           method: "DELETE",
           headers: {
@@ -50,7 +62,7 @@ describe("DELETE /api/v1/expense/debit", () => {
       expect(response.status).toBe(200);
       expect(responseBody.name).toBe("deleted");
       expect(responseBody.message).toBe(
-        `value with id ${expenseResponseBody.data[0].id} deleted successfuly`,
+        `value with id ${expenseResponseBody.id} deleted successfuly`,
       );
     });
   });

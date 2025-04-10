@@ -23,8 +23,8 @@ describe("POST /api/v1/extraIncome", () => {
         year: 2025,
       };
       const getBankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(yearMonth),
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
       );
       const getBankStatementResponseBody =
         await getBankStatementResponse.json();
@@ -36,7 +36,7 @@ describe("POST /api/v1/extraIncome", () => {
       };
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
+        `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,
         {
           method: "POST",
           headers: {

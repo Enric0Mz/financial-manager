@@ -7,7 +7,6 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
   const bankName = "Itau";
@@ -24,6 +23,8 @@ beforeAll(async () => {
   );
   bankStatementData = bankStatement.data;
 });
+
+const year = 2025;
 
 const expense1 = { total: 543.12 };
 
@@ -79,7 +80,7 @@ describe("POST /api/v1/expense/credit", () => {
       expect(responseBody.name).toBe("created");
 
       const bankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/`,
+        `${process.env.BASE_API_URL}/bank-statement/fetch/${year}`,
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
 

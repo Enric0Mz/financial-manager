@@ -43,8 +43,8 @@ describe("GET /api/v1/expense/credit", () => {
       };
 
       const getBankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(yearMonth),
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
       );
       const getBankStatementResponseBody =
         await getBankStatementResponse.json();

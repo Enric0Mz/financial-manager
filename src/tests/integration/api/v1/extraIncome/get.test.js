@@ -36,7 +36,7 @@ describe("GET /api/v1/extraIncome", () => {
   describe("Anonymous user", () => {
     test("Fetching extra income", async () => {
       const response = await fetch(
-        `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
+        `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,
       );
       const responseBody = await response.json();
 
@@ -52,8 +52,8 @@ describe("GET /api/v1/extraIncome", () => {
         month: "January",
       };
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(yearMonth),
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
       );
       const responseBody = await response.json();
 

@@ -28,14 +28,14 @@ describe("DELETE /api/v1/extraIncome", () => {
   describe("Anonymous user", () => {
     test("Deleting extra income", async () => {
       const extraIncomeResponse = await fetch(
-        `${process.env.BASE_API_URL}/extraIncome/${bankStatementId}`,
+        `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,
       );
       const extraIncomeResponseBody = await extraIncomeResponse.json();
 
       const extraIncomeId = extraIncomeResponseBody.data[0].id;
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/extraIncome/${extraIncomeId}`,
+        `${process.env.BASE_API_URL}/extra-income/${extraIncomeId}`,
         {
           method: "DELETE",
           headers: {
@@ -57,8 +57,8 @@ describe("DELETE /api/v1/extraIncome", () => {
         month: "January",
       };
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement?` +
-          new URLSearchParams(yearMonth),
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
       );
       const responseBody = await response.json();
 
