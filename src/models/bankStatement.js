@@ -1,7 +1,7 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
 import { httpSuccessCreated } from "helpers/httpSuccess";
-import { UnprocessableEntityError } from "errors/http";
+import { NotFoundError, UnprocessableEntityError } from "errors/http";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -13,7 +13,7 @@ async function findFirst() {
 
 async function findUnique(month, year) {
   const monthId = Month[month];
-  return await prisma.bankStatement.findFirst({
+  const result = await prisma.bankStatement.findFirst({
     // Always will find unique here
     where: {
       yearMonth: {
@@ -33,6 +33,10 @@ async function findUnique(month, year) {
       },
     },
   });
+  if (!result) {
+    throw new NotFoundError(`[${month}, ${year}]`);
+  }
+  return result;
 }
 
 async function findById(id) {
