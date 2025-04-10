@@ -20,7 +20,7 @@ export default route.handler({
 /**
  * @swagger
  * {
- *   "/api/v1/extraIncome/{bankStatementId}": {
+ *   "/api/v1/extra-income/{bankStatementId}": {
  *     "get": {
  *       "tags": ["Extra Income"],
  *       "summary": "List extra incomes",
@@ -73,7 +73,7 @@ async function getHandler(req, res) {
 /**
  * @swagger
  * {
- *   "/api/v1/extraIncome/{bankStatementId}": {
+ *   "/api/v1/extra-income/{bankStatementId}": {
  *     "post": {
  *       "tags": ["Extra Income"],
  *       "summary": "Create extra income",
@@ -139,7 +139,7 @@ async function postHandler(req, res) {
 /**
  * @swagger
  * {
- *   "/api/v1/extraIncome/{extraIncomeId}": {
+ *   "/api/v1/extra-income/{extraIncomeId}": {
  *     "patch": {
  *       "tags": ["Extra Income"],
  *       "summary": "Update extra income",
@@ -205,7 +205,7 @@ async function patchHandler(req, res) {
 /**
  * @swagger
  * {
- *   "/api/v1/extraIncome/{extraIncomeId}": {
+ *   "/api/v1/extra-income/{extraIncomeId}": {
  *     "delete": {
  *       "tags": ["Extra Income"],
  *       "summary": "Delete extra income",

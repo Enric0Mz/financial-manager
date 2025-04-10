@@ -21,7 +21,7 @@ export default route.handler({
 /**
  * @swagger
  * {
- *   "/api/v1/bankStatement": {
+ *   "/api/v1/bank-statement": {
  *     "post": {
  *       "tags": ["Bank Statement"],
  *       "summary": "Create bank statement",

@@ -17,7 +17,7 @@ export default route.handler({
 /**
  * @swagger
  * {
- *   "/api/v1/bankStatement/fetch/{yearNumber}": {
+ *    "/api/v1/bank-statement/fetch/{yearNumber}": {
  *     "get": {
  *       "tags": ["Bank Statement"],
  *       "summary": "List bank statements",

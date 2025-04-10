@@ -21,7 +21,7 @@ export default route.handler({
 /**
  * @swagger
  * {
- *   "/api/v1/bankStatement/{yearNumber}": {
+ *    "/api/v1/bank-statement/{yearNumber}": {
  *     "get": {
  *       "tags": ["Bank Statement"],
  *       "summary": "get bank statement",
@@ -99,7 +99,7 @@ export async function getHandler(req, res) {
 /**
  * @swagger
  * {
- *   "/api/v1/bankStatement/{bankStatementId}": {
+ *    "/api/v1/bank-statement/{bankStatementId}": {
  *     "delete": {
  *       "tags": ["Bank Statement"],
  *       "summary": "Delete bank statement",
