@@ -1,4 +1,19 @@
 import bank from "models/bank";
+import { createRouter } from "next-connect";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
+
+const route = createRouter();
+
+route.put(putHandler);
+route.delete(deleteHandler);
+
+export default route.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
 
 /**
  * @swagger
@@ -120,9 +135,4 @@ export async function deleteHandler(req, res) {
     return res.status(result.statusCode).json(result);
   }
   return res.status(result.statusCode).json(result);
-}
-
-export default function handler(req, res) {
-  if (req.method === "PUT") return putHandler(req, res);
-  if (req.method === "DELETE") return deleteHandler(req, res);
 }
