@@ -44,7 +44,7 @@ describe("GET /api/v1/bankStatement/{id}", () => {
 
     test("Fetching bank statement", async () => {
       const response = await fetch(
-        `${process.env.BASE_API_URL}/bankStatement/${year}`,
+        `${process.env.BASE_API_URL}/bankStatement/fetch/${year}`,
       );
       const responseBody = await response.json();
 

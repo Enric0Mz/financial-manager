@@ -41,8 +41,15 @@ async function findById(id) {
   });
 }
 
-async function findMany() {
+async function findMany(yearNumber) {
   return await prisma.bankStatement.findMany({
+    where: {
+      yearMonth: {
+        is: {
+          yearId: parseInt(yearNumber),
+        },
+      },
+    },
     include: {
       salary: true,
       expenses: true,

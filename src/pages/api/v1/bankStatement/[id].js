@@ -9,14 +9,49 @@ import bankStatement from "models/bankStatement";
  *   "/api/v1/bankStatement/{yearNumber}": {
  *     "get": {
  *       "tags": ["Bank Statement"],
- *       "summary": "List bankStatements",
+ *       "summary": "get bank statement",
+ *        "parameters": [
+ *         {
+ *           "name": "yearNumber",
+ *           "in": "path",
+ *           "description": "Number of year",
+ *           "required": true,
+ *           "schema": {
+ *             "type": "integer",
+ *             "format": "int64"
+ *           }
+ *         },
+ *        {
+ *          "name": "month",
+ *          "in": "query",
+ *          "description": "Month of the year",
+ *          "required": true,
+ *          "schema": {
+ *            "type": "string",
+ *            "enum": [
+ *              "January",
+ *              "February",
+ *              "March",
+ *              "April",
+ *              "May",
+ *              "June",
+ *              "July",
+ *              "August",
+ *              "September",
+ *              "October",
+ *              "November",
+ *              "December"
+ *            ]
+ *          }
+ *        }
+ *       ],
  *       "responses": {
  *         "200": {
  *           "description": "Successful operation",
  *           "content": {
  *             "application/json": {
  *               "schema": {
- *                 "$ref": "#/components/schemas/ListOfBankStatements"
+ *                 "$ref": "#/components/schemas/BankStatement"
  *               }
  *             }
  *           }
@@ -41,10 +76,6 @@ export async function getHandler(req, res) {
   const queryParams = req.query;
   const { id, month } = queryParams;
 
-  if (!month) {
-    const result = await bankStatement.findMany();
-    return res.status(200).json({ data: result });
-  }
   const result = await bankStatement.findUnique(month, id);
 
   return res.status(200).json(result);
