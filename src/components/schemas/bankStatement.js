@@ -56,7 +56,7 @@ export const BankStatement = {
     expenses: {
       type: "object",
       example: {
-        todo: "add expense object here",
+        $ref: "#/components/schemas/Expense",
       },
     },
     banks: {
