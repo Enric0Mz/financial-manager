@@ -53,7 +53,7 @@ model Expense {
   bankBankStatementId Int?
   bankBankStatement   BankBankStatement? @relation(fields: [bankBankStatementId], references: [id])
   bankStatementId     Int
-  bankStatement       BankStatement      @relation(fields: [bankStatementId], references: [id])
+  bankStatement       BankStatement      @relation(fields: [bankStatementId], references: [id], onDelete: Cascade)
 }
 
 model BankStatement {
@@ -79,7 +79,7 @@ model BankBankStatement {
   id              Int           @id @default(autoincrement())
   bank            Bank          @relation(fields: [bankId], references: [id])
   bankId          Int
-  bankStatement   BankStatement @relation(fields: bankStatementId, references: [id])
+  bankStatement   BankStatement @relation(fields: bankStatementId, references: [id], onDelete: Cascade)
   bankStatementId Int
   balance         Float         @default(0)
   expenses        Expense[]
@@ -98,7 +98,7 @@ model ExtraIncome {
   amount        Float
   createdAt     DateTime        @default(now())
   bankStatementId Int
-  bankStatement BankStatement @relation(fields: [bankStatementId], references: [id])
+  bankStatement BankStatement @relation(fields: [bankStatementId], references: [id], onDelete: Cascade)
 }
 
 enum MonthName {
