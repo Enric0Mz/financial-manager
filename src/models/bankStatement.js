@@ -1,6 +1,6 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
-import { httpSuccessCreated } from "helpers/httpSuccess";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
 
@@ -41,9 +41,13 @@ async function findUnique(month, year) {
 }
 
 async function findById(id) {
-  return await prisma.bankStatement.findUnique({
+  const result = await prisma.bankStatement.findUnique({
     where: { id },
   });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
 }
 
 async function findMany(yearNumber) {
@@ -235,6 +239,16 @@ async function updateWithExpense(expense, id, isDebit) {
   }
 }
 
+async function remove(id) {
+  await findById(id);
+
+  await prisma.bankStatement.delete({
+    where: { id },
+  });
+
+  return new httpSuccessDeleted(id);
+}
+
 const bankStatement = {
   create,
   findFirst,
@@ -249,6 +263,7 @@ const bankStatement = {
   updateBalanceForExtraIncome,
   updateBalanceReal,
   updateDebitBalance,
+  remove,
 };
 
 export default bankStatement;
