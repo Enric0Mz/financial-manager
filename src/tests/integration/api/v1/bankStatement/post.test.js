@@ -252,5 +252,30 @@ describe("POST /api/v1/bankStatement", () => {
         responseBody.balanceReal + responseBody.salary.amount,
       );
     });
+
+    test("Trying to create bank statement that already exists", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(yearMonth),
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(409);
+      expect(responseBody.name).toBe("conflict");
+      expect(responseBody.message).toBe(
+        `Value BankStatement with [${yearMonth.month}, ${yearMonth.year}] already exists on table. Insert other value`,
+      );
+    });
   });
 });

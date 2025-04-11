@@ -1,3 +1,4 @@
+import { NotFoundError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
 import prisma from "infra/database.js";
 
@@ -21,9 +22,20 @@ async function incrementBalance(amount, id) {
   });
 }
 
+async function findUnique(id) {
+  const result = await prisma.bankBankStatement.findUnique({
+    where: { id },
+  });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
+}
+
 const bankBankStatement = {
   updateBalance,
   incrementBalance,
+  findUnique,
 };
 
 export default bankBankStatement;

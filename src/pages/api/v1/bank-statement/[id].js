@@ -1,6 +1,3 @@
-import prisma from "@infra/database";
-import { NotFoundError } from "errors/http";
-import { httpSuccessDeleted } from "helpers/httpSuccess";
 import bankStatement from "models/bankStatement";
 import { createRouter } from "next-connect";
 import {
@@ -146,16 +143,7 @@ export async function deleteHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
 
-  try {
-    await prisma.bankStatement.delete({
-      where: {
-        id: bankStatementId,
-      },
-    });
-  } catch {
-    const responseError = new NotFoundError(bankStatementId);
-    return res.status(responseError.statusCode).json(responseError);
-  }
-  const responseSuccess = new httpSuccessDeleted(bankStatementId);
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  const result = await bankStatement.remove(bankStatementId);
+
+  return res.status(result.statusCode).json(result);
 }
