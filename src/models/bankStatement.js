@@ -3,6 +3,7 @@ import Month from "./enum/month";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
+import bankBankStatement from "./bankBankStatement";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -38,6 +39,20 @@ async function findUnique(month, year) {
     throw new NotFoundError(`[${month}, ${year}]`);
   }
   return result;
+}
+
+async function validateIfExists(month, year) {
+  const monthId = Month[month];
+  return await prisma.bankStatement.findFirst({
+    where: {
+      yearMonth: {
+        is: {
+          monthId: monthId,
+          yearId: parseInt(year),
+        },
+      },
+    },
+  });
 }
 
 async function findById(id) {
@@ -191,7 +206,7 @@ async function updateBalanceReal(amount, id) {
 async function updateWithExpense(expense, id, isDebit) {
   const { name, description, total, bankBankStatementId } = expense;
 
-  searchForMissingFields(expense, isDebit);
+  await searchForMissingFields(expense, isDebit);
 
   const fixedAmount = validateAndParseAmount(total);
 
@@ -220,7 +235,7 @@ async function updateWithExpense(expense, id, isDebit) {
     lastExpense,
   );
 
-  function searchForMissingFields(fields, isDebit) {
+  async function searchForMissingFields(fields, isDebit) {
     const missingFields = [];
 
     if (!fields.name) missingFields.push("name");
@@ -228,6 +243,9 @@ async function updateWithExpense(expense, id, isDebit) {
     if (!isDebit) {
       if (!fields.bankBankStatementId)
         missingFields.push("bankBankStatementId");
+      else {
+        await bankBankStatement.findUnique(bankBankStatementId);
+      }
     }
 
     if (missingFields.length > 0) {
@@ -264,6 +282,7 @@ const bankStatement = {
   updateBalanceReal,
   updateDebitBalance,
   remove,
+  validateIfExists,
 };
 
 export default bankStatement;

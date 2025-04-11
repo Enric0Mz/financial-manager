@@ -3,7 +3,7 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { NotFoundError } from "errors/http";
+import { ConflictError, NotFoundError } from "errors/http";
 import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bankStatement from "models/bankStatement";
@@ -64,10 +64,20 @@ export default route.handler({
 
 async function postHandler(req, res) {
   const body = req.body;
-  const yearMonthResult = await yearMonth.findFirst(body.month, body.year);
+  const { month, year } = body;
+
+  const yearMonthResult = await yearMonth.findFirst(month, year);
+  const validateIfExists = await bankStatement.validateIfExists(month, year);
+
+  if (validateIfExists) {
+    throw new ConflictError(
+      "bankStatement already found",
+      `BankStatement with [${month}, ${year}]`,
+    );
+  }
 
   if (!yearMonthResult) {
-    const responseError = new NotFoundError(`[${body.year}, ${body.month}]`);
+    const responseError = new NotFoundError(`[${year}, ${month}]`);
     return res.status(responseError.statusCode).json(responseError);
   }
 
