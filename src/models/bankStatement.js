@@ -1,12 +1,9 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
-import {
-  ConflictError,
-  NotFoundError,
-  UnprocessableEntityError,
-} from "errors/http";
+import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
+import bankBankStatement from "./bankBankStatement";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -209,7 +206,7 @@ async function updateBalanceReal(amount, id) {
 async function updateWithExpense(expense, id, isDebit) {
   const { name, description, total, bankBankStatementId } = expense;
 
-  searchForMissingFields(expense, isDebit);
+  await searchForMissingFields(expense, isDebit);
 
   const fixedAmount = validateAndParseAmount(total);
 
@@ -238,7 +235,7 @@ async function updateWithExpense(expense, id, isDebit) {
     lastExpense,
   );
 
-  function searchForMissingFields(fields, isDebit) {
+  async function searchForMissingFields(fields, isDebit) {
     const missingFields = [];
 
     if (!fields.name) missingFields.push("name");
@@ -246,6 +243,9 @@ async function updateWithExpense(expense, id, isDebit) {
     if (!isDebit) {
       if (!fields.bankBankStatementId)
         missingFields.push("bankBankStatementId");
+      else {
+        await bankBankStatement.findUnique(bankBankStatementId);
+      }
     }
 
     if (missingFields.length > 0) {

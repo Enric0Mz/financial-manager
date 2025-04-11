@@ -119,5 +119,31 @@ describe("POST /api/v1/expense/credit", () => {
         "fields [total,bankBankStatementId] not found or found in incorrect format",
       );
     });
+
+    test("Creating credit expense with unexistent bank bank statement id", async () => {
+      const expense = {
+        name: "Compra mercado",
+        description: "Compra de mercado da semana",
+        amount: 10.43,
+        bankBankStatementId: 333,
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(expense),
+        },
+      );
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(404);
+      expect(responseBody.name).toBe("not found");
+      expect(responseBody.message).toBe(
+        `Value ${expense.bankBankStatementId} does not exist on table. Try another value`,
+      );
+    });
   });
 });
