@@ -20,7 +20,7 @@ export default route.handler({
  *   "/api/v1/user": {
  *     "post": {
  *       "tags": ["User"],
- *       "summary": "Create bank user",
+ *       "summary": "Create user",
  *       "requestBody": {
  *          "description": "User Body",
  *          "content": {

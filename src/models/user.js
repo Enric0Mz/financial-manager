@@ -1,7 +1,8 @@
 import prisma from "@infra/database";
-import { generatePasswordHash, comparePasswords } from "@infra/security/bcrypt";
-import { UnprocessableEntityError } from "errors/http";
+import { generatePasswordHash } from "@infra/security/bcrypt";
+import { IncorrectPasswordError } from "errors/http";
 import { httpSuccessCreated } from "helpers/httpSuccess";
+import { passwordRules } from "helpers/validators";
 
 async function create(payload) {
   const { username, password, email } = payload;
@@ -23,10 +24,10 @@ async function create(payload) {
   return new httpSuccessCreated(`User ${result.username} created`, result);
 
   function validatePassword(password) {
-    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{5,}$/;
-    const result = regex.test(password);
-    if (!result) {
-      throw new UnprocessableEntityError("Invalid password", "password");
+    for (const rule of passwordRules) {
+      if (!rule.test(password)) {
+        throw new IncorrectPasswordError(rule.message);
+      }
     }
   }
 }
