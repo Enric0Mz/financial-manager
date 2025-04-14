@@ -23,6 +23,7 @@ async function clearDatabase() {
   await prisma.bankBankStatement.deleteMany({
     where: {},
   });
+  await prisma.user.deleteMany();
   await prisma.bank.deleteMany({
     where: {},
   });
