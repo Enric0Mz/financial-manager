@@ -28,6 +28,7 @@ import {
   ExpenseUpdate,
   DebitExpenseCreate,
 } from "components/schemas/expense";
+import { User, UserCreate } from "components/schemas/User";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -72,6 +73,8 @@ export async function getStaticProps() {
           CreditExpenseCreate,
           ExpenseUpdate,
           DebitExpenseCreate,
+          User,
+          UserCreate,
         },
       },
       tags: [
@@ -106,6 +109,10 @@ export async function getStaticProps() {
         {
           name: "Expense - Debit",
           description: "Manage your debit expenses",
+        },
+        {
+          name: "User",
+          description: "Manage your user",
         },
       ],
     },

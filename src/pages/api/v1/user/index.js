@@ -14,6 +14,50 @@ export default route.handler({
   onError: onInternalServerErrorHandler,
 });
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/user": {
+ *     "post": {
+ *       "tags": ["User"],
+ *       "summary": "Create bank user",
+ *       "requestBody": {
+ *          "description": "User Body",
+ *          "content": {
+ *            "application/json": {
+ *              "schema": {
+ *                "$ref": "#/components/schemas/UserCreate"
+ *              }
+ *            }
+ *          }
+ *        },
+ *       "responses": {
+ *         "201": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function postHandler(req, res) {
   const payload = req.body;
 
