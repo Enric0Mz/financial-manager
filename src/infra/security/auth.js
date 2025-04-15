@@ -1,3 +1,5 @@
+/*eslint no-undef: 0*/
+
 import jwt from "jsonwebtoken";
 
 export async function generateJwtAccessToken(userPayload) {
