@@ -76,7 +76,19 @@ export async function getStaticProps() {
           User,
           UserCreate,
         },
+        securitySchemes: {
+          BearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
       },
+      security: [
+        {
+          BearerAuth: [],
+        },
+      ],
       tags: [
         {
           name: "Year",

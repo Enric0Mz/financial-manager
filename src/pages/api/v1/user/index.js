@@ -21,6 +21,7 @@ export default route.handler({
  *     "post": {
  *       "tags": ["User"],
  *       "summary": "Create user",
+ *        "security": [],
  *       "requestBody": {
  *          "description": "User Body",
  *          "content": {
