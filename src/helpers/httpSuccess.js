@@ -47,3 +47,21 @@ export class httpSuccessDeleted {
     };
   }
 }
+
+export class HttpSuccessAuthenticated {
+  constructor(data) {
+    (this.name = "authenticated"),
+      (this.message = "User authenticated successfuly"),
+      (this.statusCode = 200);
+    this.data = data;
+  }
+
+  toJson() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+      data: this.data,
+    };
+  }
+}

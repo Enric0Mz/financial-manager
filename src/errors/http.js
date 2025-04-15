@@ -79,6 +79,24 @@ export class UnprocessableEntityError extends Error {
   }
 }
 
+export class InvalidPasswordFormatError extends Error {
+  constructor(cause) {
+    super({
+      cause,
+    });
+    this.message = cause;
+    this.name = "invalid password";
+    this.statusCode = 422;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}
+
 export class IncorrectPasswordError extends Error {
   constructor(cause) {
     super({
@@ -86,7 +104,7 @@ export class IncorrectPasswordError extends Error {
     });
     this.message = cause;
     this.name = "incorrect password";
-    this.statusCode = 422;
+    this.statusCode = 401;
   }
   toJSON() {
     return {
