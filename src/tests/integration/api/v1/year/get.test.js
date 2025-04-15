@@ -14,6 +14,7 @@ describe("GET /api/v1/year/", () => {
     test("Fetching years", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year`);
       const responseBody = await response.json();
+      console.log(responseBody);
 
       expect(response.status).toBe(200);
       expect(Array.isArray(responseBody.data)).toBe(true);

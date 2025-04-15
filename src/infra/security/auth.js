@@ -11,3 +11,15 @@ export async function generateJwtAccessToken(userPayload) {
     });
   });
 }
+
+export async function verifyJwtAccessToken(token) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ user });
+      }
+    });
+  });
+}

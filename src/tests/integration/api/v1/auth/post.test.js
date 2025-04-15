@@ -15,7 +15,7 @@ beforeAll(async () => {
 
 describe("POST /api/v1/auth", () => {
   describe("Anonymous user", () => {
-    test("Authenticate with username and password", async () => {
+    test("Authenticate with correct username and password", async () => {
       delete mockUser["email"];
       const response = await fetch(`${process.env.BASE_API_URL}/auth`, {
         method: "POST",
@@ -26,7 +26,6 @@ describe("POST /api/v1/auth", () => {
       });
 
       const responseBody = await response.json();
-      console.log(responseBody);
 
       expect(response.status).toBe(200);
       expect(responseBody.name).toBe("authenticated");

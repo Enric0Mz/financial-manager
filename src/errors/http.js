@@ -102,8 +102,26 @@ export class IncorrectPasswordError extends Error {
     super({
       cause,
     });
-    this.message = cause;
+    this.message = "Authorization token missing or invalid";
     this.name = "incorrect password";
+    this.statusCode = 401;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class UnauthorizedError extends Error {
+  constructor(cause) {
+    super({
+      cause,
+    });
+    this.message = cause;
+    this.name = "unauthorized";
     this.statusCode = 401;
   }
   toJSON() {
