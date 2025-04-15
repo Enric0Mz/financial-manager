@@ -21,7 +21,6 @@ describe("POST api/v1/user", () => {
         body: JSON.stringify(userBody),
       });
       const responseBody = await response.json();
-      console.log(responseBody);
 
       expect(response.status).toBe(201);
       expect(responseBody.name).toEqual("created");
@@ -44,7 +43,6 @@ describe("POST api/v1/user", () => {
         body: JSON.stringify(userBody),
       });
       const responseBody = await response.json();
-      console.log(responseBody.message);
 
       expect(response.status).toBe(422);
       expect(responseBody.message).toBe(
@@ -66,7 +64,6 @@ describe("POST api/v1/user", () => {
         body: JSON.stringify(userBody),
       });
       const responseBody = await response.json();
-      console.log(responseBody.message);
 
       expect(response.status).toBe(422);
       expect(responseBody.message).toBe(
@@ -87,7 +84,6 @@ describe("POST api/v1/user", () => {
         body: JSON.stringify(userBody),
       });
       const responseBody = await response.json();
-      console.log(responseBody.message);
 
       expect(response.status).toBe(422);
       expect(responseBody.message).toBe(
@@ -109,7 +105,6 @@ describe("POST api/v1/user", () => {
         body: JSON.stringify(userBody),
       });
       const responseBody = await response.json();
-      console.log(responseBody.message);
 
       expect(response.status).toBe(422);
       expect(responseBody.message).toBe(
@@ -131,7 +126,6 @@ describe("POST api/v1/user", () => {
         body: JSON.stringify(userBody),
       });
       const responseBody = await response.json();
-      console.log(responseBody.message);
 
       expect(response.status).toBe(422);
       expect(responseBody.message).toBe(
