@@ -8,6 +8,7 @@ import bank from "models/bank";
 import bankStatement from "models/bankStatement";
 import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
+import user from "models/user";
 
 async function createYear(yearId) {
   return await year.create(yearId);
@@ -63,6 +64,15 @@ async function createDebitExpense(expense, bankStatementId) {
   return await bankStatement.updateWithExpense(expense, bankStatementId, true);
 }
 
+async function createUser(userPayload) {
+  const mockUser = {
+    name: "TestUser",
+    email: "t@este.com",
+    password: "Pass@123",
+  };
+  return await user.create(userPayload || mockUser);
+}
+
 const setup = {
   createYear,
   createAllMonths,
@@ -73,6 +83,7 @@ const setup = {
   createExtraIncome,
   createCreditExpense,
   createDebitExpense,
+  createUser,
 };
 
 export default setup;
