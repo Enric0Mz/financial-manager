@@ -9,6 +9,7 @@ import bankStatement from "models/bankStatement";
 import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 import user from "models/user";
+import { generateJwtAccessToken } from "infra/security/auth";
 
 async function createYear(yearId) {
   return await year.create(yearId);
@@ -73,6 +74,14 @@ async function createUser(userPayload) {
   return await user.create(userPayload || mockUser);
 }
 
+async function generateTestToken() {
+  const mockUser = {
+    username: "MockUsername",
+    email: "mock@email.com",
+  };
+  return await generateJwtAccessToken(mockUser);
+}
+
 const setup = {
   createYear,
   createAllMonths,
@@ -84,6 +93,7 @@ const setup = {
   createCreditExpense,
   createDebitExpense,
   createUser,
+  generateTestToken,
 };
 
 export default setup;
