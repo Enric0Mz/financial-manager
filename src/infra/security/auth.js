@@ -4,15 +4,16 @@ import jwt from "jsonwebtoken";
 
 export async function generateJwtAccessToken(userPayload) {
   return new Promise((resolve, reject) => {
+    const expiresIn = 15 * 60; // 15m;
     jwt.sign(
       userPayload,
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn },
       (err, token) => {
         if (err) {
           reject(err);
         } else {
-          resolve({ accessToken: token });
+          resolve({ accessToken: token, expiresIn });
         }
       },
     );
@@ -21,6 +22,7 @@ export async function generateJwtAccessToken(userPayload) {
 
 export async function generateJwtRefreshToken(userPayload) {
   return new Promise((resolve, reject) => {
+    const expiresIn = 1000 * 60 * 60 * 24; // 1d
     jwt.sign(
       userPayload,
       process.env.REFRESH_TOKEN_SECRET,
@@ -29,7 +31,7 @@ export async function generateJwtRefreshToken(userPayload) {
         if (err) {
           reject(err);
         } else {
-          resolve({ refreshToken: token });
+          resolve({ refreshToken: token, expiresIn });
         }
       },
     );

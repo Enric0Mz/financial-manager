@@ -19,24 +19,24 @@ async function createRefreshToken(token, userId) {
   });
 }
 
-async function generateTokens(usernamePayload, password) {
-  const { id, username, email } = await user.validateUser(
-    usernamePayload,
-    password,
-  );
+async function generateTokens(username, password) {
+  const { id } = await user.validateUser(username, password);
 
-  const { accessToken } = await generateJwtAccessToken({
-    username,
-    email,
+  const { accessToken, expiresIn } = await generateJwtAccessToken({
+    id,
   });
   const { refreshToken } = await generateJwtRefreshToken({
-    username,
-    email,
+    id,
   });
 
   await createRefreshToken(refreshToken, id);
 
-  return new HttpSuccessAuthenticated({ accessToken, refreshToken });
+  return new HttpSuccessAuthenticated({
+    accessToken,
+    refreshToken,
+    expiresIn,
+    type: "Bearer",
+  });
 }
 
 const auth = {
