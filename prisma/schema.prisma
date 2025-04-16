@@ -13,6 +13,7 @@ model User {
   password      String          @db.VarChar(60)
   email         String          @unique
   createdAt     DateTime        @default(now())
+  refreshToken  RefreshToken[]
   bankStatments BankStatement[]
 }
 
@@ -100,6 +101,16 @@ model ExtraIncome {
   createdAt     DateTime        @default(now())
   bankStatementId Int
   bankStatement BankStatement @relation(fields: [bankStatementId], references: [id], onDelete: Cascade)
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid())
+  token      String
+  expiresAt  DateTime
+  revoked    Boolean  @default(false)
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  createdAt  DateTime @default(now())
 }
 
 enum MonthName {
