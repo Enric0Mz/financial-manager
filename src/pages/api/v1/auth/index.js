@@ -2,7 +2,7 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import user from "models/user";
+import auth from "models/auth";
 import { createRouter } from "next-connect";
 
 const route = createRouter();
@@ -18,7 +18,7 @@ async function authenticateHandler(req, res) {
   const body = req.body;
   const { username, password } = body;
 
-  const result = await user.generateAccessToken(username, password);
+  const result = await auth.generateTokens(username, password);
 
   return res.status(result.statusCode).json(result.toJson());
 }

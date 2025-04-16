@@ -5,13 +5,8 @@ import {
   InvalidPasswordFormatError,
   NotFoundError,
 } from "errors/http";
-import {
-  HttpSuccessAuthenticated,
-  httpSuccessCreated,
-} from "helpers/httpSuccess";
+import { httpSuccessCreated } from "helpers/httpSuccess";
 import { passwordRules } from "helpers/validators";
-
-import { generateJwtAccessToken } from "infra/security/auth";
 
 async function findUnique(username) {
   const result = await prisma.user.findUnique({
@@ -32,16 +27,6 @@ async function validateUser(username, password) {
     throw new IncorrectPasswordError("invalid password");
   }
   return user;
-}
-
-async function generateAccessToken(username, password) {
-  const user = await validateUser(username, password);
-
-  const accesstoken = await generateJwtAccessToken({
-    username: user.username,
-    email: user.email,
-  });
-  return new HttpSuccessAuthenticated(accesstoken);
 }
 
 async function create(payload) {
@@ -75,7 +60,6 @@ async function create(payload) {
 const user = {
   create,
   validateUser,
-  generateAccessToken,
 };
 
 export default user;
