@@ -1,11 +1,19 @@
 import prisma from "infra/database";
 import user from "./user";
-import { HttpSuccessAuthenticated } from "helpers/httpSuccess";
-import { generateRefreshTokenHash } from "infra/security/bcrypt";
+import {
+  HttpSuccessAuthenticated,
+  HttpSuccessRefreshed,
+} from "helpers/httpSuccess";
+import {
+  compareRefreshTokens,
+  generateRefreshTokenHash,
+} from "infra/security/bcrypt";
 import {
   generateJwtAccessToken,
   generateJwtRefreshToken,
-} from "@infra/security/auth";
+  verifyJwtRefreshToken,
+} from "infra/security/auth";
+import { UnauthorizedError } from "errors/http";
 
 async function createRefreshToken(token, userId) {
   const hashedToken = await generateRefreshTokenHash(token);
@@ -39,8 +47,44 @@ async function generateTokens(username, password) {
   });
 }
 
+async function findUnique(userId) {
+  const result = await prisma.refreshToken.findFirst({
+    where: { userId },
+  });
+  if (!result) {
+    throw new UnauthorizedError("Invalid or expired refresh token");
+  }
+  return result;
+}
+
+async function refreshSession(refreshToken) {
+  if (!refreshToken) {
+    throw new UnauthorizedError("Refresh token not found");
+  }
+  const user = await verifyJwtRefreshToken(refreshToken);
+  const refreshTokenData = await findUnique(user.id);
+  const hashedRefreshToken = refreshTokenData.token;
+  const validateRefreshToken = await compareRefreshTokens(
+    refreshToken,
+    hashedRefreshToken,
+  );
+  if (!validateRefreshToken) {
+    throw new UnauthorizedError("Invalid or expired refresh token");
+  }
+  const { accessToken, expiresIn } = await generateJwtAccessToken({
+    id: user.id,
+  });
+
+  return new HttpSuccessRefreshed({
+    accessToken,
+    expiresIn,
+    type: "Bearer",
+  });
+}
+
 const auth = {
   generateTokens,
+  refreshSession,
 };
 
 export default auth;

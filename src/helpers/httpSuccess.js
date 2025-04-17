@@ -65,3 +65,21 @@ export class HttpSuccessAuthenticated {
     };
   }
 }
+
+export class HttpSuccessRefreshed {
+  constructor(data) {
+    (this.name = "refreshed session"),
+      (this.message = "User refreshed session sucessfuly"),
+      (this.statusCode = 200);
+    this.data = data;
+  }
+
+  toJson() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+      data: this.data,
+    };
+  }
+}

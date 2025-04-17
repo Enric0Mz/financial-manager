@@ -1,5 +1,6 @@
 /*eslint no-undef: 0*/
 
+import { UnauthorizedError } from "errors/http";
 import jwt from "jsonwebtoken";
 
 export async function generateJwtAccessToken(userPayload) {
@@ -54,7 +55,7 @@ export async function verifyJwtRefreshToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) {
-        reject(err);
+        reject(new UnauthorizedError("Invalid or expired token"));
       } else {
         resolve({ user });
       }
