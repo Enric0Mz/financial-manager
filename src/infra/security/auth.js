@@ -41,11 +41,11 @@ export async function generateJwtRefreshToken(userPayload) {
 
 export async function verifyJwtAccessToken(token) {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         reject(err);
       } else {
-        resolve({ user });
+        resolve(payload);
       }
     });
   });

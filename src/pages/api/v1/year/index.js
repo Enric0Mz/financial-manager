@@ -4,11 +4,11 @@ import {
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
 import year from "models/year";
-import authenticateToken from "middlewares/auth";
+import authenticateAccessToken from "middlewares/auth";
 
 const router = createRouter();
 
-router.use(authenticateToken);
+router.use(authenticateAccessToken);
 router.get(getHandler);
 
 export default router.handler({

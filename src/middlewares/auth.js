@@ -1,10 +1,14 @@
 import { verifyJwtAccessToken } from "@infra/security/auth";
-import { UnauthorizedError, UnprocessableEntityError } from "errors/http";
+import {
+  TokenNotFoundError,
+  UnauthorizedError,
+  UnprocessableEntityError,
+} from "errors/http";
 
-export default async function authenticateToken(req, res, next) {
+export default async function authenticateAccessToken(req, res, next) {
   const authHeaders = req.headers["authorization"];
   if (!authHeaders || !authHeaders.startsWith("Bearer ")) {
-    throw new UnauthorizedError("Token missing or not found");
+    throw new TokenNotFoundError("Access token missing or not found");
   }
 
   const token = authHeaders.split(" ")[1];
