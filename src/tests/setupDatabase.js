@@ -9,7 +9,7 @@ import bankStatement from "models/bankStatement";
 import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 import user from "models/user";
-import { generateJwtAccessToken } from "infra/security/auth";
+import auth from "models/auth";
 
 async function createYear(yearId) {
   return await year.create(yearId);
@@ -74,12 +74,14 @@ async function createUser(userPayload) {
   return await user.create(userPayload || mockUser);
 }
 
-async function generateTestToken() {
+async function generateTestTokens() {
   const mockUser = {
     username: "MockUsername",
     email: "mock@email.com",
+    password: "Passw@123",
   };
-  return await generateJwtAccessToken(mockUser);
+  await createUser(mockUser);
+  return await auth.generateTokens(mockUser.username, mockUser.password);
 }
 
 const setup = {
@@ -93,7 +95,7 @@ const setup = {
   createCreditExpense,
   createDebitExpense,
   createUser,
-  generateTestToken,
+  generateTestTokens,
 };
 
 export default setup;

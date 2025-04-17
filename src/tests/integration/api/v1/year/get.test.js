@@ -12,10 +12,10 @@ beforeAll(async () => {
 describe("GET /api/v1/year/", () => {
   describe("Authenticated user", () => {
     test("Fetching years", async () => {
-      const generateToken = await setup.generateTestToken();
+      const generateToken = await setup.generateTestTokens();
       const response = await fetch(`${process.env.BASE_API_URL}/year`, {
         headers: {
-          Authorization: `Bearer ${generateToken.accessToken}`,
+          Authorization: `Bearer ${generateToken.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
