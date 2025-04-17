@@ -132,3 +132,21 @@ export class UnauthorizedError extends Error {
     };
   }
 }
+
+export class TokenNotFoundError extends Error {
+  constructor(cause) {
+    super({
+      cause,
+    });
+    this.message = cause;
+    this.name = "token not found";
+    this.statusCode = 400;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}

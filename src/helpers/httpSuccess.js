@@ -83,3 +83,19 @@ export class HttpSuccessRefreshed {
     };
   }
 }
+
+export class HttpSuccessLoggedOut {
+  constructor() {
+    (this.name = "logout"),
+      (this.message = "User logged out successfully"),
+      (this.statusCode = 200);
+  }
+
+  toJson() {
+    return {
+      name: this.name,
+      message: this.message,
+      status_code: this.statusCode,
+    };
+  }
+}

@@ -2,6 +2,7 @@ import prisma from "infra/database";
 import user from "./user";
 import {
   HttpSuccessAuthenticated,
+  HttpSuccessLoggedOut,
   HttpSuccessRefreshed,
 } from "helpers/httpSuccess";
 import {
@@ -17,12 +18,20 @@ import { UnauthorizedError } from "errors/http";
 
 async function createRefreshToken(token, userId) {
   const hashedToken = await generateRefreshTokenHash(token);
+  const expDate = new Date(Date.now() + 1000 * 60 * 60 * 24); // 1 day,
 
-  return await prisma.refreshToken.create({
-    data: {
+  return await prisma.refreshToken.upsert({
+    where: {
+      userId,
+    },
+    update: {
+      token: hashedToken,
+      expiresAt: expDate,
+    },
+    create: {
       token: hashedToken,
       userId,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day,
+      expiresAt: expDate,
     },
   });
 }
@@ -82,9 +91,18 @@ async function refreshSession(refreshToken) {
   });
 }
 
+async function logout(userId) {
+  await prisma.refreshToken.deleteMany({
+    where: { userId },
+  });
+
+  return new HttpSuccessLoggedOut();
+}
+
 const auth = {
   generateTokens,
   refreshSession,
+  logout,
 };
 
 export default auth;
