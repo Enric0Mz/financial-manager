@@ -8,6 +8,20 @@ import {
 import { httpSuccessCreated } from "helpers/httpSuccess";
 import { passwordRules } from "helpers/validators";
 
+async function findById(id) {
+  const result = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      username: true,
+      email: true,
+    },
+  });
+  if (!result) {
+    throw new NotFoundError(id);
+  }
+  return result;
+}
+
 async function findUnique(username) {
   const result = await prisma.user.findUnique({
     where: { username },
@@ -58,6 +72,7 @@ async function create(payload) {
 }
 
 const user = {
+  findById,
   create,
   validateUser,
 };

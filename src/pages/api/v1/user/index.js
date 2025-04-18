@@ -4,15 +4,25 @@ import {
 } from "helpers/handlers";
 import user from "models/user";
 import { createRouter } from "next-connect";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.get(authenticateAccessToken, getHandler);
 route.post(postHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });
+
+async function getHandler(req, res) {
+  const { id } = req.user;
+
+  const result = await user.findById(id);
+  console.log(result);
+  return res.status(200).json(result);
+}
 
 /**
  * @swagger
