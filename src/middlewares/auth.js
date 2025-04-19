@@ -19,7 +19,7 @@ export default async function authenticateAccessToken(req, res, next) {
   try {
     const user = await verifyJwtAccessToken(token);
     req.user = user;
-    next();
+    return next();
   } catch {
     throw new UnauthorizedError("Invalid or expired token");
   }

@@ -4,8 +4,9 @@ import {
   IncorrectPasswordError,
   InvalidPasswordFormatError,
   NotFoundError,
+  UnprocessableEntityError,
 } from "errors/http";
-import { httpSuccessCreated } from "helpers/httpSuccess";
+import { httpSuccessCreated, httpSuccessUpdated } from "helpers/httpSuccess";
 import { passwordRules } from "helpers/validators";
 
 async function findById(id) {
@@ -72,10 +73,28 @@ async function create(payload) {
   }
 }
 
+async function update(id, username) {
+  await findById(id);
+  console.log(username);
+  console.log("TIPO", typeof username);
+
+  if (typeof username !== "string") {
+    throw new UnprocessableEntityError("incorrect format", username);
+  }
+
+  const result = await prisma.user.update({
+    where: { id },
+    data: { username },
+  });
+
+  return new httpSuccessUpdated(result);
+}
+
 const user = {
   findById,
   create,
   validateUser,
+  update,
 };
 
 export default user;

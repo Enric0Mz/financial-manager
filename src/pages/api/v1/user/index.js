@@ -10,6 +10,7 @@ const route = createRouter();
 
 route.get(authenticateAccessToken, getHandler);
 route.post(postHandler);
+route.put(authenticateAccessToken, putHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
@@ -107,5 +108,12 @@ async function postHandler(req, res) {
 
   const result = await user.create(payload);
 
+  return res.status(result.statusCode).json(result.toJson());
+}
+
+async function putHandler(req, res) {
+  const { id } = req.user;
+  const { username } = req.body;
+  const result = await user.update(id, username);
   return res.status(result.statusCode).json(result.toJson());
 }
