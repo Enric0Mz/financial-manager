@@ -12,9 +12,8 @@ export default async function authenticateAccessToken(req, res, next) {
   }
 
   const token = authHeaders.split(" ")[1];
-
   if (!token) {
-    throw UnprocessableEntityError("invalid token format", "token");
+    throw new UnprocessableEntityError("invalid token format", "token");
   }
 
   try {

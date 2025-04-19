@@ -10,7 +10,6 @@ describe("POST /api/v1/auth/logout", () => {
   describe("Authenticated user", () => {
     test("Loggin out off aplication", async () => {
       const generateTokens = await setup.generateTestTokens();
-      console.log(generateTokens.data.accessToken);
 
       const response = await fetch(`${process.env.BASE_API_URL}/auth`, {
         method: "DELETE",
