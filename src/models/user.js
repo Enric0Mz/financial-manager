@@ -14,6 +14,7 @@ async function findById(id) {
     select: {
       username: true,
       email: true,
+      createdAt: true,
     },
   });
   if (!result) {
