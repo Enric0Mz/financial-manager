@@ -28,7 +28,7 @@ import {
   ExpenseUpdate,
   DebitExpenseCreate,
 } from "components/schemas/expense";
-import { User, UserCreate } from "components/schemas/User";
+import { User, UserCreate, UserUpdate } from "components/schemas/User";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -75,6 +75,7 @@ export async function getStaticProps() {
           DebitExpenseCreate,
           User,
           UserCreate,
+          UserUpdate,
         },
         securitySchemes: {
           BearerAuth: {

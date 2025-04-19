@@ -33,3 +33,13 @@ export const UserCreate = {
     },
   },
 };
+
+export const UserUpdate = {
+  type: "object",
+  properties: {
+    username: {
+      type: "string",
+      example: "ExemploDeNome",
+    },
+  },
+};

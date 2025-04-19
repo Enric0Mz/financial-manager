@@ -111,6 +111,51 @@ async function postHandler(req, res) {
   return res.status(result.statusCode).json(result.toJson());
 }
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/user": {
+ *     "post": {
+ *       "tags": ["User"],
+ *       "summary": "Update user",
+ *        "security": [],
+ *       "requestBody": {
+ *          "description": "User Body",
+ *          "content": {
+ *            "application/json": {
+ *              "schema": {
+ *                "$ref": "#/components/schemas/UserUpdate"
+ *              }
+ *            }
+ *          }
+ *        },
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function putHandler(req, res) {
   const { id } = req.user;
   const { username } = req.body;
