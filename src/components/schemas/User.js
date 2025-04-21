@@ -43,3 +43,17 @@ export const UserUpdate = {
     },
   },
 };
+
+export const UserLogin = {
+  type: "object",
+  properties: {
+    username: {
+      type: "string",
+      examples: "ExemploDeNome",
+    },
+    password: {
+      type: "string",
+      examples: "Senha@123",
+    },
+  },
+};

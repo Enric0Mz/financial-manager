@@ -115,10 +115,9 @@ async function postHandler(req, res) {
  * @swagger
  * {
  *   "/api/v1/user": {
- *     "post": {
+ *     "put": {
  *       "tags": ["User"],
  *       "summary": "Update user",
- *        "security": [],
  *       "requestBody": {
  *          "description": "User Body",
  *          "content": {

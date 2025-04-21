@@ -14,6 +14,51 @@ export default route.handler({
   onError: onInternalServerErrorHandler,
 });
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/auth/refresh": {
+ *     "post": {
+ *       "tags": ["Auth"],
+ *       "summary": "Refresh user login",
+ *       "requestBody": {
+ *         "description": "Refresh token",
+ *         "required": true,
+ *         "content": {
+ *           "application/json": {
+ *             "schema": {
+ *                "$ref": "#/components/schemas/RefreshToken"
+ *              }
+ *            }
+ *         }
+ *       },
+ *       "responses": {
+ *         "200": {
+ *           "description": "Tokens generated successfully",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/HttpSuccess"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function refreshSessionHandler(req, res) {
   const { refreshToken } = req.body;
 

@@ -10,6 +10,7 @@ describe("POST /api/v1/auth/refresh", () => {
   describe("Authenticated user", () => {
     test("Refreshing session with valid refreshToken", async () => {
       const generateToken = await setup.generateTestTokens();
+      console.log(generateToken);
       const response = await fetch(`${process.env.BASE_API_URL}/auth/refresh`, {
         method: "POST",
         headers: {
