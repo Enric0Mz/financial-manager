@@ -10,9 +10,14 @@ beforeAll(async () => {
 });
 
 describe("GET /api/v1/year/", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Fetching years", async () => {
-      const response = await fetch(`${process.env.BASE_API_URL}/year`);
+      const generateToken = await setup.generateTestTokens();
+      const response = await fetch(`${process.env.BASE_API_URL}/year`, {
+        headers: {
+          Authorization: `Bearer ${generateToken.data.accessToken}`,
+        },
+      });
       const responseBody = await response.json();
 
       expect(response.status).toBe(200);
@@ -41,6 +46,21 @@ describe("GET /api/v1/year/", () => {
 
       expect(response.status).toBe(404);
       expect(responseBody.name).toBe("not found");
+    });
+  });
+
+  describe("Anonymous User", () => {
+    test("Fetching years", async () => {
+      const response = await fetch(`${process.env.BASE_API_URL}/year`, {
+        headers: {
+          Authorization: "Bearer Invalid Token",
+        },
+      });
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(401);
+      expect(responseBody.name).toBe("unauthorized");
+      expect(responseBody.message).toBe("Invalid or expired access token");
     });
   });
 });

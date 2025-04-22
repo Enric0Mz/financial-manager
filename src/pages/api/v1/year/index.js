@@ -1,15 +1,19 @@
-import { onNoMatchHandler } from "helpers/handlers";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
 import { createRouter } from "next-connect";
 import year from "models/year";
-import apiMiddleware from "middlewares/cors";
+import authenticateAccessToken from "middlewares/auth";
 
 const router = createRouter();
 
-router.use(apiMiddleware);
+router.use(authenticateAccessToken);
 router.get(getHandler);
 
 export default router.handler({
   onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
 });
 
 /**

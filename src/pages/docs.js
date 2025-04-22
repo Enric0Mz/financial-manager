@@ -28,6 +28,13 @@ import {
   ExpenseUpdate,
   DebitExpenseCreate,
 } from "components/schemas/expense";
+import {
+  User,
+  UserCreate,
+  UserLogin,
+  UserUpdate,
+} from "components/schemas/User";
+import { RefreshToken } from "components/schemas/auth";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -72,8 +79,25 @@ export async function getStaticProps() {
           CreditExpenseCreate,
           ExpenseUpdate,
           DebitExpenseCreate,
+          User,
+          UserCreate,
+          UserUpdate,
+          UserLogin,
+          RefreshToken,
+        },
+        securitySchemes: {
+          BearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
         },
       },
+      security: [
+        {
+          BearerAuth: [],
+        },
+      ],
       tags: [
         {
           name: "Year",
@@ -106,6 +130,14 @@ export async function getStaticProps() {
         {
           name: "Expense - Debit",
           description: "Manage your debit expenses",
+        },
+        {
+          name: "User",
+          description: "Manage your user",
+        },
+        {
+          name: "Auth",
+          description: "Authentication and authorization",
         },
       ],
     },

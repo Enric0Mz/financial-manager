@@ -8,6 +8,8 @@ import bank from "models/bank";
 import bankStatement from "models/bankStatement";
 import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
+import user from "models/user";
+import auth from "models/auth";
 
 async function createYear(yearId) {
   return await year.create(yearId);
@@ -63,6 +65,25 @@ async function createDebitExpense(expense, bankStatementId) {
   return await bankStatement.updateWithExpense(expense, bankStatementId, true);
 }
 
+async function createUser(userPayload) {
+  const mockUser = {
+    name: "TestUser",
+    email: "t@este.com",
+    password: "Pass@123",
+  };
+  return await user.create(userPayload || mockUser);
+}
+
+async function generateTestTokens() {
+  const mockUser = {
+    username: "MockUsername",
+    email: "mock@email.com",
+    password: "Passw@123",
+  };
+  await createUser(mockUser);
+  return await auth.generateTokens(mockUser.username, mockUser.password);
+}
+
 const setup = {
   createYear,
   createAllMonths,
@@ -73,6 +94,8 @@ const setup = {
   createExtraIncome,
   createCreditExpense,
   createDebitExpense,
+  createUser,
+  generateTestTokens,
 };
 
 export default setup;
