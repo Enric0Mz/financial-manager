@@ -60,7 +60,7 @@ describe("GET /api/v1/year/", () => {
 
       expect(response.status).toBe(401);
       expect(responseBody.name).toBe("unauthorized");
-      expect(responseBody.message).toBe("Invalid or expired token");
+      expect(responseBody.message).toBe("Invalid or expired access token");
     });
   });
 });

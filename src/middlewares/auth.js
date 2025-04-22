@@ -13,7 +13,10 @@ export default async function authenticateAccessToken(req, res, next) {
 
   const token = authHeaders.split(" ")[1];
   if (!token) {
-    throw new UnprocessableEntityError("invalid token format", "token");
+    throw new UnprocessableEntityError(
+      "invalid access token format",
+      "accessToken",
+    );
   }
 
   try {
@@ -21,6 +24,6 @@ export default async function authenticateAccessToken(req, res, next) {
     req.user = user;
     return next();
   } catch {
-    throw new UnauthorizedError("Invalid or expired token");
+    throw new UnauthorizedError("Invalid or expired access token");
   }
 }

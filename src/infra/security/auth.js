@@ -55,9 +55,9 @@ export async function verifyJwtRefreshToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) {
-        reject(new UnauthorizedError("Invalid or expired token"));
+        reject(new UnauthorizedError("Invalid or expired refresh token"));
       } else {
-        resolve({ user });
+        resolve(user);
       }
     });
   });

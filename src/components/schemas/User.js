@@ -49,11 +49,11 @@ export const UserLogin = {
   properties: {
     username: {
       type: "string",
-      examples: "ExemploDeNome",
+      example: "ExemploDeNome",
     },
     password: {
       type: "string",
-      examples: "Senha@123",
+      example: "Senha@123",
     },
   },
 };
