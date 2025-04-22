@@ -32,7 +32,7 @@ describe("DELETE /api/v1/auth/logout", () => {
           },
         },
       );
-      expect(validateIfIsLoggedOut.status).toBe(400);
+      expect(validateIfIsLoggedOut.status).toBe(401);
     });
   });
 

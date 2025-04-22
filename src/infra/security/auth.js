@@ -43,7 +43,7 @@ export async function verifyJwtAccessToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
-        reject(err);
+        reject(new UnauthorizedError("Invalid or expired access token"));
       } else {
         resolve(payload);
       }

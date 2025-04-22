@@ -13,9 +13,11 @@ async function findById(id) {
   const result = await prisma.user.findUnique({
     where: { id },
     select: {
+      id: true,
       username: true,
       email: true,
       createdAt: true,
+      tokenVersion: true,
     },
   });
   if (!result) {
@@ -88,11 +90,21 @@ async function update(id, username) {
   return new httpSuccessUpdated(result);
 }
 
+async function updateTokenVersion(id) {
+  await prisma.user.update({
+    where: { id },
+    data: {
+      tokenVersion: { increment: 1 },
+    },
+  });
+}
+
 const user = {
   findById,
   create,
   validateUser,
   update,
+  updateTokenVersion,
 };
 
 export default user;

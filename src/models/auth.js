@@ -37,10 +37,10 @@ async function createRefreshToken(token, userId) {
 }
 
 async function generateTokens(username, password) {
-  const { id } = await user.validateUser(username, password);
-
+  const { id, tokenVersion } = await user.validateUser(username, password);
   const { accessToken, expiresIn } = await generateJwtAccessToken({
     id,
+    tokenVersion,
   });
   const { refreshToken } = await generateJwtRefreshToken({
     id,
@@ -95,6 +95,7 @@ async function logout(userId) {
   await prisma.refreshToken.deleteMany({
     where: { userId },
   });
+  await user.updateTokenVersion(userId);
 
   return new HttpSuccessLoggedOut();
 }

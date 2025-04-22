@@ -4,6 +4,7 @@ import {
   UnauthorizedError,
   UnprocessableEntityError,
 } from "errors/http";
+import user from "models/user";
 
 export default async function authenticateAccessToken(req, res, next) {
   const authHeaders = req.headers["authorization"];
@@ -19,11 +20,11 @@ export default async function authenticateAccessToken(req, res, next) {
     );
   }
 
-  try {
-    const user = await verifyJwtAccessToken(token);
-    req.user = user;
-    return next();
-  } catch {
+  const decoded = await verifyJwtAccessToken(token);
+  const userInDatabase = await user.findById(decoded.id);
+  if (!userInDatabase || userInDatabase.tokenVersion !== decoded.tokenVersion) {
     throw new UnauthorizedError("Invalid or expired access token");
   }
+  req.user = userInDatabase;
+  return next();
 }
