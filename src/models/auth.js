@@ -37,7 +37,8 @@ async function createRefreshToken(token, userId) {
 }
 
 async function generateTokens(username, password) {
-  const { id, tokenVersion } = await user.validateUser(username, password);
+  const { id } = await user.validateUser(username, password);
+  const tokenVersion = await user.updateTokenVersion(id);
   const { accessToken, expiresIn } = await generateJwtAccessToken({
     id,
     tokenVersion,
@@ -71,13 +72,13 @@ async function refreshSession(refreshToken) {
     throw new UnauthorizedError("Refresh token not found");
   }
   const { id } = await verifyJwtRefreshToken(refreshToken);
-  const { tokenVersion } = await user.findById(id);
   const refreshTokenData = await findUnique(id);
   const hashedRefreshToken = refreshTokenData.token;
   const isValid = await compareRefreshTokens(refreshToken, hashedRefreshToken);
   if (!isValid) {
     throw new UnauthorizedError("Invalid or expired refresh token");
   }
+  const { tokenVersion } = await user.findById(id);
   const { accessToken, expiresIn } = await generateJwtAccessToken({
     id,
     tokenVersion,

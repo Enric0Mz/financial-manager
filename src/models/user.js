@@ -91,12 +91,13 @@ async function update(id, username) {
 }
 
 async function updateTokenVersion(id) {
-  await prisma.user.update({
+  const result = await prisma.user.update({
     where: { id },
     data: {
       tokenVersion: { increment: 1 },
     },
   });
+  return result.tokenVersion;
 }
 
 const user = {
