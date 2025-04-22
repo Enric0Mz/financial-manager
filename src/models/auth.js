@@ -70,8 +70,8 @@ async function refreshSession(refreshToken) {
   if (!refreshToken) {
     throw new UnauthorizedError("Refresh token not found");
   }
-  const user = await verifyJwtRefreshToken(refreshToken);
-  const refreshTokenData = await findUnique(user.id);
+  const { id } = await verifyJwtRefreshToken(refreshToken);
+  const refreshTokenData = await findUnique(id);
   const hashedRefreshToken = refreshTokenData.token;
   const validateRefreshToken = await compareRefreshTokens(
     refreshToken,

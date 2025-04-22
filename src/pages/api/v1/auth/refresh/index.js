@@ -4,10 +4,11 @@ import {
 } from "helpers/handlers";
 import auth from "models/auth";
 import { createRouter } from "next-connect";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
-route.post(refreshSessionHandler);
+route.post(authenticateAccessToken, refreshSessionHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,

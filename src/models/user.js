@@ -75,8 +75,6 @@ async function create(payload) {
 
 async function update(id, username) {
   await findById(id);
-  console.log(username);
-  console.log("TIPO", typeof username);
 
   if (typeof username !== "string") {
     throw new UnprocessableEntityError("incorrect format", username);

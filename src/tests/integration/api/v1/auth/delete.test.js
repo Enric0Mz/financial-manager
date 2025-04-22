@@ -6,7 +6,7 @@ beforeAll(async () => {
   await orchestrator.clearDatabase();
 });
 
-describe("POST /api/v1/auth/logout", () => {
+describe("DELETE /api/v1/auth/logout", () => {
   describe("Authenticated user", () => {
     test("Loggin out off aplication", async () => {
       const generateTokens = await setup.generateTestTokens();
@@ -23,6 +23,16 @@ describe("POST /api/v1/auth/logout", () => {
       expect(response.status).toBe(200);
       expect(responseBody.name).toBe("logout");
       expect(responseBody.message).toBe("User logged out successfully");
+
+      const validateIfIsLoggedOut = await fetch(
+        `${process.env.BASE_API_URL}/user`,
+        {
+          headers: {
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
+      );
+      expect(validateIfIsLoggedOut.status).toBe(400);
     });
   });
 
