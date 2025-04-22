@@ -81,7 +81,7 @@ async function generateTestTokens() {
     password: "Passw@123",
   };
   await createUser(mockUser);
-  return await auth.generateTokens(mockUser.username, mockUser.password);
+  return await auth.generateTokens(mockUser.email, mockUser.password);
 }
 
 const setup = {

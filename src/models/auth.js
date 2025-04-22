@@ -36,8 +36,8 @@ async function createRefreshToken(token, userId) {
   });
 }
 
-async function generateTokens(username, password) {
-  const { id } = await user.validateUser(username, password);
+async function generateTokens(email, password) {
+  const { id } = await user.validateUser(email, password);
   const tokenVersion = await user.updateTokenVersion(id);
   const { accessToken, expiresIn } = await generateJwtAccessToken({
     id,

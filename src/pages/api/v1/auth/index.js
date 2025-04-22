@@ -64,9 +64,9 @@ export default route.handler({
 
 async function authenticateHandler(req, res) {
   const body = req.body;
-  const { username, password } = body;
+  const { email, password } = body;
 
-  const result = await auth.generateTokens(username, password);
+  const result = await auth.generateTokens(email, password);
 
   return res.status(result.statusCode).json(result.toJson());
 }

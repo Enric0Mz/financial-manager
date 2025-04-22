@@ -26,18 +26,18 @@ async function findById(id) {
   return result;
 }
 
-async function findUnique(username) {
+async function findUnique(email) {
   const result = await prisma.user.findUnique({
-    where: { username },
+    where: { email },
   });
   if (!result) {
-    throw new NotFoundError(username);
+    throw new NotFoundError(email);
   }
   return result;
 }
 
-async function validateUser(username, password) {
-  const user = await findUnique(username);
+async function validateUser(email, password) {
+  const user = await findUnique(email);
 
   const passwordIsValid = await comparePasswords(password, user.password);
 
