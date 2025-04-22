@@ -9,7 +9,7 @@ generator client {
 
 model User {
   id            Int             @id @default(autoincrement())
-  username      String          @unique @db.VarChar(50)
+  username      String          @db.VarChar(50)
   password      String          @db.VarChar(60)
   email         String          @unique
   createdAt     DateTime        @default(now())
@@ -66,8 +66,8 @@ model BankStatement {
   salaryId       Int
   salary         Salary              @relation(fields: [salaryId], references: [id])
   extraIncomes   ExtraIncome[]
-  userId         Int?
-  user           User?               @relation(fields: [userId], references: [id])
+  userId         Int
+  user           User               @relation(fields: [userId], references: [id])
   expenses       Expense[]
   yearMonthId    Int
   yearMonth      YearMonth           @relation(fields: [yearMonthId], references: [id])
