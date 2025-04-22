@@ -71,17 +71,16 @@ async function refreshSession(refreshToken) {
     throw new UnauthorizedError("Refresh token not found");
   }
   const { id } = await verifyJwtRefreshToken(refreshToken);
+  const { tokenVersion } = await user.findById(id);
   const refreshTokenData = await findUnique(id);
   const hashedRefreshToken = refreshTokenData.token;
-  const validateRefreshToken = await compareRefreshTokens(
-    refreshToken,
-    hashedRefreshToken,
-  );
-  if (!validateRefreshToken) {
+  const isValid = await compareRefreshTokens(refreshToken, hashedRefreshToken);
+  if (!isValid) {
     throw new UnauthorizedError("Invalid or expired refresh token");
   }
   const { accessToken, expiresIn } = await generateJwtAccessToken({
-    id: user.id,
+    id,
+    tokenVersion,
   });
 
   return new HttpSuccessRefreshed({
