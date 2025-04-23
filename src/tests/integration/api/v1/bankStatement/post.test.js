@@ -4,6 +4,8 @@ import orchestrator from "tests/orchestrator";
 const salary = 4500;
 const bank = "nuBank";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -13,14 +15,18 @@ beforeAll(async () => {
   const february = "February";
   const march = "March";
   const april = "April";
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
+
   await setup.createAllMonths();
   await setup.createYear(year);
   await setup.createMonthInYear(january, year);
   await setup.createMonthInYear(february, year);
   await setup.createMonthInYear(march, year);
   await setup.createMonthInYear(april, year);
-  await setup.createSalary(salary);
-  await setup.createBank(bank);
+  await setup.createSalary(salary, userId);
+  await setup.createBank(bank, userId);
 });
 
 describe("POST /api/v1/bankStatement", () => {
@@ -36,6 +42,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(yearMonth),
         },
@@ -57,6 +64,7 @@ describe("POST /api/v1/bankStatement", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify(february),
       });
@@ -64,6 +72,12 @@ describe("POST /api/v1/bankStatement", () => {
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${february.year}?` +
           new URLSearchParams({ month: february.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const responseBody = await response.json();
       expect(response.status).toBe(200);
@@ -79,6 +93,12 @@ describe("POST /api/v1/bankStatement", () => {
       const bankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${february.year}?` +
           new URLSearchParams({ month: february.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
       const bankStatementId = bankStatementResponseBody.id;
@@ -96,6 +116,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(expense),
         },
@@ -110,6 +131,7 @@ describe("POST /api/v1/bankStatement", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify(march),
       });
@@ -117,6 +139,12 @@ describe("POST /api/v1/bankStatement", () => {
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const responseBody = await response.json();
 
@@ -137,6 +165,12 @@ describe("POST /api/v1/bankStatement", () => {
       const bankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
 
@@ -157,6 +191,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(expense1),
         },
@@ -174,6 +209,12 @@ describe("POST /api/v1/bankStatement", () => {
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const responseBody = await response.json();
       const totalExpensesAmount = expense1.total + expense2.total;
@@ -195,6 +236,12 @@ describe("POST /api/v1/bankStatement", () => {
       const bankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const bankStatementResponseBody = await bankStatementResponse.json();
 
@@ -210,6 +257,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(expense),
         },
@@ -218,6 +266,12 @@ describe("POST /api/v1/bankStatement", () => {
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${march.year}?` +
           new URLSearchParams({ month: march.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const responseBody = await response.json();
       const expectBalanceReal =
@@ -241,6 +295,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(april),
         },
@@ -264,6 +319,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(yearMonth),
         },

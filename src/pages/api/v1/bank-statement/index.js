@@ -8,9 +8,11 @@ import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bankStatement from "models/bankStatement";
 import bank from "models/bank";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.post(postHandler);
 
 export default route.handler({
@@ -64,6 +66,7 @@ export default route.handler({
 
 async function postHandler(req, res) {
   const body = req.body;
+  const { id } = req.user;
   const { month, year } = body;
 
   const yearMonthResult = await yearMonth.findFirst(month, year);
@@ -92,6 +95,7 @@ async function postHandler(req, res) {
     yearMonthResult.id,
     lastStatement,
     banks,
+    id,
   );
 
   return res.status(result.status_code).json(result);

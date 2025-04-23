@@ -2,7 +2,6 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 import bank from "models/bank";
 import authenticateAccessToken from "middlewares/auth";

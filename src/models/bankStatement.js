@@ -86,7 +86,7 @@ async function findMany(yearNumber) {
   });
 }
 
-async function create(salary, yearMonthId, lastStatement, banks) {
+async function create(salary, yearMonthId, lastStatement, banks, userId) {
   let lastMonthBalance;
   if (lastStatement) {
     lastMonthBalance = lastStatement.balanceReal;
@@ -98,6 +98,7 @@ async function create(salary, yearMonthId, lastStatement, banks) {
 
   const result = await prisma.bankStatement.create({
     data: {
+      userId,
       salaryId: salary.id,
       yearMonthId: yearMonthId,
       balanceInitial: balance,
