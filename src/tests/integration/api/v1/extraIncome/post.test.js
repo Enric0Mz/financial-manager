@@ -1,6 +1,8 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
@@ -8,15 +10,19 @@ beforeAll(async () => {
   const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
+
   await setup.createYear(year);
   await setup.createAllMonths();
   const yearMonth = await setup.createMonthInYear(january, year);
-  const salary = await setup.createSalary(salaryAmount);
-  await setup.createBankStatement(salary, yearMonth.object.id);
+  const salary = await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(salary, yearMonth.object.id, userId);
 });
 
 describe("POST /api/v1/extraIncome", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating extra income", async () => {
       const yearMonth = {
         month: "January",
@@ -25,6 +31,12 @@ describe("POST /api/v1/extraIncome", () => {
       const getBankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
           new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const getBankStatementResponseBody =
         await getBankStatementResponse.json();
@@ -41,11 +53,13 @@ describe("POST /api/v1/extraIncome", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(extraIncome),
         },
       );
       const responseBody = await response.json();
+
       expect(response.status).toBe(201);
       expect(responseBody.name).toBe("created");
       expect(responseBody.message).toBe(
