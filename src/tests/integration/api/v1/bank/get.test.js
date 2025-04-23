@@ -4,18 +4,29 @@ import setup from "tests/setupDatabase";
 const itau = "Itau";
 const nuBank = "nuBank";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  await setup.createBank(itau);
-  await setup.createBank(nuBank);
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
+
+  await setup.createBank(itau, userId);
+  await setup.createBank(nuBank, userId);
 });
 
 describe("GET /api/v1/bank", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Fetching banks", async () => {
-      const response = await fetch(`${process.env.BASE_API_URL}/bank`);
+      const response = await fetch(`${process.env.BASE_API_URL}/bank`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
+        },
+      });
       const responseBody = await response.json();
 
       expect(response.status).toBe(200);

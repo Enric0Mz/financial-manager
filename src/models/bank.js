@@ -2,8 +2,14 @@ import prisma from "infra/database.js";
 import { NotFoundError, InternalServerError } from "errors/http";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 
-async function findMany() {
-  return await prisma.bank.findMany();
+async function findMany(userId) {
+  return await prisma.bank.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
 }
 
 async function findUnique(id) {

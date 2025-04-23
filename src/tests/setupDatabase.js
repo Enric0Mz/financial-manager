@@ -28,8 +28,8 @@ async function createSalary(amount, userId) {
   return result.object;
 }
 
-async function createBank(name) {
-  return await bank.create(name);
+async function createBank(name, userId) {
+  return await bank.create(name, userId);
 }
 
 async function createBankStatement(

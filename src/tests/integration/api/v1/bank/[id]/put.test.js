@@ -4,14 +4,19 @@ import setup from "tests/setupDatabase";
 const itau = "Itau";
 const nuBank = "nuBank";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  await setup.createBank(itau);
-  await setup.createBank(nuBank);
-});
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
 
+  await setup.createBank(itau, userId);
+  await setup.createBank(nuBank, userId);
+});
 describe("PUT /api/v1/bank/{bankId}", () => {
   describe("Anonymous user", () => {
     test("Updating bank", async () => {

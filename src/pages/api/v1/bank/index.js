@@ -53,7 +53,8 @@ export default route.handler({
  */
 
 async function getHandler(req, res) {
-  const result = await bank.findMany();
+  const { id } = req.user;
+  const result = await bank.findMany(id);
 
   return res.status(200).json({ data: result });
 }
