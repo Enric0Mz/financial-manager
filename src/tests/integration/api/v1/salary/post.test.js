@@ -6,7 +6,8 @@ let generateTokens;
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
-  generateTokens = await setup.generateTestTokens();
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
 });
 
 describe("POST /api/v1/salary", () => {

@@ -54,7 +54,8 @@ export default route.handler({
  */
 
 async function getHandler(req, res) {
-  const result = await salary.findFirst();
+  const { id } = req.user;
+  const result = await salary.findFirst(id);
 
   return res.status(200).json(result);
 }
