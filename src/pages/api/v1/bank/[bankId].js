@@ -4,9 +4,11 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.put(putHandler);
 route.delete(deleteHandler);
 
@@ -71,7 +73,7 @@ export default route.handler({
  * }
  */
 
-export async function putHandler(req, res) {
+async function putHandler(req, res) {
   const query = req.query;
   const bankId = parseInt(query.bankId);
   const body = req.body;
@@ -126,7 +128,7 @@ export async function putHandler(req, res) {
  * }
  */
 
-export async function deleteHandler(req, res) {
+async function deleteHandler(req, res) {
   const query = req.query;
   const bankId = parseInt(query.bankId);
 
