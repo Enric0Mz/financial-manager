@@ -1,6 +1,6 @@
 import prisma from "infra/database.js";
-import { NotFoundError } from "errors/http";
-import { httpSuccessDeleted } from "helpers/httpSuccess";
+import { NotFoundError, InternalServerError } from "errors/http";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 
 async function findMany() {
   return await prisma.bank.findMany();
@@ -16,10 +16,19 @@ async function findUnique(id) {
   return result;
 }
 
-async function create(name) {
-  return await prisma.bank.create({
-    data: { name },
-  });
+async function create(name, userId) {
+  try {
+    const result = await prisma.bank.create({
+      data: { name, userId },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    return new httpSuccessCreated(`bank ${name} created`, result);
+  } catch (err) {
+    throw new InternalServerError(err, 500);
+  }
 }
 
 async function update(id, name) {
