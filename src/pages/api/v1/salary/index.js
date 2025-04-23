@@ -3,7 +3,6 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import { createRouter } from "next-connect";
-import putHandler from "./[salaryId]";
 import salary from "models/salary.js";
 import authenticateAccessToken from "middlewares/auth";
 
@@ -12,7 +11,6 @@ const route = createRouter();
 route.use(authenticateAccessToken);
 route.post(postHandler);
 route.get(getHandler);
-route.put(putHandler);
 
 export default route.handler({
   onNoMatch: onNoMatchHandler,
