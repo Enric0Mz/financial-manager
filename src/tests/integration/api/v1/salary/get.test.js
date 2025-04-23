@@ -20,7 +20,7 @@ beforeAll(async () => {
 });
 
 describe("GET api/v1/salary", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Getting most recend salary added", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/salary`, {
         headers: {

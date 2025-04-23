@@ -11,7 +11,7 @@ beforeAll(async () => {
 });
 
 describe("POST /api/v1/salary", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating salary", async () => {
       const amount = 2563.57;
       const response = await fetch(`${process.env.BASE_API_URL}/salary/`, {

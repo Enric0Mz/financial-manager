@@ -16,7 +16,7 @@ beforeAll(async () => {
 });
 
 describe("PUT /api/v1/salary", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Updating salary with salary id", async () => {
       const getSalary = await fetch(`${process.env.BASE_API_URL}/salary`, {
         headers: {
