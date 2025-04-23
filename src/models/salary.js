@@ -15,10 +15,11 @@ async function findFirst() {
   return result;
 }
 
-async function create(amount) {
+async function create(amount, userId) {
   const fixedAmount = validateAndParseAmount(amount);
   const result = await prisma.salary.create({
     data: {
+      userId,
       amount: fixedAmount,
     },
   });

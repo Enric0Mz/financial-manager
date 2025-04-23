@@ -106,6 +106,7 @@ const user = {
   validateUser,
   update,
   updateTokenVersion,
+  findUnique,
 };
 
 export default user;

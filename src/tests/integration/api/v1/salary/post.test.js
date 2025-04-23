@@ -1,8 +1,12 @@
 import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
+
+let generateTokens;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+  generateTokens = await setup.generateTestTokens();
 });
 
 describe("POST /api/v1/salary", () => {
@@ -13,6 +17,7 @@ describe("POST /api/v1/salary", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
           amount,
@@ -32,6 +37,7 @@ describe("POST /api/v1/salary", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
           amount,

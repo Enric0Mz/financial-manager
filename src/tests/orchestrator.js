@@ -24,7 +24,6 @@ async function clearDatabase() {
   await prisma.bankBankStatement.deleteMany({
     where: {},
   });
-  await prisma.user.deleteMany();
   await prisma.bank.deleteMany({
     where: {},
   });
@@ -49,6 +48,7 @@ async function clearDatabase() {
   await prisma.salary.deleteMany({
     where: {},
   });
+  await prisma.user.deleteMany();
 }
 
 const orchestrator = { waitForAllServices, clearDatabase };

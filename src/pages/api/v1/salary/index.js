@@ -5,9 +5,11 @@ import {
 import { createRouter } from "next-connect";
 import putHandler from "./[salaryId]";
 import salary from "models/salary.js";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.post(postHandler);
 route.get(getHandler);
 route.put(putHandler);
@@ -103,7 +105,8 @@ async function getHandler(req, res) {
 
 async function postHandler(req, res) {
   const body = req.body;
-  const result = await salary.create(body.amount);
+  const { id } = req.user;
+  const result = await salary.create(body.amount, id);
 
   return res.status(result.statusCode).json(result.toJson());
 }
