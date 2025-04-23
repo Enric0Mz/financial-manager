@@ -14,6 +14,8 @@ model User {
   email         String          @unique
   createdAt     DateTime        @default(now())
   tokenVersion  Int             @default(1)
+  salarys       Salary[]
+  banks         Bank[]
   refreshToken  RefreshToken[]
   bankStatments BankStatement[]
 }
@@ -44,6 +46,8 @@ model YearMonth {
 model Bank {
   id                 Int                 @id @default(autoincrement())
   name               String
+  userId         Int
+  user           User               @relation(fields: [userId], references: [id])
   bankBankStatements BankBankStatement[]
 }
 
@@ -92,6 +96,8 @@ model Salary {
   id            Int             @id @default(autoincrement())
   amount        Float
   createdAt     DateTime        @default(now())
+  userId         Int
+  user           User               @relation(fields: [userId], references: [id])
   bankStatments BankStatement[]
 }
 
