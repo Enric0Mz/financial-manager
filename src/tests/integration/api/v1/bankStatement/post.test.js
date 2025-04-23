@@ -30,7 +30,7 @@ beforeAll(async () => {
 });
 
 describe("POST /api/v1/bankStatement", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating bank statement without any previous bankStatements", async () => {
       const yearMonth = {
         year: 2025,

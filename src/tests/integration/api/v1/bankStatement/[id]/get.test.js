@@ -36,7 +36,7 @@ const year = 2025;
 const salary = 4500;
 
 describe("GET /api/v1/bankStatement/{id}", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Getting bank statement", async () => {
       const month = "January";
       const response = await fetch(

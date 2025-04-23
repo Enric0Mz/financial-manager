@@ -1,27 +1,39 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
 
   const salaryAmount = 4500;
   await setup.createYear(year);
   await setup.createAllMonths();
   const monthInYear = await setup.createMonthInYear(month, year);
-  const salary = await setup.createSalary(salaryAmount);
-  await setup.createBankStatement(salary, monthInYear.object.id);
+  const salary = await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(salary, monthInYear.object.id, userId);
 });
 
 const month = "January";
 const year = 2025;
 
 describe("DELETE /api/v1/bankStatement/{id}", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Deleting bankStatement", async () => {
       const bankStatement = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${year}?` +
           new URLSearchParams({ month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
 
       const bankStatementResponse = await bankStatement.json();
@@ -33,6 +45,7 @@ describe("DELETE /api/v1/bankStatement/{id}", () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
         },
       );
@@ -50,6 +63,7 @@ describe("DELETE /api/v1/bankStatement/{id}", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
           year,
@@ -60,6 +74,12 @@ describe("DELETE /api/v1/bankStatement/{id}", () => {
       const bankStatement = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${year}?` +
           new URLSearchParams({ month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
 
       const bankStatementResponse = await bankStatement.json();
@@ -77,6 +97,7 @@ describe("DELETE /api/v1/bankStatement/{id}", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(expense),
         },
@@ -88,6 +109,7 @@ describe("DELETE /api/v1/bankStatement/{id}", () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
         },
       );
