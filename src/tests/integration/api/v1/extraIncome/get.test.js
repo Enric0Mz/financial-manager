@@ -39,7 +39,7 @@ beforeAll(async () => {
 });
 
 describe("GET /api/v1/extraIncome", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Fetching extra income", async () => {
       const response = await fetch(
         `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,
