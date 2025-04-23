@@ -35,6 +35,7 @@ async function createBank(name, userId) {
 async function createBankStatement(
   salary,
   yearMonthId,
+  userId,
   lastBankStatement,
   banks,
 ) {
@@ -43,6 +44,7 @@ async function createBankStatement(
     yearMonthId,
     lastBankStatement,
     banks,
+    userId,
   );
 }
 

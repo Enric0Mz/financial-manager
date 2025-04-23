@@ -4,9 +4,11 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.get(fetchHandler);
 
 export default route.handler({
@@ -63,7 +65,8 @@ export default route.handler({
 async function fetchHandler(req, res) {
   const query = req.query;
   const yearNumber = query.id;
+  const { id } = req.user;
 
-  const result = await bankStatement.findMany(yearNumber);
+  const result = await bankStatement.findMany(yearNumber, id);
   return res.status(200).json({ data: result });
 }

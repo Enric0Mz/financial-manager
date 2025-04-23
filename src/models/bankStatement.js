@@ -4,6 +4,7 @@ import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
 import bankBankStatement from "./bankBankStatement";
+import month from "pages/api/v1/month";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
@@ -13,17 +14,22 @@ async function findFirst() {
   });
 }
 
-async function findUnique(month, year) {
+async function findUnique(month, year, userId) {
   const monthId = Month[month];
   const result = await prisma.bankStatement.findFirst({
     // Always will find unique here
     where: {
-      yearMonth: {
-        is: {
-          monthId: monthId,
-          yearId: parseInt(year),
+      AND: [
+        {
+          yearMonth: {
+            is: {
+              monthId: monthId,
+              yearId: parseInt(year),
+            },
+          },
         },
-      },
+        { userId },
+      ],
     },
     include: {
       salary: true,
@@ -65,21 +71,34 @@ async function findById(id) {
   return result;
 }
 
-async function findMany(yearNumber) {
+async function findMany(yearNumber, userId) {
   return await prisma.bankStatement.findMany({
     where: {
-      yearMonth: {
-        is: {
-          yearId: parseInt(yearNumber),
+      AND: [
+        {
+          yearMonth: {
+            is: {
+              yearId: parseInt(yearNumber),
+            },
+          },
         },
-      },
+        { userId },
+      ],
     },
-    include: {
-      salary: true,
-      expenses: true,
-      banks: {
-        include: {
-          bank: true,
+    select: {
+      balanceInitial: true,
+      yearMonth: {
+        select: {
+          year: {
+            select: {
+              yearNumber: true,
+            },
+          },
+          month: {
+            select: {
+              month: true,
+            },
+          },
         },
       },
     },
