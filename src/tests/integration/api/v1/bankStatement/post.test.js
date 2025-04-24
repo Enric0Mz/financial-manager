@@ -202,6 +202,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(expense2),
         },

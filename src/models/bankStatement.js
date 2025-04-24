@@ -4,7 +4,6 @@ import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { NotFoundError, UnprocessableEntityError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
 import bankBankStatement from "./bankBankStatement";
-import month from "pages/api/v1/month";
 
 async function findFirst() {
   return await prisma.bankStatement.findFirst({
