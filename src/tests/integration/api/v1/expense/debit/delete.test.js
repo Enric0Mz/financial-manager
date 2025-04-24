@@ -36,7 +36,7 @@ beforeAll(async () => {
 });
 
 describe("DELETE /api/v1/expense/debit", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Deleting expense", async () => {
       const yearMonth = {
         month: "January",

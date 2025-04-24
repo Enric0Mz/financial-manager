@@ -1,23 +1,26 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
 });
 
 describe("POST /api/v1/auth/refresh", () => {
   describe("Authenticated user", () => {
     test("Refreshing session with valid refreshToken", async () => {
-      const generateToken = await setup.generateTestTokens();
       const response = await fetch(`${process.env.BASE_API_URL}/auth/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${generateToken.data.accessToken}`,
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
-          refreshToken: generateToken.data.refreshToken,
+          refreshToken: generateTokens.data.refreshToken,
         }),
       });
 

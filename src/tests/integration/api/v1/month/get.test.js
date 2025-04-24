@@ -18,7 +18,7 @@ beforeAll(async () => {
 });
 
 describe("GET api/v1/month", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Fething months", async () => {
       const year = 2025;
       const response = await fetch(

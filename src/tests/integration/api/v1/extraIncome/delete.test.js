@@ -31,7 +31,7 @@ beforeAll(async () => {
 });
 
 describe("DELETE /api/v1/extraIncome", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Deleting extra income", async () => {
       const extraIncomeResponse = await fetch(
         `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,

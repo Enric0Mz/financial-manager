@@ -36,7 +36,7 @@ beforeAll(async () => {
 });
 
 describe("PATCH /api/v1/expense/debit", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Updating all items of an expense", async () => {
       const updatedEXpense = {
         name: "Compra débito (Atualizada)",

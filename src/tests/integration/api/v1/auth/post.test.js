@@ -14,7 +14,7 @@ beforeAll(async () => {
 });
 
 describe("POST /api/v1/auth", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Authenticate with correct email and password", async () => {
       delete mockUser["username"];
       const response = await fetch(`${process.env.BASE_API_URL}/auth`, {

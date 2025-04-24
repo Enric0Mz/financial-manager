@@ -18,7 +18,7 @@ beforeAll(async () => {
 });
 
 describe("DELETE api/v1/month", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Deleting month", async () => {
       const year = 2025;
       const month = "January";

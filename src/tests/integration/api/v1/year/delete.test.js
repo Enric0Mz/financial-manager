@@ -15,7 +15,7 @@ beforeAll(async () => {
 });
 
 describe("DELETE api/v1/year", () => {
-  describe("anonymous user", () => {
+  describe("Authenticated user", () => {
     const year = 2025;
     test("Deleting year", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
