@@ -1,11 +1,16 @@
 import orchestrator from "tests/orchestrator.js";
 import setup from "tests/setupDatabase.js";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
   const year = 2025;
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
+
   await setup.createYear(year);
 });
 
@@ -17,6 +22,7 @@ describe("DELETE api/v1/year", () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
@@ -32,6 +38,7 @@ describe("DELETE api/v1/year", () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
