@@ -13,17 +13,22 @@ async function findFirst() {
   });
 }
 
-async function findUnique(month, year) {
+async function findUnique(month, year, userId) {
   const monthId = Month[month];
   const result = await prisma.bankStatement.findFirst({
     // Always will find unique here
     where: {
-      yearMonth: {
-        is: {
-          monthId: monthId,
-          yearId: parseInt(year),
+      AND: [
+        {
+          yearMonth: {
+            is: {
+              monthId: monthId,
+              yearId: parseInt(year),
+            },
+          },
         },
-      },
+        { userId },
+      ],
     },
     include: {
       salary: true,
@@ -65,28 +70,42 @@ async function findById(id) {
   return result;
 }
 
-async function findMany(yearNumber) {
+async function findMany(yearNumber, userId) {
   return await prisma.bankStatement.findMany({
     where: {
-      yearMonth: {
-        is: {
-          yearId: parseInt(yearNumber),
+      AND: [
+        {
+          yearMonth: {
+            is: {
+              yearId: parseInt(yearNumber),
+            },
+          },
         },
-      },
+        { userId },
+      ],
     },
-    include: {
-      salary: true,
-      expenses: true,
-      banks: {
-        include: {
-          bank: true,
+    select: {
+      id: true,
+      balanceInitial: true,
+      yearMonth: {
+        select: {
+          year: {
+            select: {
+              yearNumber: true,
+            },
+          },
+          month: {
+            select: {
+              month: true,
+            },
+          },
         },
       },
     },
   });
 }
 
-async function create(salary, yearMonthId, lastStatement, banks) {
+async function create(salary, yearMonthId, lastStatement, banks, userId) {
   let lastMonthBalance;
   if (lastStatement) {
     lastMonthBalance = lastStatement.balanceReal;
@@ -98,6 +117,7 @@ async function create(salary, yearMonthId, lastStatement, banks) {
 
   const result = await prisma.bankStatement.create({
     data: {
+      userId,
       salaryId: salary.id,
       yearMonthId: yearMonthId,
       balanceInitial: balance,

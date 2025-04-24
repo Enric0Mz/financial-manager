@@ -47,9 +47,9 @@ export const UserUpdate = {
 export const UserLogin = {
   type: "object",
   properties: {
-    username: {
+    email: {
       type: "string",
-      example: "ExemploDeNome",
+      example: "exemplo@email.com",
     },
     password: {
       type: "string",

@@ -6,7 +6,8 @@ let generateToken;
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
-  generateToken = await setup.generateTestTokens();
+  const result = await setup.generateTestTokens();
+  generateToken = result.tokens;
 });
 
 describe("PUT api/v1/user", () => {

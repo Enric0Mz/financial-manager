@@ -1,18 +1,25 @@
-import orchestrator from "tests/orchestrator.js";
+import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
+
+let generateTokens;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
 });
 
 describe("POST /api/v1/year", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating year", async () => {
       const year = 1996;
       const response = await fetch(`${process.env.BASE_API_URL}/year/${year}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
@@ -27,6 +34,7 @@ describe("POST /api/v1/year", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
@@ -41,6 +49,7 @@ describe("POST /api/v1/year", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();

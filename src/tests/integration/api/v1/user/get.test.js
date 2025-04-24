@@ -1,15 +1,19 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateToken;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+
+  const result = await setup.generateTestTokens();
+  generateToken = result.tokens;
 });
 
 describe("GET api/v1/user", () => {
   describe("Authenticated user", () => {
     test("Getting user", async () => {
-      const generateToken = await setup.generateTestTokens();
       const response = await fetch(`${process.env.BASE_API_URL}/user`, {
         headers: {
           Authorization: `Bearer ${generateToken.data.accessToken}`,

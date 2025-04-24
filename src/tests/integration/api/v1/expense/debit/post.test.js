@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
 let bankStatementData;
+let generateTokens;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -12,17 +13,22 @@ beforeAll(async () => {
   const salaryAmount = 4500;
   await setup.createYear(year);
   await setup.createAllMonths();
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
+
   const yearMonth = await setup.createMonthInYear(january, year);
-  const salary = await setup.createSalary(salaryAmount);
+  const salary = await setup.createSalary(salaryAmount, userId);
   const bankStatement = await setup.createBankStatement(
     salary,
     yearMonth.object.id,
+    userId,
   );
   bankStatementData = bankStatement.data;
 });
 
 describe("POST /api/v1/expense/debit", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating debit expense", async () => {
       const expense = {
         name: "Pix curso",
@@ -35,6 +41,7 @@ describe("POST /api/v1/expense/debit", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(expense),
         },
@@ -61,6 +68,7 @@ describe("POST /api/v1/expense/debit", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify(expense),
       },

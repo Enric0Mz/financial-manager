@@ -1,21 +1,27 @@
 import setup from "tests/setupDatabase.js";
 import orchestrator from "tests/orchestrator";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
   const year = 2025;
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
+
   setup.createYear(year);
 });
 
 describe("POST /api/v1/month", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating all months of the year", async () => {
       const response = await fetch(`${process.env.BASE_API_URL}/month`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
@@ -29,6 +35,7 @@ describe("POST /api/v1/month", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
       });
       const responseBody = await response.json();
@@ -48,6 +55,7 @@ describe("POST /api/v1/month", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify({ month }),
         },
@@ -68,6 +76,7 @@ describe("POST /api/v1/month", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify({ month }),
         },

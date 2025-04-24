@@ -4,9 +4,11 @@ import {
   onNoMatchHandler,
 } from "helpers/handlers";
 import extraIncome from "models/extraIncome";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.get(getHandler);
 route.post(postHandler);
 route.patch(patchHandler);

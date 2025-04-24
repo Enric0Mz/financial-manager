@@ -2,18 +2,20 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import authenticateAccessToken from "middlewares/auth";
 import bankStatement from "models/bankStatement";
 import expenseDebit from "models/expenseDebit.js";
 import { createRouter } from "next-connect";
 
-const route = createRouter();
+const router = createRouter();
 
-route.get(getHandler);
-route.post(postHandler);
-route.patch(patchHandler);
-route.delete(deleteHandler);
+router.use(authenticateAccessToken);
+router.get(getHandler);
+router.post(postHandler);
+router.patch(patchHandler);
+router.delete(deleteHandler);
 
-export default route.handler({
+export default router.handler({
   onNoMatch: onNoMatchHandler,
   onError: onInternalServerErrorHandler,
 });

@@ -4,9 +4,11 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.get(getHandler);
 route.delete(deleteHandler);
 
@@ -87,8 +89,9 @@ export default route.handler({
 export async function getHandler(req, res) {
   const queryParams = req.query;
   const { id, month } = queryParams;
+  const { id: userId } = req.user;
 
-  const result = await bankStatement.findUnique(month, id);
+  const result = await bankStatement.findUnique(month, id, userId);
 
   return res.status(200).json(result);
 }

@@ -3,8 +3,11 @@ import { NotFoundError } from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
 import prisma from "infra/database.js";
 
-async function findFirst() {
+async function findFirst(userId) {
   const result = await prisma.salary.findFirst({
+    where: {
+      userId,
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -15,10 +18,11 @@ async function findFirst() {
   return result;
 }
 
-async function create(amount) {
+async function create(amount, userId) {
   const fixedAmount = validateAndParseAmount(amount);
   const result = await prisma.salary.create({
     data: {
+      userId,
       amount: fixedAmount,
     },
   });

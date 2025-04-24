@@ -1,16 +1,18 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
 });
 
 describe("DELETE /api/v1/auth/logout", () => {
   describe("Authenticated user", () => {
     test("Loggin out off aplication", async () => {
-      const generateTokens = await setup.generateTestTokens();
-
       const response = await fetch(`${process.env.BASE_API_URL}/auth`, {
         method: "DELETE",
         headers: {

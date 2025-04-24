@@ -3,12 +3,14 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import authenticateAccessToken from "middlewares/auth";
 import month from "models/month.js";
 import yearMonth from "models/yearMonth.js";
 import { createRouter } from "next-connect";
 
 const router = createRouter();
 
+router.use(authenticateAccessToken);
 router.get(getHandler);
 router.post(postHandler);
 router.delete(deleteHandler);

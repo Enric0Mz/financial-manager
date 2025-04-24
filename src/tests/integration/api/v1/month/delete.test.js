@@ -1,19 +1,24 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
   const year = 2025;
   const month = "January";
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
+
   await setup.createAllMonths();
   await setup.createYear(year);
   await setup.createMonthInYear(month, year);
 });
 
 describe("DELETE api/v1/month", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Deleting month", async () => {
       const year = 2025;
       const month = "January";
@@ -23,6 +28,7 @@ describe("DELETE api/v1/month", () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify({ month }),
         },
@@ -40,6 +46,7 @@ describe("DELETE api/v1/month", () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({ month }),
       });
@@ -61,6 +68,7 @@ describe("DELETE api/v1/month", () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify({ month }),
         },

@@ -8,6 +8,7 @@ const updatedExtraIncome = {
 };
 
 let bankStatementId;
+let generateTokens;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -16,23 +17,34 @@ beforeAll(async () => {
   const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
+
   await setup.createYear(year);
   await setup.createAllMonths();
   const yearMonth = await setup.createMonthInYear(january, year);
-  const salary = await setup.createSalary(salaryAmount);
+  const salary = await setup.createSalary(salaryAmount, userId);
   const bankStatement = await setup.createBankStatement(
     salary,
     yearMonth.object.id,
+    userId,
   );
   bankStatementId = bankStatement.data.id;
   await setup.createExtraIncome(extraIncome, bankStatementId);
 });
 
 describe("PATCH /api/v1/extraIncome", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Updating extra income", async () => {
       const extraIncomeResponse = await fetch(
         `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const extraIncomeResponseBody = await extraIncomeResponse.json();
 
@@ -44,6 +56,7 @@ describe("PATCH /api/v1/extraIncome", () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(updatedExtraIncome),
         },
@@ -56,6 +69,12 @@ describe("PATCH /api/v1/extraIncome", () => {
 
       const getUpdatedResponse = await fetch(
         `${process.env.BASE_API_URL}/extra-income/${bankStatementId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const getUpdatedBody = await getUpdatedResponse.json();
 
@@ -70,6 +89,12 @@ describe("PATCH /api/v1/extraIncome", () => {
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
           new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
       );
       const responseBody = await response.json();
 

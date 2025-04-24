@@ -2,12 +2,13 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import { createRouter } from "next-connect";
 import bank from "models/bank";
+import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
 
+route.use(authenticateAccessToken);
 route.get(getHandler);
 route.post(postHandler);
 
@@ -51,7 +52,8 @@ export default route.handler({
  */
 
 async function getHandler(req, res) {
-  const result = await bank.findMany();
+  const { id } = req.user;
+  const result = await bank.findMany(id);
 
   return res.status(200).json({ data: result });
 }
@@ -103,10 +105,9 @@ async function getHandler(req, res) {
 async function postHandler(req, res) {
   const body = req.body;
   const name = body.bank;
+  const { id } = req.user;
 
-  await bank.create(name);
+  const result = await bank.create(name, id);
 
-  const responseSuccess = new httpSuccessCreated(`bank ${name} created`);
-
-  return res.status(responseSuccess.statusCode).json(responseSuccess);
+  return res.status(result.statusCode).json(result.toJson());
 }
