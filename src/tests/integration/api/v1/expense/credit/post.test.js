@@ -89,7 +89,8 @@ describe("POST /api/v1/expense/credit", () => {
       expect(responseBody.name).toBe("created");
 
       const bankStatementResponse = await fetch(
-        `${process.env.BASE_API_URL}/bank-statement/fetch/${year}`,
+        `${process.env.BASE_API_URL}/bank-statement/${year}?` +
+          new URLSearchParams({ month: "January" }),
         {
           headers: {
             "Content-Type": "application/json",
@@ -97,16 +98,15 @@ describe("POST /api/v1/expense/credit", () => {
           },
         },
       );
+
       const bankStatementResponseBody = await bankStatementResponse.json();
 
       const validateBalanceReal =
-        bankStatementResponseBody.data[0].balanceInitial -
+        bankStatementResponseBody.balanceInitial -
         (expense1.total + expense2.total);
 
-      expect(bankStatementResponseBody.data[0].balanceReal).toBe(
-        validateBalanceReal,
-      );
-      expect(bankStatementResponseBody.data[0].banks[0].balance).toBe(
+      expect(bankStatementResponseBody.balanceReal).toBe(validateBalanceReal);
+      expect(bankStatementResponseBody.banks[0].balance).toBe(
         expense1.total + expense2.total,
       );
     });

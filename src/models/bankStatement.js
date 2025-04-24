@@ -86,6 +86,7 @@ async function findMany(yearNumber, userId) {
       ],
     },
     select: {
+      id: true,
       balanceInitial: true,
       yearMonth: {
         select: {
