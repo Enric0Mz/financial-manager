@@ -2,11 +2,13 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import authenticateAccessToken from "middlewares/auth";
 import month from "models/month";
 import { createRouter } from "next-connect";
 
 const router = createRouter();
 
+router.use(authenticateAccessToken);
 router.post(postHandler);
 
 export default router.handler({

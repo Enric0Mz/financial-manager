@@ -1,12 +1,17 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
   const year = 2025;
   const month = "January";
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
+
   await setup.createAllMonths();
   await setup.createYear(year);
   await setup.createMonthInYear(month, year);
@@ -16,7 +21,15 @@ describe("GET api/v1/month", () => {
   describe("Anonymous user", () => {
     test("Fething months", async () => {
       const year = 2025;
-      const response = await fetch(`${process.env.BASE_API_URL}/month/${year}`);
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/month/${year}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
+      );
       const responseBody = await response.json();
 
       expect(response.status).toBe(200);
