@@ -1,6 +1,7 @@
 import prisma from "infra/database";
 import { generatePasswordHash, comparePasswords } from "infra/security/bcrypt";
 import {
+  ConflictError,
   IncorrectPasswordError,
   InvalidPasswordFormatError,
   NotFoundError,
@@ -50,13 +51,14 @@ async function validateUser(email, password) {
 async function create(payload) {
   const { username, password, email } = payload;
   validatePassword(password);
+  await validateEmailUniqueness(email);
   const hashedPassword = await generatePasswordHash(password);
 
   const result = await prisma.user.create({
     data: {
       username,
       password: hashedPassword,
-      email,
+      email: email.toLowerCase(),
     },
     select: {
       id: true,
@@ -98,6 +100,17 @@ async function updateTokenVersion(id) {
     },
   });
   return result.tokenVersion;
+}
+
+async function validateEmailUniqueness(email) {
+  const result = await prisma.user.findUnique({
+    where: {
+      email: email.toLowerCase(),
+    },
+  });
+  if (result) {
+    throw new ConflictError("Email already exists", email);
+  }
 }
 
 const user = {
