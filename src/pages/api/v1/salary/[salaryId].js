@@ -1,4 +1,19 @@
 import salary from "models/salary";
+import {
+  onInternalServerErrorHandler,
+  onNoMatchHandler,
+} from "helpers/handlers";
+import { createRouter } from "next-connect";
+import authenticateAccessToken from "middlewares/auth";
+
+const route = createRouter();
+
+route.put(authenticateAccessToken, putHandler);
+
+export default route.handler({
+  onNoMatch: onNoMatchHandler,
+  onError: onInternalServerErrorHandler,
+});
 
 /**
  * @swagger
@@ -55,7 +70,7 @@ import salary from "models/salary";
  *   }
  * }
  */
-export default async function putHandler(req, res) {
+async function putHandler(req, res) {
   const salaryId = req.query.salaryId;
   const body = req.body;
   const amountValue = body.amount;

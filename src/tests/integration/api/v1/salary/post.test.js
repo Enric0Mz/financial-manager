@@ -1,18 +1,24 @@
 import orchestrator from "tests/orchestrator";
+import setup from "tests/setupDatabase";
+
+let generateTokens;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+  const result = await setup.generateTestTokens();
+  generateTokens = result.tokens;
 });
 
 describe("POST /api/v1/salary", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Creating salary", async () => {
       const amount = 2563.57;
       const response = await fetch(`${process.env.BASE_API_URL}/salary/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
           amount,
@@ -32,6 +38,7 @@ describe("POST /api/v1/salary", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
           amount,

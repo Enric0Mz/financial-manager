@@ -4,18 +4,29 @@ import setup from "tests/setupDatabase";
 const itau = "Itau";
 const nuBank = "nuBank";
 
+let generateTokens;
+
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  await setup.createBank(itau);
-  await setup.createBank(nuBank);
+  const result = await setup.generateTestTokens();
+  const userId = result.user.data.id;
+  generateTokens = result.tokens;
+
+  await setup.createBank(itau, userId);
+  await setup.createBank(nuBank, userId);
 });
 
 describe("PUT /api/v1/bank/{bankId}", () => {
-  describe("Anonymous user", () => {
+  describe("Authenticated user", () => {
     test("Updating bank", async () => {
-      const bankReponse = await fetch(`${process.env.BASE_API_URL}/bank`);
+      const bankReponse = await fetch(`${process.env.BASE_API_URL}/bank`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
+        },
+      });
       const bankResponseBody = await bankReponse.json();
       const bankId = bankResponseBody.data[0].id;
 
@@ -26,6 +37,7 @@ describe("PUT /api/v1/bank/{bankId}", () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(updateBankData),
         },
@@ -45,6 +57,7 @@ describe("PUT /api/v1/bank/{bankId}", () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
           },
           body: JSON.stringify(updateBankData),
         },

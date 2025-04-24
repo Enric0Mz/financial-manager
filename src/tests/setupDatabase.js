@@ -23,18 +23,19 @@ async function createMonthInYear(month, year) {
   return await yearMonth.create(month, year);
 }
 
-async function createSalary(amount) {
-  let result = await salary.create(amount);
+async function createSalary(amount, userId) {
+  let result = await salary.create(amount, userId);
   return result.object;
 }
 
-async function createBank(name) {
-  return await bank.create(name);
+async function createBank(name, userId) {
+  return await bank.create(name, userId);
 }
 
 async function createBankStatement(
   salary,
   yearMonthId,
+  userId,
   lastBankStatement,
   banks,
 ) {
@@ -43,6 +44,7 @@ async function createBankStatement(
     yearMonthId,
     lastBankStatement,
     banks,
+    userId,
   );
 }
 
@@ -80,8 +82,9 @@ async function generateTestTokens() {
     email: "mock@email.com",
     password: "Passw@123",
   };
-  await createUser(mockUser);
-  return await auth.generateTokens(mockUser.username, mockUser.password);
+  const user = (await createUser(mockUser)).toJson();
+  const tokens = await auth.generateTokens(mockUser.email, mockUser.password);
+  return { tokens, user };
 }
 
 const setup = {

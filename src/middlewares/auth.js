@@ -1,4 +1,4 @@
-import { verifyJwtAccessToken } from "@infra/security/auth";
+import { verifyJwtAccessToken } from "infra/security/auth";
 import {
   TokenNotFoundError,
   UnauthorizedError,
