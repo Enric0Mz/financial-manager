@@ -26,17 +26,16 @@ async function findMany(year) {
   });
 }
 
-async function createAllMonths() {
+async function bulkCreate() {
   const exists = await prisma.month.findFirst();
   if (exists) {
     throw new ConflictError("", "all months");
   }
 
   const months = createMonthsObject();
-  const result = await prisma.month.createMany({
+  return await prisma.month.createManyAndReturn({
     data: months,
   });
-  return new httpSuccessCreated("All months created successfuly", result);
 
   function createMonthsObject() {
     let months = [];
@@ -54,7 +53,7 @@ async function createAllMonths() {
 
 const month = {
   findFirst,
-  createAllMonths,
+  bulkCreate,
   findMany,
 };
 

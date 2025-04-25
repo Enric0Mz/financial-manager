@@ -42,10 +42,28 @@ async function deleteMany(yearId, monthId) {
   });
 }
 
+async function connect(yearList, monthList) {
+  const payload = generatePayload(yearList, monthList);
+  return await prisma.yearMonth.createManyAndReturn({
+    data: payload,
+  });
+
+  function generatePayload(years, months) {
+    const result = [];
+    for (const year of years) {
+      for (const month of months) {
+        result.push({ yearId: year.yearNumber, monthId: month.numeric });
+      }
+    }
+    return result;
+  }
+}
+
 const yearMonth = {
   create,
   findFirst,
   deleteMany,
+  connect,
 };
 
 export default yearMonth;

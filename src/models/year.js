@@ -60,11 +60,22 @@ async function remove(id) {
   }
 }
 
+async function bulkCreate() {
+  const years = Array.from({ length: 2051 - 1950 }, (_, i) => ({
+    yearNumber: i + 1950,
+  }));
+
+  return await prisma.year.createManyAndReturn({
+    data: years,
+  });
+}
+
 const year = {
   findMany,
   findUnique,
   create,
   remove,
+  bulkCreate,
 };
 
 export default year;
