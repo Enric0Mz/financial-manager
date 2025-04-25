@@ -39,8 +39,6 @@ model YearMonth {
   year          Year            @relation(fields: [yearId], references: [yearNumber])
   yearId        Int
   bankStatments BankStatement[]
-
-  @@unique([yearId, monthId])
 }
 
 model Bank {
