@@ -10,6 +10,7 @@ import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 import user from "models/user";
 import auth from "models/auth";
+import calendar from "models/calendar";
 
 async function createYear(yearId) {
   return await year.create(yearId);
@@ -34,11 +35,14 @@ async function createBank(name, userId) {
 
 async function createBankStatement(
   salary,
-  yearMonthId,
+  yearMonthValue,
   userId,
   lastBankStatement,
   banks,
 ) {
+  const { month, year } = yearMonthValue;
+  const { id: yearMonthId } = await yearMonth.findFirst(month, year);
+
   return await bankStatement.create(
     salary,
     yearMonthId,
@@ -87,6 +91,10 @@ async function generateTestTokens() {
   return { tokens, user };
 }
 
+async function createCalendar() {
+  return await calendar.create();
+}
+
 const setup = {
   createYear,
   createAllMonths,
@@ -99,6 +107,7 @@ const setup = {
   createDebitExpense,
   createUser,
   generateTestTokens,
+  createCalendar,
 };
 
 export default setup;

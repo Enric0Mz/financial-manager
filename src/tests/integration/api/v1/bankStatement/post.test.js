@@ -10,21 +10,11 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  const year = 2025;
-  const january = "January";
-  const february = "February";
-  const march = "March";
-  const april = "April";
+  await setup.createCalendar();
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
-  await setup.createAllMonths();
-  await setup.createYear(year);
-  await setup.createMonthInYear(january, year);
-  await setup.createMonthInYear(february, year);
-  await setup.createMonthInYear(march, year);
-  await setup.createMonthInYear(april, year);
   await setup.createSalary(salary, userId);
   await setup.createBank(bank, userId);
 });
