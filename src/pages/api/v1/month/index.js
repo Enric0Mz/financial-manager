@@ -2,6 +2,7 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
+import { httpSuccessCreated } from "helpers/httpSuccess";
 import authenticateAccessToken from "middlewares/auth";
 import month from "models/month";
 import { createRouter } from "next-connect";
@@ -50,6 +51,7 @@ export default router.handler({
  * }
  */
 async function postHandler(req, res) {
-  const result = await month.createAllMonths();
+  const months = await month.bulkCreate();
+  const result = new httpSuccessCreated("All months created successfuly");
   res.status(result.statusCode).json(result);
 }

@@ -16,7 +16,7 @@ async function createYear(yearId) {
 }
 
 async function createAllMonths() {
-  return await month.createAllMonths();
+  return await month.bulkCreate();
 }
 
 async function createMonthInYear(month, year) {
