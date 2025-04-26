@@ -16,13 +16,9 @@ beforeAll(async () => {
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
-  const salary = await setup.createSalary(salaryAmount, userId);
-  const bankStatement = await setup.createBankStatement(
-    salary,
-    january,
-    userId,
-  );
-  await setup.createBankStatement(salary, february, userId, bankStatement.data);
+  await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(january.month, january.year, userId);
+  await setup.createBankStatement(february.month, february.year, userId);
 });
 
 const year = 2025;

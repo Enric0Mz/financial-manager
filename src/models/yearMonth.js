@@ -3,6 +3,7 @@ import Month from "./enum/month.js";
 import year from "./year.js";
 import month from "./month.js";
 import { httpSuccessCreated } from "helpers/httpSuccess.js";
+import { NotFoundError } from "errors/http.js";
 
 async function findFirst(monthName, yearId) {
   const result = await prisma.yearMonth.findFirst({

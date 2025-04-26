@@ -33,23 +33,8 @@ async function createBank(name, userId) {
   return await bank.create(name, userId);
 }
 
-async function createBankStatement(
-  salary,
-  yearMonthValue,
-  userId,
-  lastBankStatement,
-  banks,
-) {
-  const { month, year } = yearMonthValue;
-  const { id: yearMonthId } = await yearMonth.findFirst(month, year);
-
-  return await bankStatement.create(
-    salary,
-    yearMonthId,
-    lastBankStatement,
-    banks,
-    userId,
-  );
+async function createBankStatement(month, year, userId) {
+  return await bankStatement.create(month, year, userId);
 }
 
 async function createExtraIncome(payload, bankStatementId) {

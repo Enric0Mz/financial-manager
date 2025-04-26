@@ -15,8 +15,8 @@ beforeAll(async () => {
 
   const salaryAmount = 4500;
 
-  const salary = await setup.createSalary(salaryAmount, userId);
-  await setup.createBankStatement(salary, january, userId);
+  await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(january.month, january.year, userId);
 });
 
 const january = { month: "January", year: 2025 };
