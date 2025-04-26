@@ -17,39 +17,6 @@ export default router.handler({
   onError: onInternalServerErrorHandler,
 });
 
-/**
- * @swagger
- * {
- *   "/api/v1/month": {
- *     "post": {
- *       "tags": ["Month"],
- *       "summary": "Create all months of the year",
- *       "responses": {
- *         "201": {
- *           "description": "Successful operation",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/HttpSuccess"
- *               }
- *             }
- *           }
- *         },
- *         "500": {
- *           "description": "Internal server error",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/InternalServerError"
- *               }
- *             }
- *           }
- *         }
- *       }
- *     }
- *   }
- * }
- */
 async function postHandler(req, res) {
   const months = await month.bulkCreate();
   const result = new httpSuccessCreated("All months created successfuly");

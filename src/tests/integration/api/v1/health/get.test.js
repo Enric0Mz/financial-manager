@@ -7,8 +7,8 @@ test("Retrieving current database information", async () => {
   expect(response.status).toBe(200);
   expect(responseBody.updated_at).toBe(currentDate);
   expect(databaseInfo.version).toBe("16.0");
-  expect(databaseInfo.max_connections).toBe("100");
-  expect(databaseInfo.opened_connections).toBe(1);
+  expect(databaseInfo.maxConnections).toBe("100");
+  expect(databaseInfo.openedConnections).toBe(1);
 });
 
 test("route GET /api/v1/nonexistent should return 404 not found", async () => {
