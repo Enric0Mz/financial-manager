@@ -17,7 +17,7 @@ async function findFirst(monthName, yearId) {
     },
   });
   if (!result) {
-    throw new NotFoundError(`[${year}, ${month}]`);
+    throw new NotFoundError(`[${yearId}, ${monthName}]`);
   }
   return result;
 }

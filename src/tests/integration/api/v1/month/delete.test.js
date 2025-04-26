@@ -55,7 +55,7 @@ describe("DELETE api/v1/month", () => {
       expect(response.status).toBe(404);
       expect(responseBody.name).toBe("not found");
       expect(responseBody.message).toBe(
-        `Value ${month} does not exist on table. Try another value`,
+        `Value [2025, ${month}] does not exist on table. Try another value`,
       );
     });
 
