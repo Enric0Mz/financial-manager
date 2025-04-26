@@ -17,22 +17,20 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
+  await setup.createCalendar();
+
   const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
+
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
-  await setup.createYear(year);
-  await setup.createAllMonths();
-  const yearMonth = await setup.createMonthInYear(january, year);
-  const salary = await setup.createSalary(salaryAmount, userId);
-  const bankStatement = await setup.createBankStatement(
-    salary,
-    yearMonth.object.id,
-    userId,
-  );
+  await setup.createSalary(salaryAmount, userId);
+  const bankStatement = (
+    await setup.createBankStatement(january, year, userId)
+  ).toJson();
   bankStatementId = bankStatement.data.id;
   await setup.createExtraIncome(extraIncome1, bankStatementId);
   await setup.createExtraIncome(extraIncome2, bankStatementId);

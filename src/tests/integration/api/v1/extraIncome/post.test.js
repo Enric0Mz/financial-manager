@@ -7,18 +7,18 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
+  await setup.createCalendar();
+
   const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
+
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
-  await setup.createYear(year);
-  await setup.createAllMonths();
-  const yearMonth = await setup.createMonthInYear(january, year);
-  const salary = await setup.createSalary(salaryAmount, userId);
-  await setup.createBankStatement(salary, yearMonth.object.id, userId);
+  await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(january, year, userId);
 });
 
 describe("POST /api/v1/extraIncome", () => {
