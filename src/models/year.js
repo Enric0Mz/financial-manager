@@ -65,9 +65,13 @@ async function bulkCreate() {
     yearNumber: i + 1950,
   }));
 
-  return await prisma.year.createManyAndReturn({
-    data: years,
-  });
+  try {
+    return await prisma.year.createManyAndReturn({
+      data: years,
+    });
+  } catch (err) {
+    throw new ConflictError(err, "calendar");
+  }
 }
 
 const year = {

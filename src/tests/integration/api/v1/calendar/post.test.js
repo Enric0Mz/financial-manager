@@ -29,5 +29,22 @@ describe("GET /api/v1/calendar/", () => {
         "months created for years 1950 to 2050",
       );
     });
+
+    test("Creating calendar again", async () => {
+      const response = await fetch(`${process.env.BASE_API_URL}/calendar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${generateTokens.data.accessToken}`,
+        },
+      });
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(409);
+      expect(responseBody.name).toBe("conflict");
+      expect(responseBody.message).toBe(
+        "Value calendar already exists on table. Insert other value",
+      );
+    });
   });
 });
