@@ -5,7 +5,7 @@ import month from "./month.js";
 import { httpSuccessCreated } from "helpers/httpSuccess.js";
 
 async function findFirst(monthName, yearId) {
-  return await prisma.yearMonth.findFirst({
+  const result = await prisma.yearMonth.findFirst({
     where: {
       month: {
         month: monthName,
@@ -15,6 +15,10 @@ async function findFirst(monthName, yearId) {
       },
     },
   });
+  if (!result) {
+    throw new NotFoundError(`[${year}, ${month}]`);
+  }
+  return result;
 }
 
 async function create(monthName, yearId) {

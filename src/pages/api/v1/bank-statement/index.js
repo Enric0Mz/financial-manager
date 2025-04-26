@@ -69,34 +69,7 @@ async function postHandler(req, res) {
   const { id } = req.user;
   const { month, year } = body;
 
-  const yearMonthResult = await yearMonth.findFirst(month, year);
-  const validateIfExists = await bankStatement.validateIfExists(month, year);
+  const result = await bankStatement.create(month, year, id);
 
-  if (validateIfExists) {
-    throw new ConflictError(
-      "bankStatement already found",
-      `BankStatement with [${month}, ${year}]`,
-    );
-  }
-
-  if (!yearMonthResult) {
-    const responseError = new NotFoundError(`[${year}, ${month}]`);
-    return res.status(responseError.statusCode).json(responseError);
-  }
-
-  const salaryResult = await salary.findFirst();
-
-  const lastStatement = await bankStatement.findFirst();
-
-  const banks = await bank.findMany();
-
-  const result = await bankStatement.create(
-    salaryResult,
-    yearMonthResult.id,
-    lastStatement,
-    banks,
-    id,
-  );
-
-  return res.status(result.status_code).json(result);
+  return res.status(result.statusCode).json(result.toJson());
 }

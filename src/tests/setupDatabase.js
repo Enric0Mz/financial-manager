@@ -72,20 +72,18 @@ async function createDebitExpense(expense, bankStatementId) {
 }
 
 async function createUser(userPayload) {
-  const mockUser = {
-    name: "TestUser",
-    email: "t@este.com",
-    password: "Pass@123",
-  };
-  return await user.create(userPayload || mockUser);
+  return await user.create(userPayload);
 }
 
-async function generateTestTokens() {
-  const mockUser = {
+async function generateTestTokens(userPayload) {
+  let mockUser = {
     username: "MockUsername",
     email: "mock@email.com",
     password: "Passw@123",
   };
+  if (userPayload) {
+    mockUser = userPayload;
+  }
   const user = (await createUser(mockUser)).toJson();
   const tokens = await auth.generateTokens(mockUser.email, mockUser.password);
   return { tokens, user };
