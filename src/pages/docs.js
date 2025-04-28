@@ -35,6 +35,7 @@ import {
   UserUpdate,
 } from "components/schemas/User";
 import { RefreshToken } from "components/schemas/auth";
+import { Health } from "components/schemas/health";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -84,6 +85,7 @@ export async function getStaticProps() {
           UserUpdate,
           UserLogin,
           RefreshToken,
+          Health,
         },
         securitySchemes: {
           BearerAuth: {
@@ -100,12 +102,20 @@ export async function getStaticProps() {
       ],
       tags: [
         {
-          name: "Year",
-          description: "Manage year resource",
+          name: "Health",
+          description: "Health routes",
         },
         {
-          name: "Month",
-          description: "Manage month resource",
+          name: "Calendar",
+          description: "Create calendar of the application",
+        },
+        {
+          name: "User",
+          description: "Manage your user",
+        },
+        {
+          name: "Auth",
+          description: "Authentication and authorization",
         },
         {
           name: "Salary",
@@ -130,14 +140,6 @@ export async function getStaticProps() {
         {
           name: "Expense - Debit",
           description: "Manage your debit expenses",
-        },
-        {
-          name: "User",
-          description: "Manage your user",
-        },
-        {
-          name: "Auth",
-          description: "Authentication and authorization",
         },
       ],
     },

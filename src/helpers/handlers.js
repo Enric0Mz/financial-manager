@@ -1,7 +1,6 @@
 import { InvalidHttpMethodError, InternalServerError } from "errors/http";
 
 export function onNoMatchHandler(req, res) {
-  console.log("AQYU");
   const responseError = new InvalidHttpMethodError(req.method);
   return res.status(responseError.statusCode).json(responseError);
 }

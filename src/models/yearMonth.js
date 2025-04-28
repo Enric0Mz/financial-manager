@@ -3,9 +3,10 @@ import Month from "./enum/month.js";
 import year from "./year.js";
 import month from "./month.js";
 import { httpSuccessCreated } from "helpers/httpSuccess.js";
+import { NotFoundError } from "errors/http.js";
 
 async function findFirst(monthName, yearId) {
-  return await prisma.yearMonth.findFirst({
+  const result = await prisma.yearMonth.findFirst({
     where: {
       month: {
         month: monthName,
@@ -15,6 +16,10 @@ async function findFirst(monthName, yearId) {
       },
     },
   });
+  if (!result) {
+    throw new NotFoundError(`[${yearId}, ${monthName}]`);
+  }
+  return result;
 }
 
 async function create(monthName, yearId) {
@@ -42,10 +47,28 @@ async function deleteMany(yearId, monthId) {
   });
 }
 
+async function connect(yearList, monthList) {
+  const payload = generatePayload(yearList, monthList);
+  return await prisma.yearMonth.createManyAndReturn({
+    data: payload,
+  });
+
+  function generatePayload(years, months) {
+    const result = [];
+    for (const year of years) {
+      for (const month of months) {
+        result.push({ yearId: year.yearNumber, monthId: month.numeric });
+      }
+    }
+    return result;
+  }
+}
+
 const yearMonth = {
   create,
   findFirst,
   deleteMany,
+  connect,
 };
 
 export default yearMonth;

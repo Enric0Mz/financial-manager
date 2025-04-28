@@ -10,13 +10,14 @@ import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 import user from "models/user";
 import auth from "models/auth";
+import calendar from "models/calendar";
 
 async function createYear(yearId) {
   return await year.create(yearId);
 }
 
 async function createAllMonths() {
-  return await month.createAllMonths();
+  return await month.bulkCreate();
 }
 
 async function createMonthInYear(month, year) {
@@ -32,20 +33,8 @@ async function createBank(name, userId) {
   return await bank.create(name, userId);
 }
 
-async function createBankStatement(
-  salary,
-  yearMonthId,
-  userId,
-  lastBankStatement,
-  banks,
-) {
-  return await bankStatement.create(
-    salary,
-    yearMonthId,
-    lastBankStatement,
-    banks,
-    userId,
-  );
+async function createBankStatement(month, year, userId) {
+  return await bankStatement.create(month, year, userId);
 }
 
 async function createExtraIncome(payload, bankStatementId) {
@@ -68,23 +57,25 @@ async function createDebitExpense(expense, bankStatementId) {
 }
 
 async function createUser(userPayload) {
-  const mockUser = {
-    name: "TestUser",
-    email: "t@este.com",
-    password: "Pass@123",
-  };
-  return await user.create(userPayload || mockUser);
+  return await user.create(userPayload);
 }
 
-async function generateTestTokens() {
-  const mockUser = {
+async function generateTestTokens(userPayload) {
+  let mockUser = {
     username: "MockUsername",
     email: "mock@email.com",
     password: "Passw@123",
   };
+  if (userPayload) {
+    mockUser = userPayload;
+  }
   const user = (await createUser(mockUser)).toJson();
   const tokens = await auth.generateTokens(mockUser.email, mockUser.password);
   return { tokens, user };
+}
+
+async function createCalendar() {
+  return await calendar.create();
 }
 
 const setup = {
@@ -99,6 +90,7 @@ const setup = {
   createDebitExpense,
   createUser,
   generateTestTokens,
+  createCalendar,
 };
 
 export default setup;

@@ -1,10 +1,10 @@
-import { createRouter } from "next-connect";
 import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import bankStatement from "models/bankStatement";
+import { createRouter } from "next-connect";
 import authenticateAccessToken from "middlewares/auth";
+import calendar from "models/calendar";
 
 const route = createRouter();
 
@@ -19,22 +19,12 @@ export default route.handler({
 /**
  * @swagger
  * {
- *   "/api/v1/bank-statement": {
+ *   "/api/v1/calendar": {
  *     "post": {
- *       "tags": ["Bank Statement"],
- *       "summary": "Create bank statement",
- *       "requestBody": {
- *          "description": "Bank Statement year/month",
- *          "content": {
- *            "application/json": {
- *              "schema": {
- *                "$ref": "#/components/schemas/YearMonth"
- *              }
- *            }
- *          }
- *        },
+ *       "tags": ["Calendar"],
+ *       "summary": "Create months and years",
  *       "responses": {
- *         "201": {
+ *         "200": {
  *           "description": "Successful operation",
  *           "content": {
  *             "application/json": {
@@ -61,11 +51,7 @@ export default route.handler({
  */
 
 async function postHandler(req, res) {
-  const body = req.body;
-  const { id } = req.user;
-  const { month, year } = body;
+  const result = await calendar.create();
 
-  const result = await bankStatement.create(month, year, id);
-
-  return res.status(result.statusCode).json(result.toJson());
+  return res.status(result.statusCode).json(result);
 }

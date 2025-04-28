@@ -20,51 +20,6 @@ export default router.handler({
   onError: onInternalServerErrorHandler,
 });
 
-/**
- * @swagger
- * {
- *   "/api/v1/month/{yearNumber}": {
- *     "get": {
- *       "tags": ["Month"],
- *       "summary": "List months",
- *        "parameters": [
- *      {
- *       "name": "yearNumber",
- *        "in": "path",
- *        "description": "Number of year",
- *        "required": true,
- *        "schema": {
- *          "type": "integer",
- *          "format": "int64"
- *          }
- *       }
- *     ],
- *       "responses": {
- *         "200": {
- *           "description": "Successful operation",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/ListOfMonths"
- *               }
- *             }
- *           }
- *         },
- *         "500": {
- *           "description": "Internal server error",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/InternalServerError"
- *               }
- *             }
- *           }
- *         }
- *       }
- *     }
- *   }
- * }
- */
 async function getHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
@@ -74,61 +29,6 @@ async function getHandler(req, res) {
   });
 }
 
-/**
- * @swagger
- * {
- *   "/api/v1/month/{yearNumber}": {
- *     "post": {
- *       "tags": ["Month"],
- *       "summary": "Create month in year",
- *        "parameters": [
- *      {
- *       "name": "yearNumber",
- *        "in": "path",
- *        "description": "Number of year",
- *        "required": true,
- *        "schema": {
- *          "type": "integer",
- *          "format": "int64"
- *          }
- *       }
- *     ],
- *       "requestBody": {
- *        "description": "Month body",
- *        "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/MonthCreate"
- *               }
- *             }
- *           }
- *         },
- *       "responses": {
- *         "200": {
- *           "description": "Successful operation",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/ListOfMonths"
- *               }
- *             }
- *           }
- *         },
- *         "500": {
- *           "description": "Internal server error",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/InternalServerError"
- *               }
- *             }
- *           }
- *         }
- *       }
- *     }
- *   }
- * }
- */
 async function postHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);
@@ -139,60 +39,6 @@ async function postHandler(req, res) {
   return res.status(result.statusCode).json(result);
 }
 
-/**
- * @swagger
- * {
- *   "/api/v1/month/{yearNumber}": {
- *     "delete": {
- *       "tags": ["Month"],
- *       "summary": "Delete month of a year",
- *        "parameters": [
- *      {
- *       "name": "yearNumber",
- *        "in": "path",
- *        "description": "Number of year",
- *        "required": true,
- *        "schema": {
- *          "type": "integer",
- *          "format": "int64"
- *          }
- *       }
- *     ],
- *       "requestBody": {
- *        "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/MonthCreate"
- *               }
- *             }
- *           }
- *         },
- *       "responses": {
- *         "201": {
- *           "description": "Successful operation",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/HttpSuccess"
- *               }
- *             }
- *           }
- *         },
- *         "500": {
- *           "description": "Internal server error",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/InternalServerError"
- *               }
- *             }
- *           }
- *         }
- *       }
- *     }
- *   }
- * }
- */
 async function deleteHandler(req, res) {
   const payload = req.query;
   const yearNumberValue = parseInt(payload.yearNumber);

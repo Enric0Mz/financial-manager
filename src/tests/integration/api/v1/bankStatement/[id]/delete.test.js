@@ -7,27 +7,26 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
+  await setup.createCalendar();
+
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
   const salaryAmount = 4500;
-  await setup.createYear(year);
-  await setup.createAllMonths();
-  const monthInYear = await setup.createMonthInYear(month, year);
-  const salary = await setup.createSalary(salaryAmount, userId);
-  await setup.createBankStatement(salary, monthInYear.object.id, userId);
+
+  await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(january.month, january.year, userId);
 });
 
-const month = "January";
-const year = 2025;
+const january = { month: "January", year: 2025 };
 
 describe("DELETE /api/v1/bankStatement/{id}", () => {
   describe("Authenticated user", () => {
     test("Deleting bankStatement", async () => {
       const bankStatement = await fetch(
-        `${process.env.BASE_API_URL}/bank-statement/${year}?` +
-          new URLSearchParams({ month }),
+        `${process.env.BASE_API_URL}/bank-statement/${january.year}?` +
+          new URLSearchParams({ month: january.month }),
         {
           headers: {
             "Content-Type": "application/json",
@@ -66,14 +65,14 @@ describe("DELETE /api/v1/bankStatement/{id}", () => {
           Authorization: `Bearer ${generateTokens.data.accessToken}`,
         },
         body: JSON.stringify({
-          year,
-          month,
+          year: january.year,
+          month: january.month,
         }),
       });
 
       const bankStatement = await fetch(
-        `${process.env.BASE_API_URL}/bank-statement/${year}?` +
-          new URLSearchParams({ month }),
+        `${process.env.BASE_API_URL}/bank-statement/${january.year}?` +
+          new URLSearchParams({ month: january.month }),
         {
           headers: {
             "Content-Type": "application/json",

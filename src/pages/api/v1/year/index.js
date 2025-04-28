@@ -16,40 +16,6 @@ export default router.handler({
   onError: onInternalServerErrorHandler,
 });
 
-/**
- * @swagger
- * {
- *   "/api/v1/year": {
- *     "get": {
- *       "tags": ["Year"],
- *       "summary": "List years",
- *       "responses": {
- *         "200": {
- *           "description": "Successful operation",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/ListOfYears"
- *               }
- *             }
- *           }
- *         },
- *         "500": {
- *           "description": "Internal server error",
- *           "content": {
- *             "application/json": {
- *               "schema": {
- *                 "$ref": "#/components/schemas/InternalServerError"
- *               }
- *             }
- *           }
- *         }
- *       }
- *     }
- *   }
- * }
- */
-
 async function getHandler(req, res) {
   const result = await year.findMany();
   res.status(200).json({

@@ -1,12 +1,20 @@
 import prisma from "infra/database.js";
 import Month from "./enum/month";
 import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
-import { NotFoundError, UnprocessableEntityError } from "errors/http";
+import {
+  NotFoundError,
+  UnprocessableEntityError,
+  ConflictError,
+} from "errors/http";
 import { validateAndParseAmount } from "helpers/validators";
 import bankBankStatement from "./bankBankStatement";
+import yearMonth from "./yearMonth";
+import salary from "./salary";
+import bank from "./bank";
 
-async function findFirst() {
+async function findFirst(userId) {
   return await prisma.bankStatement.findFirst({
+    where: { userId },
     orderBy: {
       createdAt: "desc",
     },
@@ -46,18 +54,25 @@ async function findUnique(month, year, userId) {
   return result;
 }
 
-async function validateIfExists(month, year) {
-  const monthId = Month[month];
-  return await prisma.bankStatement.findFirst({
+async function validateIfExists(yearMonthId, userId) {
+  const result = await prisma.bankStatement.findFirst({
     where: {
+      AND: [{ yearMonthId }, { userId }],
+    },
+    include: {
       yearMonth: {
-        is: {
-          monthId: monthId,
-          yearId: parseInt(year),
+        include: {
+          month: true,
         },
       },
     },
   });
+  if (result) {
+    throw new ConflictError(
+      "bankStatement already found",
+      `BankStatement with [${result.yearMonth.month.month}, ${result.yearMonth.yearId}]`,
+    );
+  }
 }
 
 async function findById(id) {
@@ -105,21 +120,23 @@ async function findMany(yearNumber, userId) {
   });
 }
 
-async function create(salary, yearMonthId, lastStatement, banks, userId) {
-  let lastMonthBalance;
-  if (lastStatement) {
-    lastMonthBalance = lastStatement.balanceReal;
-  }
+async function create(month, year, userId) {
+  const { id: yearMonthId } = await yearMonth.findFirst(month, year);
+  await validateIfExists(yearMonthId, userId);
 
-  const balance = lastMonthBalance
-    ? salary.amount + lastMonthBalance
-    : salary.amount;
+  const { id: salaryId, amount } = await salary.findFirst(userId);
+
+  const lastStatement = await findFirst(userId);
+
+  const balance = calcBalance(lastStatement, amount);
+
+  const banks = await bank.findMany(userId);
 
   const result = await prisma.bankStatement.create({
     data: {
       userId,
-      salaryId: salary.id,
-      yearMonthId: yearMonthId,
+      salaryId,
+      yearMonthId,
       balanceInitial: balance,
       balanceTotal: balance,
       balanceReal: balance,
@@ -139,8 +156,17 @@ async function create(salary, yearMonthId, lastStatement, banks, userId) {
       banks: true,
     },
   });
+  return new httpSuccessCreated("Bank statement created", result);
 
-  return new httpSuccessCreated("Bank statement created", result).toJson();
+  function calcBalance(lastStatement, salaryAmount) {
+    let lastMonthBalance;
+
+    if (lastStatement) {
+      lastMonthBalance = lastStatement.balanceReal;
+    }
+
+    return lastMonthBalance ? salaryAmount + lastMonthBalance : salaryAmount;
+  }
 }
 
 async function incrementBalance(amount, id) {
