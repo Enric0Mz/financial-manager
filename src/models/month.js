@@ -1,7 +1,6 @@
 import prisma from "infra/database.js";
 import { MonthName } from "@prisma/client";
 import { ConflictError } from "errors/http";
-import { httpSuccessCreated } from "helpers/httpSuccess";
 import { NotFoundError } from "errors/http";
 
 async function findFirst(monthName) {

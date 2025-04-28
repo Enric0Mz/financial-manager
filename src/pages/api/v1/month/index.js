@@ -18,7 +18,7 @@ export default router.handler({
 });
 
 async function postHandler(req, res) {
-  const months = await month.bulkCreate();
+  await month.bulkCreate();
   const result = new httpSuccessCreated("All months created successfuly");
   res.status(result.statusCode).json(result);
 }
