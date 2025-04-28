@@ -30,6 +30,7 @@ export const UserCreate = {
     email: {
       type: "string",
       format: "email",
+      example: "exemplo@email.com",
     },
   },
 };
@@ -49,6 +50,7 @@ export const UserLogin = {
   properties: {
     email: {
       type: "string",
+      format: "email",
       example: "exemplo@email.com",
     },
     password: {
