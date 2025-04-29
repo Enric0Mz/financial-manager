@@ -27,7 +27,7 @@ async function findUnique(id) {
   return result;
 }
 
-async function create(payload, bankStatementId) {
+async function create(payload, bankStatementId, userId) {
   const fixedAmount = validateAndParseAmount(payload.amount);
   try {
     const result = await prisma.extraIncome.create({
@@ -39,11 +39,13 @@ async function create(payload, bankStatementId) {
     });
 
     await bankStatement.incrementBalance(payload.amount, bankStatementId);
+    await bankStatement.reprocessAmounts(bankStatementId, userId);
     return new httpSuccessCreated(
       `Extra income ${result.name} created`,
       result,
     );
-  } catch {
+  } catch (err) {
+    console.log(err);
     throw new NotFoundError(bankStatementId);
   }
 }

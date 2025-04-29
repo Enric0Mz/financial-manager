@@ -313,6 +313,47 @@ async function remove(id) {
   return new httpSuccessDeleted(id);
 }
 
+async function reprocessAmounts(id, userId) {
+  const currentStatement = await findById(id);
+  const nextStatements = await findNextStatements(currentStatement, userId);
+  if (nextStatements.length === 1) {
+    return;
+  }
+  const { amount: salaryAmont } = await salary.findFirst(userId);
+  await reprocess(nextStatements, salaryAmont);
+
+  async function findNextStatements(currentStatement, userId) {
+    return await prisma.bankStatement.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: currentStatement.createdAt,
+        },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+  }
+
+  async function reprocess(bankStatements, salary) {
+    for (let i = 0; i < bankStatements.length - 1; i++) {
+      const prevBalanceReal = bankStatements[i].balanceReal;
+      const id = bankStatements[i + 1].id;
+      const updatedBalance = prevBalanceReal + salary;
+
+      await updateBalanceInitial(id, updatedBalance);
+    }
+  }
+
+  async function updateBalanceInitial(id, amount) {
+    return await prisma.bankStatement.update({
+      where: { id },
+      data: {
+        balanceInitial: amount,
+      },
+    });
+  }
+}
+
 const bankStatement = {
   create,
   findFirst,
@@ -329,6 +370,7 @@ const bankStatement = {
   updateDebitBalance,
   remove,
   validateIfExists,
+  reprocessAmounts,
 };
 
 export default bankStatement;
