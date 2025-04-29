@@ -1,8 +1,8 @@
+import { NotFoundError } from "errors/http";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
+import { validateAndParseAmount } from "helpers/validators";
 import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
-import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
-import { NotFoundError } from "errors/http";
-import { validateAndParseAmount } from "helpers/validators";
 
 async function findMany(bankStatementId) {
   return await prisma.extraIncome.findMany({
@@ -44,8 +44,7 @@ async function create(payload, bankStatementId, userId) {
       `Extra income ${result.name} created`,
       result,
     );
-  } catch (err) {
-    console.log(err);
+  } catch {
     throw new NotFoundError(bankStatementId);
   }
 }

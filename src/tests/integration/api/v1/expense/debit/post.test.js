@@ -1,7 +1,8 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
-let bankStatementData;
+let bankStatement1Data;
+let bankStatement2Data
 let generateTokens;
 
 beforeAll(async () => {
@@ -20,11 +21,10 @@ beforeAll(async () => {
   generateTokens = result.tokens;
 
   await setup.createSalary(salaryAmount, userId);
-  const bankStatement = (
-    await setup.createBankStatement(january, year, userId)
-  ).toJson();
-  await setup.createBankStatement(february, year, userId)
-  bankStatementData = bankStatement.data;
+  const bankStatement1 = (await setup.createBankStatement(january, year, userId)).toJson();
+  const bankStatement2 = (await setup.createBankStatement(february, year, userId)).toJson()
+  bankStatement1Data = bankStatement1.data;
+  bankStatement2Data = bankStatement2.data
 });
 
 const expense1 = {
@@ -43,7 +43,7 @@ describe("POST /api/v1/expense/debit", () => {
   describe("Authenticated user", () => {
     test("Creating debit expense", async () => {
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/debit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/debit/${bankStatement1Data.id}`,
         {
           method: "POST",
           headers: {
@@ -65,7 +65,7 @@ describe("POST /api/v1/expense/debit", () => {
 
     test("Creating debit expense for the second time", async () => {
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/debit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/debit/${bankStatement1Data.id}`,
         {
           method: "POST",
           headers: {
@@ -89,6 +89,22 @@ describe("POST /api/v1/expense/debit", () => {
         month: "February",
         year: 2025
       }
+      const expense3 = {
+        name: "Exemplo gasto",
+        description: "Exemplo de gasto",
+        total: 350.50,
+      }
+      await fetch(
+        `${process.env.BASE_API_URL}/expense/debit/${bankStatement2Data.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+          body: JSON.stringify(expense3),
+        },
+      );
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
         new URLSearchParams({ month: yearMonth.month }),
@@ -101,9 +117,11 @@ describe("POST /api/v1/expense/debit", () => {
       );
       const responseBody = await response.json();
       const updatedBalanceIntital = (responseBody.salary.amount * 2) - expense1.total - expense2.total
+      const updatedBalanceTotal = updatedBalanceIntital - expense3.total
 
       expect(response.status).toBe(200);
       expect(responseBody.balanceInitial).toBe(updatedBalanceIntital)
+      expect(responseBody.balanceTotal).toBe(updatedBalanceTotal)
     });
   });
 });

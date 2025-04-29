@@ -37,7 +37,7 @@ describe("POST /api/v1/extraIncome", () => {
       };
       const getBankStatementResponse = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
-          new URLSearchParams({ month: yearMonth.month }),
+        new URLSearchParams({ month: yearMonth.month }),
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +61,6 @@ describe("POST /api/v1/extraIncome", () => {
         },
       );
       const responseBody = await response.json();
-      console.log(responseBody);
 
       expect(response.status).toBe(201);
       expect(responseBody.name).toBe("created");
@@ -77,7 +76,7 @@ describe("POST /api/v1/extraIncome", () => {
       };
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
-          new URLSearchParams({ month: yearMonth.month }),
+        new URLSearchParams({ month: yearMonth.month }),
         {
           headers: {
             "Content-Type": "application/json",

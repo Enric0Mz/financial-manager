@@ -341,12 +341,8 @@ async function reprocessAmounts(id, userId) {
     for (let i = 0; i < bankStatements.length - 1; i++) {
       const prevBalanceReal = bankStatements[i].balanceReal;
       const id = bankStatements[i + 1].id;
-      console.log("Pre Create", bankStatements[i + 1])
       const updatedBalance = prevBalanceReal + salary;
       await updateBalanceInitial(id, updatedBalance);
-      console.log("Post Create", await prisma.bankStatement.findUnique({
-        where: { id }
-      }))
     }
   }
 
