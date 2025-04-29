@@ -1,16 +1,16 @@
-import prisma from "infra/database.js";
-import Month from "./enum/month";
-import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import {
+  ConflictError,
   NotFoundError,
   UnprocessableEntityError,
-  ConflictError,
 } from "errors/http";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { validateAndParseAmount } from "helpers/validators";
-import bankBankStatement from "./bankBankStatement";
-import yearMonth from "./yearMonth";
-import salary from "./salary";
+import prisma from "infra/database.js";
 import bank from "./bank";
+import bankBankStatement from "./bankBankStatement";
+import Month from "./enum/month";
+import salary from "./salary";
+import yearMonth from "./yearMonth";
 
 async function findFirst(userId) {
   return await prisma.bankStatement.findFirst({
@@ -142,14 +142,14 @@ async function create(month, year, userId) {
       balanceReal: balance,
       banks: banks
         ? {
-            create: banks.map((bank) => ({
-              bank: {
-                connect: {
-                  id: bank.id,
-                },
+          create: banks.map((bank) => ({
+            bank: {
+              connect: {
+                id: bank.id,
               },
-            })),
-          }
+            },
+          })),
+        }
         : undefined,
     },
     include: {
@@ -331,6 +331,9 @@ async function reprocessAmounts(id, userId) {
         },
       },
       orderBy: { createdAt: "asc" },
+      include: {
+        expenses: true
+      }
     });
   }
 
@@ -338,9 +341,12 @@ async function reprocessAmounts(id, userId) {
     for (let i = 0; i < bankStatements.length - 1; i++) {
       const prevBalanceReal = bankStatements[i].balanceReal;
       const id = bankStatements[i + 1].id;
+      console.log("Pre Create", bankStatements[i + 1])
       const updatedBalance = prevBalanceReal + salary;
-
       await updateBalanceInitial(id, updatedBalance);
+      console.log("Post Create", await prisma.bankStatement.findUnique({
+        where: { id }
+      }))
     }
   }
 
