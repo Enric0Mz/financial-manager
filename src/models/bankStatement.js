@@ -142,14 +142,14 @@ async function create(month, year, userId) {
       balanceReal: balance,
       banks: banks
         ? {
-          create: banks.map((bank) => ({
-            bank: {
-              connect: {
-                id: bank.id,
+            create: banks.map((bank) => ({
+              bank: {
+                connect: {
+                  id: bank.id,
+                },
               },
-            },
-          })),
-        }
+            })),
+          }
         : undefined,
     },
     include: {
@@ -316,10 +316,11 @@ async function remove(id) {
 async function reprocessAmounts(id, userId) {
   const currentStatement = await findById(id);
   const nextStatements = await findNextStatements(currentStatement, userId);
+  const { amount: salaryAmont } = await salary.findFirst(userId);
   if (nextStatements.length === 1) {
+    await calculateAndUpdateBalanceRealAndTotal(nextStatements[0]);
     return;
   }
-  const { amount: salaryAmont } = await salary.findFirst(userId);
   await reprocess(nextStatements, salaryAmont);
 
   async function findNextStatements(currentStatement, userId) {
@@ -332,18 +333,31 @@ async function reprocessAmounts(id, userId) {
       },
       orderBy: { createdAt: "asc" },
       include: {
-        expenses: true
-      }
+        expenses: true,
+      },
     });
   }
 
   async function reprocess(bankStatements, salary) {
     for (let i = 0; i < bankStatements.length - 1; i++) {
-      const prevBalanceReal = bankStatements[i].balanceReal;
-      const id = bankStatements[i + 1].id;
-      const updatedBalance = prevBalanceReal + salary;
-      await updateBalanceInitial(id, updatedBalance);
+      const current = bankStatements[i];
+      const next = bankStatements[i + 1];
+      await calculateAndUpdateBalanceInitial(
+        next.id,
+        current.balanceReal,
+        salary,
+      );
+      await calculateAndUpdateBalanceRealAndTotal(next);
     }
+  }
+
+  async function calculateAndUpdateBalanceInitial(
+    statementId,
+    previousBalance,
+    salary,
+  ) {
+    const updatedBalance = previousBalance + salary;
+    await updateBalanceInitial(statementId, updatedBalance);
   }
 
   async function updateBalanceInitial(id, amount) {
@@ -351,6 +365,23 @@ async function reprocessAmounts(id, userId) {
       where: { id },
       data: {
         balanceInitial: amount,
+      },
+    });
+  }
+
+  async function calculateAndUpdateBalanceRealAndTotal(statement) {
+    console.log(statement);
+    const totalExpenses = statement.expenses.reduce(
+      (sum, expense) => sum + expense.total,
+      0,
+    );
+    console.log(totalExpenses);
+    const updatedBalance = statement.balanceInitial - totalExpenses;
+    await prisma.bankStatement.update({
+      where: { id: statement.id },
+      data: {
+        balanceTotal: updatedBalance,
+        balanceReal: updatedBalance,
       },
     });
   }

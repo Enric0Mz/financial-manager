@@ -132,7 +132,7 @@ async function getHandler(req, res) {
  */
 async function postHandler(req, res) {
   const query = req.query;
-  const { id: userId } = req.user
+  const { id: userId } = req.user;
   const bankStatementId = parseInt(query.id);
   const body = req.body;
   const expenseAmount = body.total;
@@ -144,7 +144,7 @@ async function postHandler(req, res) {
   );
   await bankStatement.decrementBalance(expenseAmount, bankStatementId);
   await bankStatement.incrementDebitBalance(expenseAmount, bankStatementId);
-  await bankStatement.reprocessAmounts(bankStatementId, userId)
+  await bankStatement.reprocessAmounts(bankStatementId, userId);
   return res.status(result.statusCode).json(result.toJson());
 }
 
