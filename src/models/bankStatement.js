@@ -170,7 +170,7 @@ async function create(month, year, userId) {
 }
 
 async function incrementBalance(amount, id) {
-  await prisma.bankStatement.update({
+  return await prisma.bankStatement.update({
     where: { id },
     data: {
       balanceTotal: { increment: amount },
@@ -316,12 +316,11 @@ async function remove(id) {
 async function reprocessAmounts(id, userId) {
   const currentStatement = await findById(id);
   const nextStatements = await findNextStatements(currentStatement, userId);
-  const { amount: salaryAmont } = await salary.findFirst(userId);
+  const { amount: salaryAmount } = await salary.findFirst(userId);
   if (nextStatements.length === 1) {
-    await calculateAndUpdateBalanceRealAndTotal(nextStatements[0]);
     return;
   }
-  await reprocess(nextStatements, salaryAmont);
+  await reprocess(nextStatements, salaryAmount);
 
   async function findNextStatements(currentStatement, userId) {
     return await prisma.bankStatement.findMany({
@@ -370,13 +369,13 @@ async function reprocessAmounts(id, userId) {
   }
 
   async function calculateAndUpdateBalanceRealAndTotal(statement) {
-    console.log(statement);
+    console.log("STATEMENT", statement);
     const totalExpenses = statement.expenses.reduce(
       (sum, expense) => sum + expense.total,
       0,
     );
-    console.log(totalExpenses);
     const updatedBalance = statement.balanceInitial - totalExpenses;
+    console.log("updatedBalance", updatedBalance);
     await prisma.bankStatement.update({
       where: { id: statement.id },
       data: {

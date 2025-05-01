@@ -14,6 +14,7 @@ beforeAll(async () => {
 
   const year = 2025;
   const january = "January";
+  const february = "February";
   const salaryAmount = 4500;
 
   const result = await setup.generateTestTokens();
@@ -24,6 +25,7 @@ beforeAll(async () => {
   const bankStatement = (
     await setup.createBankStatement(january, year, userId)
   ).toJson();
+  await setup.createBankStatement(february, year, userId);
   bankStatementId = bankStatement.data.id;
   await setup.createExtraIncome(extraIncome, bankStatementId);
 });
