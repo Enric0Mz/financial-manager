@@ -144,7 +144,7 @@ async function postHandler(req, res) {
   );
   await bankStatement.decrementBalance(expenseAmount, bankStatementId);
   await bankStatement.incrementDebitBalance(expenseAmount, bankStatementId);
-  await bankStatement.reprocessAmounts(bankStatementId, userId);
+  await bankStatement.reprocessBalances(bankStatementId, userId);
   return res.status(result.statusCode).json(result.toJson());
 }
 

@@ -39,7 +39,7 @@ async function create(payload, bankStatementId, userId) {
     });
 
     await bankStatement.incrementBalance(payload.amount, bankStatementId);
-    await bankStatement.reprocessAmounts(bankStatementId, userId);
+    await bankStatement.reprocessBalances(bankStatementId, userId);
     return new httpSuccessCreated(
       `Extra income ${result.name} created`,
       result,
@@ -76,7 +76,7 @@ async function update(payload, id, userId) {
       totalAmount,
       bankStatementId,
     );
-    await bankStatement.reprocessAmounts(bankStatementId, userId);
+    await bankStatement.reprocessBalances(bankStatementId, userId);
   }
   return result;
 }
@@ -96,7 +96,7 @@ async function remove(id, userId) {
     expensesAmount,
     existingExtraIncome.bankStatementId,
   );
-  await bankStatement.reprocessAmounts(bankStatementId, userId);
+  await bankStatement.reprocessBalances(bankStatementId, userId);
   return new httpSuccessDeleted(`with id ${id}`);
 }
 

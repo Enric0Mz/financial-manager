@@ -313,7 +313,7 @@ async function remove(id) {
   return new httpSuccessDeleted(id);
 }
 
-async function reprocessAmounts(id, userId) {
+async function reprocessBalances(id, userId) {
   const currentStatement = await findById(id);
   const nextStatements = await findNextStatements(currentStatement, userId);
   const { amount: salaryAmount } = await salary.findFirst(userId);
@@ -404,7 +404,7 @@ const bankStatement = {
   updateDebitBalance,
   remove,
   validateIfExists,
-  reprocessAmounts,
+  reprocessBalances,
 };
 
 export default bankStatement;
