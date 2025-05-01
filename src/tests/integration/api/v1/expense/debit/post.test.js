@@ -2,7 +2,6 @@ import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
 let bankStatement1Data;
-let bankStatement2Data;
 let generateTokens;
 
 beforeAll(async () => {
@@ -13,7 +12,6 @@ beforeAll(async () => {
 
   const year = 2025;
   const january = "January";
-  const february = "February";
   const salaryAmount = 4500;
 
   const result = await setup.generateTestTokens();
@@ -24,11 +22,7 @@ beforeAll(async () => {
   const bankStatement1 = (
     await setup.createBankStatement(january, year, userId)
   ).toJson();
-  const bankStatement2 = (
-    await setup.createBankStatement(february, year, userId)
-  ).toJson();
   bankStatement1Data = bankStatement1.data;
-  bankStatement2Data = bankStatement2.data;
 });
 
 const expense1 = {
@@ -87,49 +81,5 @@ describe("POST /api/v1/expense/debit", () => {
       expect(responseBody.data.description).toBe(expense2.description);
       expect(responseBody.data.total).toBe(expense2.total);
     });
-
-    // This test will return in expense-post-create branch
-
-    // test("Creation of expense should reflect in all bank statements", async () => {
-    //   const yearMonth = {
-    //     month: "February",
-    //     year: 2025,
-    //   };
-    //   const expense3 = {
-    //     name: "Exemplo gasto",
-    //     description: "Exemplo de gasto",
-    //     total: 350.5,
-    //   };
-    //   await fetch(
-    //     `${process.env.BASE_API_URL}/expense/debit/${bankStatement2Data.id}`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${generateTokens.data.accessToken}`,
-    //       },
-    //       body: JSON.stringify(expense3),
-    //     },
-    //   );
-    //   const response = await fetch(
-    //     `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
-    //       new URLSearchParams({ month: yearMonth.month }),
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${generateTokens.data.accessToken}`,
-    //       },
-    //     },
-    //   );
-    //   const responseBody = await response.json();
-
-    //   const updatedBalanceIntital =
-    //     responseBody.salary.amount * 2 - expense1.total - expense2.total;
-    //   const updatedBalanceTotal = updatedBalanceIntital - expense3.total;
-
-    //   expect(response.status).toBe(200);
-    //   expect(responseBody.balanceInitial).toBe(updatedBalanceIntital);
-    //   expect(responseBody.balanceTotal).toBe(updatedBalanceTotal);
-    // });
   });
 });
