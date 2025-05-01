@@ -49,7 +49,7 @@ async function create(payload, bankStatementId, userId) {
   }
 }
 
-async function update(payload, id) {
+async function update(payload, id, userId) {
   if (payload.amount !== undefined) {
     payload.amount = validateAndParseAmount(payload.amount);
   }
@@ -76,6 +76,7 @@ async function update(payload, id) {
       totalAmount,
       bankStatementId,
     );
+    await bankStatement.reprocessAmounts(bankStatementId, userId);
   }
   return result;
 }

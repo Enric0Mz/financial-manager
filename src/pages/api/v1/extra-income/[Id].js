@@ -197,10 +197,15 @@ async function postHandler(req, res) {
 
 async function patchHandler(req, res) {
   const query = req.query;
+  const { id: userId } = req.user;
   const extraIncomeId = parseInt(query.Id);
   const body = req.body;
 
-  const updatedExtraIncome = await extraIncome.update(body, extraIncomeId);
+  const updatedExtraIncome = await extraIncome.update(
+    body,
+    extraIncomeId,
+    userId,
+  );
 
   return res.status(200).json(updatedExtraIncome);
 }
