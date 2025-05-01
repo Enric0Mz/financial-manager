@@ -340,10 +340,11 @@ async function reprocessBalances(id, userId) {
   async function reprocess(bankStatements, salary) {
     for (let i = 0; i < bankStatements.length - 1; i++) {
       const current = bankStatements[i];
+      const updatedCurrent = await findById(current.id);
       const next = bankStatements[i + 1];
       const result = await calculateAndUpdateBalanceInitial(
         next.id,
-        current.balanceReal,
+        updatedCurrent.balanceReal,
         salary,
       );
       await calculateAndUpdateBalanceRealAndTotal(result);

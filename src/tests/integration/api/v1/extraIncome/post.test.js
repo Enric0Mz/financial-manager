@@ -12,6 +12,7 @@ beforeAll(async () => {
   const year = 2025;
   const january = "January";
   const february = "February";
+  const march = "March";
 
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
@@ -20,6 +21,7 @@ beforeAll(async () => {
   await setup.createSalary(salaryAmount, userId);
   await setup.createBankStatement(january, year, userId);
   await setup.createBankStatement(february, year, userId);
+  await setup.createBankStatement(march, year, userId);
 });
 
 const salaryAmount = 4500;
@@ -87,6 +89,29 @@ describe("POST /api/v1/extraIncome", () => {
       const responseBody = await response.json();
 
       const totalBalanceInitial = salaryAmount * 2 + extraIncome.amount;
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceInitial).toBe(totalBalanceInitial);
+    });
+
+    test("Creation of extra income should reflect through all statements created", async () => {
+      const yearMonth = {
+        month: "March",
+        year: 2025,
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
+      );
+      const responseBody = await response.json();
+
+      const totalBalanceInitial = salaryAmount * 3 + extraIncome.amount;
 
       expect(response.status).toBe(200);
       expect(responseBody.balanceInitial).toBe(totalBalanceInitial);
