@@ -80,8 +80,9 @@ async function update(payload, id) {
   return result;
 }
 
-async function remove(id) {
+async function remove(id, userId) {
   const existingExtraIncome = await findUnique(id);
+  const bankStatementId = existingExtraIncome.bankStatementId;
   await prisma.extraIncome.delete({
     where: {
       id,
@@ -94,6 +95,7 @@ async function remove(id) {
     expensesAmount,
     existingExtraIncome.bankStatementId,
   );
+  await bankStatement.reprocessAmounts(bankStatementId, userId);
   return new httpSuccessDeleted(`with id ${id}`);
 }
 

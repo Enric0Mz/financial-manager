@@ -253,9 +253,10 @@ async function patchHandler(req, res) {
 
 async function deleteHandler(req, res) {
   const query = req.query;
+  const { id: userId } = req.user;
   const extraIncomeId = parseInt(query.Id);
 
-  const result = await extraIncome.remove(extraIncomeId);
+  const result = await extraIncome.remove(extraIncomeId, userId);
 
   return res.status(result.statusCode).json(result);
 }

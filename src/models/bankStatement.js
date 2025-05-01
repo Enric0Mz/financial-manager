@@ -341,12 +341,12 @@ async function reprocessAmounts(id, userId) {
     for (let i = 0; i < bankStatements.length - 1; i++) {
       const current = bankStatements[i];
       const next = bankStatements[i + 1];
-      await calculateAndUpdateBalanceInitial(
+      const result = await calculateAndUpdateBalanceInitial(
         next.id,
         current.balanceReal,
         salary,
       );
-      await calculateAndUpdateBalanceRealAndTotal(next);
+      await calculateAndUpdateBalanceRealAndTotal(result);
     }
   }
 
@@ -356,26 +356,28 @@ async function reprocessAmounts(id, userId) {
     salary,
   ) {
     const updatedBalance = previousBalance + salary;
-    await updateBalanceInitial(statementId, updatedBalance);
+    return await updateBalanceInitial(statementId, updatedBalance);
   }
 
   async function updateBalanceInitial(id, amount) {
-    return await prisma.bankStatement.update({
+    const result = await prisma.bankStatement.update({
       where: { id },
       data: {
         balanceInitial: amount,
       },
+      include: {
+        expenses: true,
+      },
     });
+    return result;
   }
 
   async function calculateAndUpdateBalanceRealAndTotal(statement) {
-    console.log("STATEMENT", statement);
     const totalExpenses = statement.expenses.reduce(
       (sum, expense) => sum + expense.total,
       0,
     );
     const updatedBalance = statement.balanceInitial - totalExpenses;
-    console.log("updatedBalance", updatedBalance);
     await prisma.bankStatement.update({
       where: { id: statement.id },
       data: {
