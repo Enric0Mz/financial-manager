@@ -2,9 +2,9 @@ import {
   onInternalServerErrorHandler,
   onNoMatchHandler,
 } from "helpers/handlers";
-import { createRouter } from "next-connect";
 import authenticateAccessToken from "middlewares/auth";
 import calendar from "models/calendar";
+import { createRouter } from "next-connect";
 
 const route = createRouter();
 
@@ -53,5 +53,5 @@ export default route.handler({
 async function postHandler(req, res) {
   const result = await calendar.create();
 
-  return res.status(result.statusCode).json(result);
+  return res.status(result.statusCode).json(result.toJson());
 }

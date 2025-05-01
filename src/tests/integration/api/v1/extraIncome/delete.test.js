@@ -14,6 +14,7 @@ beforeAll(async () => {
 
   const year = 2025;
   const january = "January";
+  const february = "February";
   const salaryAmount = 4500;
 
   const result = await setup.generateTestTokens();
@@ -24,6 +25,7 @@ beforeAll(async () => {
   const bankStatement = (
     await setup.createBankStatement(january, year, userId)
   ).toJson();
+  await setup.createBankStatement(february, year, userId);
   bankStatementId = bankStatement.data.id;
   await setup.createExtraIncome(extraIncome, bankStatementId);
 });
@@ -66,6 +68,28 @@ describe("DELETE /api/v1/extraIncome", () => {
       const yearMonth = {
         year: 2025,
         month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
+      );
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceTotal).toBe(responseBody.balanceInitial);
+      expect(responseBody.balanceReal).toBe(responseBody.balanceInitial);
+    });
+
+    test("Getting bank statement to check if amount was correctly deleted in second bank statement", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "February",
       };
       const response = await fetch(
         `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +

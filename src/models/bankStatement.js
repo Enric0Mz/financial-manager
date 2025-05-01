@@ -1,16 +1,16 @@
-import prisma from "infra/database.js";
-import Month from "./enum/month";
-import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import {
+  ConflictError,
   NotFoundError,
   UnprocessableEntityError,
-  ConflictError,
 } from "errors/http";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
 import { validateAndParseAmount } from "helpers/validators";
-import bankBankStatement from "./bankBankStatement";
-import yearMonth from "./yearMonth";
-import salary from "./salary";
+import prisma from "infra/database.js";
 import bank from "./bank";
+import bankBankStatement from "./bankBankStatement";
+import Month from "./enum/month";
+import salary from "./salary";
+import yearMonth from "./yearMonth";
 
 async function findFirst(userId) {
   return await prisma.bankStatement.findFirst({
@@ -170,7 +170,7 @@ async function create(month, year, userId) {
 }
 
 async function incrementBalance(amount, id) {
-  await prisma.bankStatement.update({
+  return await prisma.bankStatement.update({
     where: { id },
     data: {
       balanceTotal: { increment: amount },
@@ -313,6 +313,81 @@ async function remove(id) {
   return new httpSuccessDeleted(id);
 }
 
+async function reprocessAmounts(id, userId) {
+  const currentStatement = await findById(id);
+  const nextStatements = await findNextStatements(currentStatement, userId);
+  const { amount: salaryAmount } = await salary.findFirst(userId);
+  if (nextStatements.length === 1) {
+    return;
+  }
+  await reprocess(nextStatements, salaryAmount);
+
+  async function findNextStatements(currentStatement, userId) {
+    return await prisma.bankStatement.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: currentStatement.createdAt,
+        },
+      },
+      orderBy: { createdAt: "asc" },
+      include: {
+        expenses: true,
+      },
+    });
+  }
+
+  async function reprocess(bankStatements, salary) {
+    for (let i = 0; i < bankStatements.length - 1; i++) {
+      const current = bankStatements[i];
+      const next = bankStatements[i + 1];
+      const result = await calculateAndUpdateBalanceInitial(
+        next.id,
+        current.balanceReal,
+        salary,
+      );
+      await calculateAndUpdateBalanceRealAndTotal(result);
+    }
+  }
+
+  async function calculateAndUpdateBalanceInitial(
+    statementId,
+    previousBalance,
+    salary,
+  ) {
+    const updatedBalance = previousBalance + salary;
+    return await updateBalanceInitial(statementId, updatedBalance);
+  }
+
+  async function updateBalanceInitial(id, amount) {
+    const result = await prisma.bankStatement.update({
+      where: { id },
+      data: {
+        balanceInitial: amount,
+      },
+      include: {
+        expenses: true,
+      },
+    });
+    return result;
+  }
+
+  async function calculateAndUpdateBalanceRealAndTotal(statement) {
+    const totalExpenses = statement.expenses.reduce(
+      (sum, expense) => sum + expense.total,
+      0,
+    );
+    const updatedBalance = statement.balanceInitial - totalExpenses;
+    await prisma.bankStatement.update({
+      where: { id: statement.id },
+      data: {
+        balanceTotal: updatedBalance,
+        balanceReal: updatedBalance,
+      },
+    });
+  }
+}
+
 const bankStatement = {
   create,
   findFirst,
@@ -329,6 +404,7 @@ const bankStatement = {
   updateDebitBalance,
   remove,
   validateIfExists,
+  reprocessAmounts,
 };
 
 export default bankStatement;

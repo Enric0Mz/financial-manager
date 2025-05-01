@@ -132,8 +132,9 @@ async function postHandler(req, res) {
   const query = req.query;
   const body = req.body;
   const bankStatementId = parseInt(query.Id);
+  const { id: userId } = req.user;
 
-  const result = await extraIncome.create(body, bankStatementId);
+  const result = await extraIncome.create(body, bankStatementId, userId);
 
   return res.status(result.statusCode).json(result.toJson());
 }
@@ -196,10 +197,15 @@ async function postHandler(req, res) {
 
 async function patchHandler(req, res) {
   const query = req.query;
+  const { id: userId } = req.user;
   const extraIncomeId = parseInt(query.Id);
   const body = req.body;
 
-  const updatedExtraIncome = await extraIncome.update(body, extraIncomeId);
+  const updatedExtraIncome = await extraIncome.update(
+    body,
+    extraIncomeId,
+    userId,
+  );
 
   return res.status(200).json(updatedExtraIncome);
 }
@@ -252,9 +258,10 @@ async function patchHandler(req, res) {
 
 async function deleteHandler(req, res) {
   const query = req.query;
+  const { id: userId } = req.user;
   const extraIncomeId = parseInt(query.Id);
 
-  const result = await extraIncome.remove(extraIncomeId);
+  const result = await extraIncome.remove(extraIncomeId, userId);
 
   return res.status(result.statusCode).json(result);
 }
