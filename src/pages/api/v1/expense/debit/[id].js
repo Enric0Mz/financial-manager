@@ -205,8 +205,9 @@ async function patchHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
   const body = req.body;
+  const { id: userId } = req.user;
 
-  const result = await expenseDebit.update(body, expenseId);
+  const result = await expenseDebit.update(body, expenseId, userId);
 
   return res.status(result.statusCode).json(result.toJson());
 }
@@ -260,8 +261,9 @@ async function patchHandler(req, res) {
 async function deleteHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
+  const { id: userId } = req.user;
 
-  const result = await expenseDebit.remove(expenseId);
+  const result = await expenseDebit.remove(expenseId, userId);
 
   return res.status(result.statusCode).json(result);
 }
