@@ -249,9 +249,8 @@ async function updateBalanceReal(amount, id) {
   });
 }
 
-async function updateWithExpense(expense, id, isDebit) {
+async function updateWithExpense(expense, id, isDebit, userId) {
   const { name, description, total, bankBankStatementId } = expense;
-
   await searchForMissingFields(expense, isDebit);
 
   const fixedAmount = validateAndParseAmount(total);
@@ -274,6 +273,15 @@ async function updateWithExpense(expense, id, isDebit) {
       expenses: true,
     },
   });
+  if (isDebit) {
+    await decrementBalance(total, id);
+    await incrementDebitBalance(total, id);
+  } else {
+    await decrementBalanceReal(total, id);
+    await bankBankStatement.incrementBalance(total, bankBankStatementId);
+  }
+  await reprocessBalances(id, userId);
+
   const lastExpense = result.expenses[result.expenses.length - 1];
 
   return new httpSuccessCreated(

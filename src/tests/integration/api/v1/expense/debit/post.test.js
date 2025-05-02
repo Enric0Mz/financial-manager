@@ -30,7 +30,7 @@ beforeAll(async () => {
   bankStatement1Data = bankStatement1.data;
   bankStatement2Data = bankStatement2.data;
 
-  await setup.createDebitExpense(expense3, bankStatement2Data.id);
+  await setup.createDebitExpense(expense3, bankStatement2Data.id, userId);
 });
 
 const expense1 = {

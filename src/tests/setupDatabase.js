@@ -41,19 +41,22 @@ async function createExtraIncome(payload, bankStatementId) {
   return await extraIncome.create(payload, bankStatementId);
 }
 
-async function createCreditExpense(expense, bankStatementId) {
-  await bankStatement.decrementBalanceReal(expense.total, bankStatementId);
-  await bankBankStatement.incrementBalance(
-    expense.total,
-    expense.bankBankStatementId,
+async function createCreditExpense(expense, bankStatementId, userId) {
+  return await bankStatement.updateWithExpense(
+    expense,
+    bankStatementId,
+    false,
+    userId,
   );
-  return await bankStatement.updateWithExpense(expense, bankStatementId, false);
 }
 
-async function createDebitExpense(expense, bankStatementId) {
-  await bankStatement.decrementBalance(expense.total, bankStatementId);
-  await bankStatement.incrementDebitBalance(expense.total, bankStatementId);
-  return await bankStatement.updateWithExpense(expense, bankStatementId, true);
+async function createDebitExpense(expense, bankStatementId, userId) {
+  return await bankStatement.updateWithExpense(
+    expense,
+    bankStatementId,
+    true,
+    userId,
+  );
 }
 
 async function createUser(userPayload) {

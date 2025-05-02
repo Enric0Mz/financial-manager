@@ -29,7 +29,7 @@ beforeAll(async () => {
     await setup.createBankStatement(january, year, userId)
   ).toJson();
   bankStatementData = bankStatement.data;
-  await setup.createDebitExpense(expense, bankStatementData.id);
+  await setup.createDebitExpense(expense, bankStatementData.id, userId);
 });
 
 describe("GET /api/v1/expense/debit", () => {

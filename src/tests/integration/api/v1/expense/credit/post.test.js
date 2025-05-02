@@ -40,7 +40,7 @@ beforeAll(async () => {
     bankBankStatementId: bankStatement2Data.banks[0].id,
   };
 
-  await setup.createCreditExpense(expense3, bankStatement2Data.id);
+  await setup.createCreditExpense(expense3, bankStatement2Data.id, userId);
 });
 
 const year = 2025;
@@ -112,7 +112,6 @@ describe("POST /api/v1/expense/credit", () => {
       );
 
       const bankStatementResponseBody = await bankStatementResponse.json();
-
       const validateBalanceReal =
         bankStatementResponseBody.balanceInitial -
         (expense1.total + expense2.total);

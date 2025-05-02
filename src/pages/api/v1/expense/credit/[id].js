@@ -141,14 +141,8 @@ async function postHandler(req, res) {
     body,
     bankStatementId,
     false,
+    userId,
   );
-
-  await bankStatement.decrementBalanceReal(body.total, bankStatementId);
-  await bankBankStatement.incrementBalance(
-    body.total,
-    body.bankBankStatementId,
-  );
-  await bankStatement.reprocessBalances(bankStatementId, userId);
   return res.status(result.statusCode).json(result.toJson());
 }
 

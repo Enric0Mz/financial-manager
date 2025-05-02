@@ -135,16 +135,13 @@ async function postHandler(req, res) {
   const { id: userId } = req.user;
   const bankStatementId = parseInt(query.id);
   const body = req.body;
-  const expenseAmount = body.total;
 
   const result = await bankStatement.updateWithExpense(
     body,
     bankStatementId,
     true,
+    userId,
   );
-  await bankStatement.decrementBalance(expenseAmount, bankStatementId);
-  await bankStatement.incrementDebitBalance(expenseAmount, bankStatementId);
-  await bankStatement.reprocessBalances(bankStatementId, userId);
   return res.status(result.statusCode).json(result.toJson());
 }
 
