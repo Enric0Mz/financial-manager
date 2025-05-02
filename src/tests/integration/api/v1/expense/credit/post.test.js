@@ -1,7 +1,8 @@
 import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
-let bankStatementData;
+let bankStatement1Data;
+let bankStatement2Data;
 let generateTokens;
 
 beforeAll(async () => {
@@ -11,6 +12,7 @@ beforeAll(async () => {
   await setup.createCalendar();
 
   const january = "January";
+  const february = "February";
   const salaryAmount = 4500;
   const bankName = "Itau";
   const result = await setup.generateTestTokens();
@@ -21,10 +23,24 @@ beforeAll(async () => {
 
   await setup.createBank(bankName, userId);
 
-  const bankStatement = (
+  const bankStatement1 = (
     await setup.createBankStatement(january, year, userId)
   ).toJson();
-  bankStatementData = bankStatement.data;
+  bankStatement1Data = bankStatement1.data;
+
+  const bankStatement2 = (
+    await setup.createBankStatement(february, year, userId)
+  ).toJson();
+  bankStatement2Data = bankStatement2.data;
+
+  const expense3 = {
+    name: "expense teste",
+    description: "description teste",
+    total: 200,
+    bankBankStatementId: bankStatement2Data.banks[0].id,
+  };
+
+  await setup.createCreditExpense(expense3, bankStatement2Data.id);
 });
 
 const year = 2025;
@@ -39,10 +55,10 @@ describe("POST /api/v1/expense/credit", () => {
       Object.assign(expense1, {
         name: "Compra mercado",
         description: "Compra de mercado da semana",
-        bankBankStatementId: bankStatementData.banks[0].id,
+        bankBankStatementId: bankStatement1Data.banks[0].id,
       });
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatement1Data.id}`,
         {
           method: "POST",
           headers: {
@@ -66,10 +82,10 @@ describe("POST /api/v1/expense/credit", () => {
       Object.assign(expense2, {
         name: "Jogo ps5",
         description: "Compra jogo gta 6",
-        bankBankStatementId: bankStatementData.banks[0].id,
+        bankBankStatementId: bankStatement1Data.banks[0].id,
       });
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatement1Data.id}`,
         {
           method: "POST",
           headers: {
@@ -113,7 +129,7 @@ describe("POST /api/v1/expense/credit", () => {
       };
 
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatement1Data.id}`,
         {
           method: "POST",
           headers: {
@@ -140,7 +156,7 @@ describe("POST /api/v1/expense/credit", () => {
         bankBankStatementId: 333,
       };
       const response = await fetch(
-        `${process.env.BASE_API_URL}/expense/credit/${bankStatementData.id}`,
+        `${process.env.BASE_API_URL}/expense/credit/${bankStatement1Data.id}`,
         {
           method: "POST",
           headers: {
@@ -156,6 +172,37 @@ describe("POST /api/v1/expense/credit", () => {
       expect(responseBody.name).toBe("not found");
       expect(responseBody.message).toBe(
         `Value ${expense.bankBankStatementId} does not exist on table. Try another value`,
+      );
+    });
+
+    test("Creation of credit expenses should reflect in all bankStatements", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "February",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
+      );
+      const responseBody = await response.json();
+
+      const correctedBalanceTotalAmount =
+        responseBody.salary.amount * 2 - expense1.total - expense2.total;
+
+      const correctBalanceRealAmount = correctedBalanceTotalAmount - 200;
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceTotal).toBe(
+        parseFloat(correctedBalanceTotalAmount.toFixed(2)),
+      );
+      expect(responseBody.balanceReal).toBe(
+        parseFloat(correctBalanceRealAmount.toFixed(2)),
       );
     });
   });

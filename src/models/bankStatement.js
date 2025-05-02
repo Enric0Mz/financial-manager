@@ -374,16 +374,27 @@ async function reprocessBalances(id, userId) {
   }
 
   async function calculateAndUpdateBalanceRealAndTotal(statement) {
+    const debitExpenses = [];
+    for (let expense of statement.expenses) {
+      if (!expense.bankBankStatementId) {
+        debitExpenses.push(expense);
+      }
+    }
+    const totalExpensesDebit = debitExpenses.reduce(
+      (sum, expense) => sum + expense.total,
+      0,
+    );
     const totalExpenses = statement.expenses.reduce(
       (sum, expense) => sum + expense.total,
       0,
     );
-    const updatedBalance = statement.balanceInitial - totalExpenses;
+    const updatedBalanceTotal = statement.balanceInitial - totalExpensesDebit;
+    const updatedBalanceReal = statement.balanceInitial - totalExpenses;
     await prisma.bankStatement.update({
       where: { id: statement.id },
       data: {
-        balanceTotal: updatedBalance,
-        balanceReal: updatedBalance,
+        balanceTotal: updatedBalanceTotal,
+        balanceReal: updatedBalanceReal,
       },
     });
   }

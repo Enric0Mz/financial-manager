@@ -134,6 +134,7 @@ async function getHanlder(req, res) {
 async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
+  const { id: userId } = req.user;
   const body = req.body;
 
   const result = await bankStatement.updateWithExpense(
@@ -147,6 +148,7 @@ async function postHandler(req, res) {
     body.total,
     body.bankBankStatementId,
   );
+  await bankStatement.reprocessBalances(bankStatementId, userId);
   return res.status(result.statusCode).json(result.toJson());
 }
 
