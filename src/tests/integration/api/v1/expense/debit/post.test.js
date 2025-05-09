@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator";
 import setup from "tests/setupDatabase";
 
 let bankStatement1Data;
+let bankStatement2Data;
 let generateTokens;
 
 beforeAll(async () => {
@@ -12,6 +13,7 @@ beforeAll(async () => {
 
   const year = 2025;
   const january = "January";
+  const february = "February";
   const salaryAmount = 4500;
 
   const result = await setup.generateTestTokens();
@@ -22,7 +24,13 @@ beforeAll(async () => {
   const bankStatement1 = (
     await setup.createBankStatement(january, year, userId)
   ).toJson();
+  const bankStatement2 = (
+    await setup.createBankStatement(february, year, userId)
+  ).toJson();
   bankStatement1Data = bankStatement1.data;
+  bankStatement2Data = bankStatement2.data;
+
+  await setup.createDebitExpense(expense3, bankStatement2Data.id, userId);
 });
 
 const expense1 = {
@@ -35,6 +43,12 @@ const expense2 = {
   name: "Gasto mercado",
   description: "gasto com mercado dia 15",
   total: 436.09,
+};
+
+const expense3 = {
+  name: "Gasto exemplo",
+  description: "Gasto exemplo",
+  total: 200,
 };
 
 describe("POST /api/v1/expense/debit", () => {
@@ -80,6 +94,33 @@ describe("POST /api/v1/expense/debit", () => {
       expect(responseBody.data.name).toBe(expense2.name);
       expect(responseBody.data.description).toBe(expense2.description);
       expect(responseBody.data.total).toBe(expense2.total);
+    });
+
+    test("Creation of expenses should reflect in all bankStatements", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "February",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          },
+        },
+      );
+      const responseBody = await response.json();
+
+      const correctedAmount =
+        responseBody.salary.amount * 2 -
+        expense1.total -
+        expense2.total -
+        expense3.total;
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceTotal).toBe(correctedAmount);
     });
   });
 });

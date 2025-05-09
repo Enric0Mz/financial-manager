@@ -249,9 +249,8 @@ async function updateBalanceReal(amount, id) {
   });
 }
 
-async function updateWithExpense(expense, id, isDebit) {
+async function updateWithExpense(expense, id, isDebit, userId) {
   const { name, description, total, bankBankStatementId } = expense;
-
   await searchForMissingFields(expense, isDebit);
 
   const fixedAmount = validateAndParseAmount(total);
@@ -274,6 +273,15 @@ async function updateWithExpense(expense, id, isDebit) {
       expenses: true,
     },
   });
+  if (isDebit) {
+    await decrementBalance(total, id);
+    await incrementDebitBalance(total, id);
+  } else {
+    await decrementBalanceReal(total, id);
+    await bankBankStatement.incrementBalance(total, bankBankStatementId);
+  }
+  await reprocessBalances(id, userId);
+
   const lastExpense = result.expenses[result.expenses.length - 1];
 
   return new httpSuccessCreated(
@@ -313,7 +321,7 @@ async function remove(id) {
   return new httpSuccessDeleted(id);
 }
 
-async function reprocessAmounts(id, userId) {
+async function reprocessBalances(id, userId) {
   const currentStatement = await findById(id);
   const nextStatements = await findNextStatements(currentStatement, userId);
   const { amount: salaryAmount } = await salary.findFirst(userId);
@@ -340,10 +348,11 @@ async function reprocessAmounts(id, userId) {
   async function reprocess(bankStatements, salary) {
     for (let i = 0; i < bankStatements.length - 1; i++) {
       const current = bankStatements[i];
+      const updatedCurrent = await findById(current.id);
       const next = bankStatements[i + 1];
       const result = await calculateAndUpdateBalanceInitial(
         next.id,
-        current.balanceReal,
+        updatedCurrent.balanceReal,
         salary,
       );
       await calculateAndUpdateBalanceRealAndTotal(result);
@@ -373,16 +382,27 @@ async function reprocessAmounts(id, userId) {
   }
 
   async function calculateAndUpdateBalanceRealAndTotal(statement) {
+    const debitExpenses = [];
+    for (let expense of statement.expenses) {
+      if (!expense.bankBankStatementId) {
+        debitExpenses.push(expense);
+      }
+    }
+    const totalExpensesDebit = debitExpenses.reduce(
+      (sum, expense) => sum + expense.total,
+      0,
+    );
     const totalExpenses = statement.expenses.reduce(
       (sum, expense) => sum + expense.total,
       0,
     );
-    const updatedBalance = statement.balanceInitial - totalExpenses;
+    const updatedBalanceTotal = statement.balanceInitial - totalExpensesDebit;
+    const updatedBalanceReal = statement.balanceInitial - totalExpenses;
     await prisma.bankStatement.update({
       where: { id: statement.id },
       data: {
-        balanceTotal: updatedBalance,
-        balanceReal: updatedBalance,
+        balanceTotal: updatedBalanceTotal,
+        balanceReal: updatedBalanceReal,
       },
     });
   }
@@ -404,7 +424,7 @@ const bankStatement = {
   updateDebitBalance,
   remove,
   validateIfExists,
-  reprocessAmounts,
+  reprocessBalances,
 };
 
 export default bankStatement;

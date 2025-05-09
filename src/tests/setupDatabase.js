@@ -6,7 +6,6 @@ import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bank from "models/bank";
 import bankStatement from "models/bankStatement";
-import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 import user from "models/user";
 import auth from "models/auth";
@@ -41,19 +40,22 @@ async function createExtraIncome(payload, bankStatementId) {
   return await extraIncome.create(payload, bankStatementId);
 }
 
-async function createCreditExpense(expense, bankStatementId) {
-  await bankStatement.decrementBalanceReal(expense.total, bankStatementId);
-  await bankBankStatement.incrementBalance(
-    expense.total,
-    expense.bankBankStatementId,
+async function createCreditExpense(expense, bankStatementId, userId) {
+  return await bankStatement.updateWithExpense(
+    expense,
+    bankStatementId,
+    false,
+    userId,
   );
-  return await bankStatement.updateWithExpense(expense, bankStatementId, false);
 }
 
-async function createDebitExpense(expense, bankStatementId) {
-  await bankStatement.decrementBalance(expense.total, bankStatementId);
-  await bankStatement.incrementDebitBalance(expense.total, bankStatementId);
-  return await bankStatement.updateWithExpense(expense, bankStatementId, true);
+async function createDebitExpense(expense, bankStatementId, userId) {
+  return await bankStatement.updateWithExpense(
+    expense,
+    bankStatementId,
+    true,
+    userId,
+  );
 }
 
 async function createUser(userPayload) {

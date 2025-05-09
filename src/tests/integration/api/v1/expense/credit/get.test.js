@@ -32,7 +32,7 @@ beforeAll(async () => {
     bankBankStatementId: bankStatementData.banks[0].id,
   };
 
-  await setup.createCreditExpense(expense, bankStatementData.id);
+  await setup.createCreditExpense(expense, bankStatementData.id, userId);
 });
 
 describe("GET /api/v1/expense/credit", () => {
