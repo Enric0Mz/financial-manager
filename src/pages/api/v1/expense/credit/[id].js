@@ -5,7 +5,6 @@ import {
 } from "helpers/handlers";
 import bankStatement from "models/bankStatement";
 import expense from "models/expenseCredit";
-import bankBankStatement from "models/bankBankStatement";
 import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();

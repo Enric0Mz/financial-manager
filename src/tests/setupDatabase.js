@@ -6,7 +6,6 @@ import yearMonth from "models/yearMonth";
 import salary from "models/salary";
 import bank from "models/bank";
 import bankStatement from "models/bankStatement";
-import bankBankStatement from "models/bankBankStatement";
 import extraIncome from "models/extraIncome";
 import user from "models/user";
 import auth from "models/auth";
