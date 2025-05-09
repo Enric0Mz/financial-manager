@@ -9,26 +9,22 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
+  await setup.createCalendar();
+
   const year = 2025;
   const january = "January";
   const salaryAmount = 4500;
   const bankName = "Itau";
-  await setup.createYear(year);
-  await setup.createAllMonths();
+
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
-  const yearMonth = await setup.createMonthInYear(january, year);
-  const salary = await setup.createSalary(salaryAmount, userId);
-  const bank = (await setup.createBank(bankName, userId)).toJson();
-  const bankStatement = await setup.createBankStatement(
-    salary,
-    yearMonth.object.id,
-    userId,
-    undefined,
-    [bank.data],
-  );
+  await setup.createSalary(salaryAmount, userId);
+  await setup.createBank(bankName, userId);
+  const bankStatement = (
+    await setup.createBankStatement(january, year, userId)
+  ).toJson();
   bankStatementData = bankStatement.data;
   expense = {
     name: "Compra mercado",
@@ -37,7 +33,7 @@ beforeAll(async () => {
     bankBankStatementId: bankStatementData.banks[0].id,
   };
 
-  await setup.createCreditExpense(expense, bankStatementData.id);
+  await setup.createCreditExpense(expense, bankStatementData.id, userId);
 });
 
 describe("PATCH /api/v1/expense/credit", () => {

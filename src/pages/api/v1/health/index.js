@@ -14,6 +14,41 @@ export default router.handler({
   onError: onInternalServerErrorHandler,
 });
 
+/**
+ * @swagger
+ * {
+ *   "/api/v1/health": {
+ *     "get": {
+ *       "tags": ["Health"],
+ *       "summary": "Check API health",
+ *       "security": [],
+ *       "responses": {
+ *         "200": {
+ *           "description": "Successful operation",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/Health"
+ *               }
+ *             }
+ *           }
+ *         },
+ *         "500": {
+ *           "description": "Internal server error",
+ *           "content": {
+ *             "application/json": {
+ *               "schema": {
+ *                 "$ref": "#/components/schemas/InternalServerError"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ */
+
 async function getHandler(req, res) {
   const serverVersionResult = await prisma.$queryRaw`SHOW server_version;`;
   const serverVersionValue = serverVersionResult[0].server_version.slice(0, 4);
@@ -34,8 +69,8 @@ async function getHandler(req, res) {
     dependencies: {
       database: {
         version: serverVersionValue,
-        max_connections: maxConnectionsValue,
-        opened_connections: openedConnectionsValue,
+        maxConnections: maxConnectionsValue,
+        openedConnections: openedConnectionsValue,
       },
     },
   });

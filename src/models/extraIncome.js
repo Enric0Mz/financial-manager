@@ -1,8 +1,8 @@
+import { NotFoundError } from "errors/http";
+import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
+import { validateAndParseAmount } from "helpers/validators";
 import prisma from "infra/database.js";
 import bankStatement from "./bankStatement";
-import { httpSuccessCreated, httpSuccessDeleted } from "helpers/httpSuccess";
-import { NotFoundError } from "errors/http";
-import { validateAndParseAmount } from "helpers/validators";
 
 async function findMany(bankStatementId) {
   return await prisma.extraIncome.findMany({
@@ -27,7 +27,7 @@ async function findUnique(id) {
   return result;
 }
 
-async function create(payload, bankStatementId) {
+async function create(payload, bankStatementId, userId) {
   const fixedAmount = validateAndParseAmount(payload.amount);
   try {
     const result = await prisma.extraIncome.create({
@@ -39,6 +39,7 @@ async function create(payload, bankStatementId) {
     });
 
     await bankStatement.incrementBalance(payload.amount, bankStatementId);
+    await bankStatement.reprocessBalances(bankStatementId, userId);
     return new httpSuccessCreated(
       `Extra income ${result.name} created`,
       result,
@@ -48,7 +49,7 @@ async function create(payload, bankStatementId) {
   }
 }
 
-async function update(payload, id) {
+async function update(payload, id, userId) {
   if (payload.amount !== undefined) {
     payload.amount = validateAndParseAmount(payload.amount);
   }
@@ -75,12 +76,14 @@ async function update(payload, id) {
       totalAmount,
       bankStatementId,
     );
+    await bankStatement.reprocessBalances(bankStatementId, userId);
   }
   return result;
 }
 
-async function remove(id) {
+async function remove(id, userId) {
   const existingExtraIncome = await findUnique(id);
+  const bankStatementId = existingExtraIncome.bankStatementId;
   await prisma.extraIncome.delete({
     where: {
       id,
@@ -93,6 +96,7 @@ async function remove(id) {
     expensesAmount,
     existingExtraIncome.bankStatementId,
   );
+  await bankStatement.reprocessBalances(bankStatementId, userId);
   return new httpSuccessDeleted(`with id ${id}`);
 }
 

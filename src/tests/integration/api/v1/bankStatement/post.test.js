@@ -2,31 +2,33 @@ import setup from "tests/setupDatabase";
 import orchestrator from "tests/orchestrator";
 
 const salary = 4500;
+const salary2 = 1500;
 const bank = "nuBank";
 
-let generateTokens;
+let generateTokens1;
+let generateTokens2;
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  const year = 2025;
-  const january = "January";
-  const february = "February";
-  const march = "March";
-  const april = "April";
-  const result = await setup.generateTestTokens();
-  const userId = result.user.data.id;
-  generateTokens = result.tokens;
+  await setup.createCalendar();
 
-  await setup.createAllMonths();
-  await setup.createYear(year);
-  await setup.createMonthInYear(january, year);
-  await setup.createMonthInYear(february, year);
-  await setup.createMonthInYear(march, year);
-  await setup.createMonthInYear(april, year);
-  await setup.createSalary(salary, userId);
-  await setup.createBank(bank, userId);
+  const tokensResult1 = await setup.generateTestTokens();
+  const userId1 = tokensResult1.user.data.id;
+  generateTokens1 = tokensResult1.tokens;
+  const tokensResult2 = await setup.generateTestTokens({
+    username: "user2",
+    email: "user2@email.com",
+    password: "Password@123",
+  });
+  const userId2 = tokensResult2.user.data.id;
+  generateTokens2 = tokensResult2.tokens;
+
+  await setup.createSalary(salary, userId1);
+  await setup.createBank(bank, userId1);
+  await setup.createSalary(salary2, userId2);
+  await setup.createBank(bank, userId2);
 });
 
 describe("POST /api/v1/bankStatement", () => {
@@ -42,14 +44,13 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(yearMonth),
         },
       );
 
       const responseBody = await response.json();
-
       expect(response.status).toBe(201);
       expect(responseBody.name).toBe("created");
       expect(responseBody.message).toBe(`Bank statement created`);
@@ -64,7 +65,7 @@ describe("POST /api/v1/bankStatement", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          Authorization: `Bearer ${generateTokens1.data.accessToken}`,
         },
         body: JSON.stringify(february),
       });
@@ -75,7 +76,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -96,7 +97,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -116,7 +117,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(expense),
         },
@@ -131,7 +132,7 @@ describe("POST /api/v1/bankStatement", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${generateTokens.data.accessToken}`,
+          Authorization: `Bearer ${generateTokens1.data.accessToken}`,
         },
         body: JSON.stringify(march),
       });
@@ -142,7 +143,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -168,7 +169,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -191,7 +192,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(expense1),
         },
@@ -202,7 +203,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(expense2),
         },
@@ -213,7 +214,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -240,7 +241,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -258,7 +259,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(expense),
         },
@@ -270,7 +271,7 @@ describe("POST /api/v1/bankStatement", () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
         },
       );
@@ -296,7 +297,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(april),
         },
@@ -320,7 +321,7 @@ describe("POST /api/v1/bankStatement", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${generateTokens.data.accessToken}`,
+            Authorization: `Bearer ${generateTokens1.data.accessToken}`,
           },
           body: JSON.stringify(yearMonth),
         },
@@ -333,6 +334,52 @@ describe("POST /api/v1/bankStatement", () => {
       expect(responseBody.message).toBe(
         `Value BankStatement with [${yearMonth.month}, ${yearMonth.year}] already exists on table. Insert other value`,
       );
+    });
+
+    test("Creating bank statement for new user", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens2.data.accessToken}`,
+          },
+          body: JSON.stringify(yearMonth),
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(201);
+      expect(responseBody.name).toBe("created");
+    });
+
+    test("BankStatement for new user should be a empty statement", async () => {
+      const yearMonth = {
+        year: 2025,
+        month: "January",
+      };
+      const response = await fetch(
+        `${process.env.BASE_API_URL}/bank-statement/${yearMonth.year}?` +
+          new URLSearchParams({ month: yearMonth.month }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${generateTokens2.data.accessToken}`,
+          },
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(responseBody.balanceInitial).toBe(salary2);
+      expect(responseBody.debitBalance).toBe(0);
     });
   });
 });

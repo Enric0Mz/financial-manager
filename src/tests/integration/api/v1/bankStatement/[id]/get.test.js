@@ -7,29 +7,18 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 
-  const january = "January";
-  const february = "February";
+  await setup.createCalendar();
+
+  const january = { month: "January", year: 2025 };
+  const february = { month: "February", year: 2025 };
   const salaryAmount = 4500;
   const result = await setup.generateTestTokens();
   const userId = result.user.data.id;
   generateTokens = result.tokens;
 
-  await setup.createYear(year);
-  await setup.createAllMonths();
-  const monthInYearJanuary = await setup.createMonthInYear(january, year);
-  const monthInYearFebruary = await setup.createMonthInYear(february, year);
-  const salary = await setup.createSalary(salaryAmount, userId);
-  const bankStatement = await setup.createBankStatement(
-    salary,
-    monthInYearJanuary.object.id,
-    userId,
-  );
-  await setup.createBankStatement(
-    salary,
-    monthInYearFebruary.object.id,
-    userId,
-    bankStatement.data,
-  );
+  await setup.createSalary(salaryAmount, userId);
+  await setup.createBankStatement(january.month, january.year, userId);
+  await setup.createBankStatement(february.month, february.year, userId);
 });
 
 const year = 2025;

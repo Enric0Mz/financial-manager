@@ -17,7 +17,7 @@ async function findUnique(id) {
   return result;
 }
 
-async function update(payload, id) {
+async function update(payload, id, userId) {
   if (payload.total !== undefined) {
     payload.total = validateAndParseAmount(payload.total);
   }
@@ -44,6 +44,10 @@ async function update(payload, id) {
       expensesAmount,
       existingExpense.bankBankStatementId,
     );
+    await bankStatement.reprocessBalances(
+      existingExpense.bankStatementId,
+      userId,
+    );
   }
   return new httpSuccessUpdated(result);
 }
@@ -57,7 +61,7 @@ async function creditTotalExpenses(bankStatementId, bankBankStatementId) {
   return totalExpenses._sum.total || 0;
 }
 
-async function remove(id) {
+async function remove(id, userId) {
   const existingExpense = await findUnique(id);
   await prisma.expense.delete({
     where: { id },
@@ -73,6 +77,10 @@ async function remove(id) {
   await bankBankStatement.updateBalance(
     expensesAmount,
     existingExpense.bankBankStatementId,
+  );
+  await bankStatement.reprocessBalances(
+    existingExpense.bankStatementId,
+    userId,
   );
   return new httpSuccessDeleted(`with id ${id}`);
 }

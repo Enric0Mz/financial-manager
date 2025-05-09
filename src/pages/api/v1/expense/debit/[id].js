@@ -132,17 +132,16 @@ async function getHandler(req, res) {
  */
 async function postHandler(req, res) {
   const query = req.query;
+  const { id: userId } = req.user;
   const bankStatementId = parseInt(query.id);
   const body = req.body;
-  const expenseAmount = body.total;
 
   const result = await bankStatement.updateWithExpense(
     body,
     bankStatementId,
     true,
+    userId,
   );
-  await bankStatement.decrementBalance(expenseAmount, bankStatementId);
-  await bankStatement.incrementDebitBalance(expenseAmount, bankStatementId);
   return res.status(result.statusCode).json(result.toJson());
 }
 
@@ -206,8 +205,9 @@ async function patchHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
   const body = req.body;
+  const { id: userId } = req.user;
 
-  const result = await expenseDebit.update(body, expenseId);
+  const result = await expenseDebit.update(body, expenseId, userId);
 
   return res.status(result.statusCode).json(result.toJson());
 }
@@ -261,8 +261,9 @@ async function patchHandler(req, res) {
 async function deleteHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
+  const { id: userId } = req.user;
 
-  const result = await expenseDebit.remove(expenseId);
+  const result = await expenseDebit.remove(expenseId, userId);
 
   return res.status(result.statusCode).json(result);
 }

@@ -5,7 +5,6 @@ import {
 } from "helpers/handlers";
 import bankStatement from "models/bankStatement";
 import expense from "models/expenseCredit";
-import bankBankStatement from "models/bankBankStatement";
 import authenticateAccessToken from "middlewares/auth";
 
 const route = createRouter();
@@ -134,18 +133,14 @@ async function getHanlder(req, res) {
 async function postHandler(req, res) {
   const query = req.query;
   const bankStatementId = parseInt(query.id);
+  const { id: userId } = req.user;
   const body = req.body;
 
   const result = await bankStatement.updateWithExpense(
     body,
     bankStatementId,
     false,
-  );
-
-  await bankStatement.decrementBalanceReal(body.total, bankStatementId);
-  await bankBankStatement.incrementBalance(
-    body.total,
-    body.bankBankStatementId,
+    userId,
   );
   return res.status(result.statusCode).json(result.toJson());
 }
@@ -210,8 +205,9 @@ async function patchHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
   const body = req.body;
+  const { id: userId } = req.user;
 
-  const result = await expense.update(body, expenseId);
+  const result = await expense.update(body, expenseId, userId);
   return res.status(result.statusCode).json(result);
 }
 
@@ -264,8 +260,9 @@ async function patchHandler(req, res) {
 async function deleteHandler(req, res) {
   const query = req.query;
   const expenseId = parseInt(query.id);
+  const { id: userId } = req.user;
 
-  const result = await expense.remove(expenseId);
+  const result = await expense.remove(expenseId, userId);
 
   return res.status(result.statusCode).json(result);
 }

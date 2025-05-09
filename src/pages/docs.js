@@ -3,38 +3,39 @@ import dynamic from "next/dynamic";
 import "swagger-ui-react/swagger-ui.css";
 import InternalServerError from "components/schemas/HttpError";
 import HttpSuccess from "components/schemas/HttpSuccess";
-import { ListOfMonths, Month, MonthCreate } from "components/schemas/month";
-import { ListOfYears, Year } from "components/schemas/year";
-import { Salary, SalaryCreate } from "components/schemas/salary";
+import { ListOfMonths, Month, MonthCreate } from "components/schemas/Month";
+import { ListOfYears, Year } from "components/schemas/Year";
+import { Salary, SalaryCreate } from "components/schemas/Salary";
 import {
   Bank,
   BankCreate,
   BankUpdate,
   ListOfBanks,
-} from "components/schemas/bank";
+} from "components/schemas/Bank";
 import {
   BankStatement,
   ListOfBankStatements,
-} from "components/schemas/bankStatement";
-import { YearMonth } from "components/schemas/yearMonth";
+} from "components/schemas/BankStatement";
+import { YearMonth } from "components/schemas/YearMonth";
 import {
   ExtraIncome,
   ExtraIncomeCreate,
   ListOfExtraIncome,
-} from "components/schemas/extraIncome";
+} from "components/schemas/ExtraIncome";
 import {
   Expense,
   CreditExpenseCreate,
   ExpenseUpdate,
   DebitExpenseCreate,
-} from "components/schemas/expense";
+} from "components/schemas/Expense";
 import {
   User,
   UserCreate,
   UserLogin,
   UserUpdate,
 } from "components/schemas/User";
-import { RefreshToken } from "components/schemas/auth";
+import { RefreshToken } from "components/schemas/Auth";
+import { Health } from "components/schemas/Health";
 
 const SwaggerUI = dynamic(import("swagger-ui-react"), { ssr: false });
 
@@ -84,6 +85,7 @@ export async function getStaticProps() {
           UserUpdate,
           UserLogin,
           RefreshToken,
+          Health,
         },
         securitySchemes: {
           BearerAuth: {
@@ -100,12 +102,20 @@ export async function getStaticProps() {
       ],
       tags: [
         {
-          name: "Year",
-          description: "Manage year resource",
+          name: "Health",
+          description: "Health routes",
         },
         {
-          name: "Month",
-          description: "Manage month resource",
+          name: "Calendar",
+          description: "Create calendar of the application",
+        },
+        {
+          name: "User",
+          description: "Manage your user",
+        },
+        {
+          name: "Auth",
+          description: "Authentication and authorization",
         },
         {
           name: "Salary",
@@ -130,14 +140,6 @@ export async function getStaticProps() {
         {
           name: "Expense - Debit",
           description: "Manage your debit expenses",
-        },
-        {
-          name: "User",
-          description: "Manage your user",
-        },
-        {
-          name: "Auth",
-          description: "Authentication and authorization",
         },
       ],
     },
