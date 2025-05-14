@@ -27,7 +27,7 @@ A API do `financial-manager` foi projetada para ser flexível e escalável, ofer
 ## Tecnologias Utilizadas 🛠️
 
 - **Backend:** Next.js (API Routes)
-- **Linguagem:** JavaScript com Node.js _(Corrigido: Adicionado ponto final)_
+- **Linguagem:** JavaScript com Node.js
 - **Banco de Dados:** PostgreSQL
 - **ORM/Query Builder:** Prisma
 - **Testes Automatizados:** Jest
@@ -54,8 +54,6 @@ Siga os passos abaixo para configurar e rodar a API localmente:
 3.  Instale as dependências:
     ```bash
     npm install
-    # ou
-    yarn install
     ```
 4.  **Configure as variáveis de ambiente.** Crie um arquivo `.env` na raiz do projeto baseado no arquivo `.env.development` (se você tiver um) e preencha com suas configurações. **É crucial configurar corretamente estas variáveis para que a aplicação se conecte ao banco de dados e funcione adequadamente.**
 
@@ -89,8 +87,6 @@ Siga os passos abaixo para configurar e rodar a API localmente:
 6.  Inicie o servidor de desenvolvimento:
     ```bash
     npm run dev
-    # ou
-    yarn dev
     ```
 
 A API estará rodando em `http://localhost:3000` (ou a porta configurada no seu Next.js).
@@ -154,6 +150,9 @@ O projeto `financial-manager` está em desenvolvimento contínuo e há diversas 
 - 🏷️ **Sistema de Classificação de Gastos Avançado:** Implementar um sistema mais robusto para categorizar despesas, permitindo subcategorias e tags personalizadas para uma análise financeira ainda mais granular.
 - 🔁 **Gerenciamento de Compras Recorrentes e Parceladas:** Adicionar funcionalidades específicas para lidar com despesas que se repetem automaticamente (assinaturas, aluguéis) e compras parceladas no cartão de crédito, facilitando o acompanhamento dessas obrigações ao longo do tempo.
 - 🔍 **Filtro e Análise de Meses com Maiores Gastos:** Desenvolver ferramentas de visualização e filtro para identificar rapidamente os meses com os maiores volumes de despesas, ajudando o usuário a entender seus padrões de consumo e identificar áreas para otimização.
+
+- 🔒 **Criptografia de Dados Sensíveis:** Implementar medidas de segurança adicionais, como a criptografia de dados sensíveis armazenados, para garantir a privacidade e proteção das informações financeiras dos usuários.
+
 - 💻 **Frontend em React:** Concluir a implementação da interface do usuário em React para oferecer uma experiência completa e amigável para gerenciar as finanças.
 - 📈 **Relatórios e Gráficos:** Gerar relatórios visuais (gráficos de barras, pizza, etc.) para apresentar um resumo da situação financeira, distribuição de gastos por categoria, evolução do saldo, entre outros insights.
 - 🔔 **Notificações e Alertas:** Implementar um sistema de notificações para alertar sobre vencimento de contas, atingimento de limites de gastos em categorias, etc.
