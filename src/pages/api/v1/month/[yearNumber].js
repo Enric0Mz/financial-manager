@@ -53,6 +53,6 @@ async function deleteHandler(req, res) {
   return res.status(200).json({
     name: "deleted",
     message: `value ${body.month} deleted sucessfuly`,
-    status_code: 200,
+    statusCode: 200,
   });
 }

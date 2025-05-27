@@ -51,6 +51,7 @@ describe("DELETE api/v1/month", () => {
         body: JSON.stringify({ month }),
       });
       const responseBody = await response.json();
+      console.lo;
 
       expect(response.status).toBe(404);
       expect(responseBody.name).toBe("not found");

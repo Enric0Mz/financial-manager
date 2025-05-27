@@ -1,7 +1,7 @@
 const InternalServerError = {
   type: "object",
   properties: {
-    status_code: {
+    statusCode: {
       type: "integer",
       format: "int64",
       example: 500,

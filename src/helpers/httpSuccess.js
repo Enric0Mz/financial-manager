@@ -9,7 +9,7 @@ export class httpSuccessCreated {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
       data: this.object,
     };
   }
@@ -27,7 +27,7 @@ export class httpSuccessUpdated {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
       data: this.data,
     };
   }
@@ -43,7 +43,7 @@ export class httpSuccessDeleted {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -60,7 +60,7 @@ export class HttpSuccessAuthenticated {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
       data: this.data,
     };
   }
@@ -78,7 +78,7 @@ export class HttpSuccessRefreshed {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
       data: this.data,
     };
   }
@@ -95,7 +95,7 @@ export class HttpSuccessLoggedOut {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
