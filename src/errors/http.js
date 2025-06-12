@@ -9,7 +9,7 @@ export class ConflictError extends TypeError {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -24,7 +24,7 @@ export class NotFoundError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -39,7 +39,7 @@ export class InvalidHttpMethodError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -57,7 +57,7 @@ export class InternalServerError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -74,7 +74,7 @@ export class UnprocessableEntityError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -92,7 +92,7 @@ export class InvalidPasswordFormatError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -110,7 +110,7 @@ export class IncorrectPasswordError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -128,7 +128,7 @@ export class UnauthorizedError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }
@@ -146,7 +146,7 @@ export class TokenNotFoundError extends Error {
     return {
       name: this.name,
       message: this.message,
-      status_code: this.statusCode,
+      statusCode: this.statusCode,
     };
   }
 }

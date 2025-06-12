@@ -1,7 +1,7 @@
 const HttpSuccess = {
   type: "object",
   properties: {
-    status_code: {
+    statusCode: {
       type: "integer",
       format: "int64",
       example: 200,
