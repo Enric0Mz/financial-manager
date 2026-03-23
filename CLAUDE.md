@@ -68,17 +68,17 @@ src/
 
 ## Key API Routes
 
-| Domain | Endpoints |
-|--------|-----------|
-| Auth | `POST /auth`, `POST /auth/refresh`, `DELETE /auth` |
-| User | `POST /user`, `GET /user`, `PUT /user` |
-| Bank | CRUD at `/bank` and `/bank/{id}` |
-| Salary | `POST /salary`, `PUT /salary/{id}`, `GET /salary` |
+| Domain         | Endpoints                                               |
+| -------------- | ------------------------------------------------------- |
+| Auth           | `POST /auth`, `POST /auth/refresh`, `DELETE /auth`      |
+| User           | `POST /user`, `GET /user`, `PUT /user`                  |
+| Bank           | CRUD at `/bank` and `/bank/{id}`                        |
+| Salary         | `POST /salary`, `PUT /salary/{id}`, `GET /salary`       |
 | Bank Statement | `/bank-statement` (create, fetch by year/month, delete) |
-| Expenses | `/expense/credit/{id}` and `/expense/debit/{id}` (CRUD) |
-| Extra Income | `/extra-income/{bankStatementId}` (CRUD) |
-| Calendar | `/calendar`, `/year/{n}`, `/month` |
-| Health | `GET /health` |
+| Expenses       | `/expense/credit/{id}` and `/expense/debit/{id}` (CRUD) |
+| Extra Income   | `/extra-income/{bankStatementId}` (CRUD)                |
+| Calendar       | `/calendar`, `/year/{n}`, `/month`                      |
+| Health         | `GET /health`                                           |
 
 ## Database
 
@@ -117,6 +117,7 @@ src/
 ## Frontend Status
 
 UI is in early development. Current state:
+
 - Health page with SWR data fetching and Tailwind styling
 - Auth pages (login/register) scaffolded
 - UI language: Portuguese (pt-BR)
